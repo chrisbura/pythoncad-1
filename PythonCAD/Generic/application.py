@@ -41,6 +41,7 @@ class Application(object):
         this class provide the real pythoncad api interface ..
     """
     def __init__(self, **args):
+        self.__document_schema = DocumentSchema()
         userDirectory=os.getenv('USERPROFILE') or os.getenv('HOME')
         pyUserDir=os.path.join(userDirectory, "PythonCAD")
         if not os.path.exists(pyUserDir):
@@ -48,7 +49,7 @@ class Application(object):
         baseDbName=os.path.join(pyUserDir, 'PythonCAD_Local.pdr')
         #--
         # Kernel document is used for application settings
-        self.kernel=Document(baseDbName)
+        self.kernel=Document(baseDbName, self.__document_schema)
         self.__applicationCommand=APPLICATION_COMMAND
         # Setting up Application Events
         self.startUpEvent=PyCadEvent()
@@ -59,7 +60,7 @@ class Application(object):
         self.activeteDocumentEvent=PyCadEvent()
         # manage Document inizialization
         self.__Documents={}
-        self.alchemy_documents = {}
+        # self.alchemy_documents = {}
         if args.has_key('open'):
             self.openDocument(args['open'])
         else:
@@ -67,7 +68,7 @@ class Application(object):
         # Fire the Application inizialization
         self.startUpEvent(self)
 
-        self.__document_schema = DocumentSchema()
+
 
     @property
     def getRecentFiles(self):
@@ -167,11 +168,11 @@ class Application(object):
         """
             Create a new document empty document in the application
         """
-        newDoc=Document(fileName)
-        new_alchemy_doc = AlchemyDocument(self.__document_schema)
+        newDoc=   Document(fileName, self.__document_schema)
+        # new_alchemy_doc = AlchemyDocument(self.__document_schema)
         fileName=newDoc.dbPath
         self.__Documents[fileName]=newDoc
-        self.alchemy_documents[new_alchemy_doc.db_path] = new_alchemy_doc
+        # self.alchemy_documents[new_alchemy_doc.db_path] = new_alchemy_doc
         self.afterOpenDocumentEvent(self, self.__Documents[fileName])   #   Fire the open document event
         self.ActiveDocument=self.__Documents[fileName]              #   Set Active the document
         # self.active_alchemy_document = self.alchemy_documents[new_alchemy_doc.database.db_path]
@@ -184,7 +185,7 @@ class Application(object):
         """
         self.beforeOpenDocumentEvent(self, fileName)
         if not self.__Documents.has_key(fileName):
-            self.__Documents[fileName]=Document(fileName)
+            self.__Documents[fileName]=Document(fileName, self.__document_schema)
             self.addRecentFiles(fileName)
         self.afterOpenDocumentEvent(self, self.__Documents[fileName])   #   Fire the open document event
         self.ActiveDocument=self.__Documents[fileName]                  #   Set Active the document

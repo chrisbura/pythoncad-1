@@ -132,8 +132,8 @@ class EntityDb(BaseDb):
                     pycad_index,
                     pycad_visible,
                     pycad_property) VALUES
-                    (?,?,?,?,?,1,?,?,?,?,?,?,?,?)"""
-                    
+                    (:1, :2, :3, :4, :5, 1, :6, :7, :8, :9, :10, :11, :12, :13)"""
+
         tupleArg=(
                     _entityId,
                     _entityType,
@@ -143,13 +143,29 @@ class EntityDb(BaseDb):
                     _xMin,
                     _yMin,
                     _xMax,
-                    _yMax, 
+                    _yMax,
                     _revisionState,
-                    _revisionIndex, 
+                    _revisionIndex,
                     _entityVisible,
-                    _property)
-        self.makeUpdateInsert(_sqlInsert, tupleArg)
-        
+                    _property
+        )
+        tuple_dict = {
+                    '1': _entityId,
+                    '2': _entityType,
+                    '3': _entityDump,
+                    '4': _styleObject,
+                    '5': undoId,
+                    '6': _xMin,
+                    '7': _yMin,
+                    '8': _xMax,
+                    '9': _yMax,
+                    '10': _revisionState,
+                    '11': _revisionIndex,
+                    '12': _entityVisible,
+                    '13': _property
+        }
+        self.makeUpdateInsert(_sqlInsert, tuple_dict)
+
     def getEntityFromTableId(self,entityTableId):
         """
             Get the entity object from the database Univoc id

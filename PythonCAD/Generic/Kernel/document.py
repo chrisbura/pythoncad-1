@@ -73,7 +73,7 @@ class Document(BaseDb):
         This class provide basic operation on the pycad db database
         dbPath: is the path the database if None look in the some directory.
     """
-    def __init__(self,dbPath=None):
+    def __init__(self,dbPath=None, schema=None):
         """
             init of the kernel
         """
@@ -91,7 +91,7 @@ class Document(BaseDb):
         self.undoRedoEvent=PyCadEvent()
         self.handledErrorEvent=PyCadEvent()
         #create Connection
-        self.createConnection(dbPath)
+        self.createConnection(dbPath, schema) #
         # inizialize extentionObject
         self.__UndoDb=UndoDb(self.getConnection())
         self.__EntityDb=EntityDb(self.getConnection())

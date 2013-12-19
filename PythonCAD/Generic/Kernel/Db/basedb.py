@@ -28,6 +28,8 @@ import sqlite3 as sql
 
 from Kernel.exception import *
 
+from Kernel.Db.alchemy import Connection
+
 class BaseDb(object):
     """
         this class provide base db operation
@@ -36,18 +38,27 @@ class BaseDb(object):
     def __init__(self):
         self.__dbConnection=None
         self.dbPath=None
-        
-    def createConnection(self,dbPath=None):
+
+    def createConnection(self, dbPath=None, schema=None):
         """
             create the connection with the database
         """
+
+        if schema is None:
+            raise NotImplementedError('Schema needs to be passed')
+
         if dbPath is None:
             f=tempfile.NamedTemporaryFile(prefix='PyCad_',suffix='.pdr')
             dbPath=f.name
             f.close()
-        self.__dbConnection = sql.connect(str(dbPath))
-        self.dbPath=dbPath
-        
+
+        self.connection = Connection(schema, dbPath)
+        self.db = self.connection.session
+        self.db_path = self.connection.db_path
+
+        self.__dbConnection = self.connection
+        self.dbPath = self.db_path
+
     def setConnection(self,dbConnection):
         """
             set the connection with the database
@@ -152,6 +163,6 @@ class BaseDb(object):
             perform a commit
         """
         try:
-            self.__dbConnection.commit()
+            self.__dbConnection.session.commit()
         except:
             print "Error on commit"

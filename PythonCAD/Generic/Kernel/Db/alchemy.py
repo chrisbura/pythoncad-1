@@ -25,5 +25,8 @@ class Connection(object):
         # TODO: Check if it will add new tables when a file is opened, warn about changes if so
         db_schema.metadata.create_all(bind=engine, checkfirst=True)
 
+    def cursor(self):
+        return self.session
+
     def __del__(self):
         self.session.close()
