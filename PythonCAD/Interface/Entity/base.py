@@ -33,6 +33,7 @@ from Kernel.GeoEntity.point     import Point
 
 class BaseEntity(QtGui.QGraphicsItem):
     shapeSize=MOUSE_GRAPH_DIMENSION
+    # TODO: Move to application settings ('debug mode')
     showShape=False #This Flag is used for debug porpoise
     showBBox=False  #This Flag is used for debug porpoise
     def __init__(self, entity):

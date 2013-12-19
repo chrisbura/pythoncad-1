@@ -33,6 +33,8 @@ from Kernel.exception           import *
 from Kernel.document            import *
 from Kernel.Command             import *
 
+from Kernel.alchemy_document import AlchemyDocument
+from Kernel.Db.schema import DocumentSchema
 
 class Application(object):
     """
@@ -45,6 +47,7 @@ class Application(object):
             os.makedirs(pyUserDir)
         baseDbName=os.path.join(pyUserDir, 'PythonCAD_Local.pdr')
         #--
+        # Kernel document is used for application settings
         self.kernel=Document(baseDbName)
         self.__applicationCommand=APPLICATION_COMMAND
         # Setting up Application Events
@@ -56,12 +59,15 @@ class Application(object):
         self.activeteDocumentEvent=PyCadEvent()
         # manage Document inizialization
         self.__Documents={}
+        self.alchemy_documents = {}
         if args.has_key('open'):
             self.openDocument(args['open'])
         else:
             self.__ActiveDocument=None
         # Fire the Application inizialization
         self.startUpEvent(self)
+
+        self.__document_schema = DocumentSchema()
 
     @property
     def getRecentFiles(self):
@@ -162,10 +168,13 @@ class Application(object):
             Create a new document empty document in the application
         """
         newDoc=Document(fileName)
+        new_alchemy_doc = AlchemyDocument(self.__document_schema)
         fileName=newDoc.dbPath
         self.__Documents[fileName]=newDoc
+        self.alchemy_documents[new_alchemy_doc.db_path] = new_alchemy_doc
         self.afterOpenDocumentEvent(self, self.__Documents[fileName])   #   Fire the open document event
         self.ActiveDocument=self.__Documents[fileName]              #   Set Active the document
+        # self.active_alchemy_document = self.alchemy_documents[new_alchemy_doc.database.db_path]
         self.addRecentFiles(fileName)
         return self.__Documents[fileName]
 
