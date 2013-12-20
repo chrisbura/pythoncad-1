@@ -12,3 +12,19 @@ class Layer(Base):
     name = Column(String(50))
     visible = Column(Boolean, default=True)
 
+
+class Point(Base):
+    __tablename__ = 'points'
+    id = Column(Integer, primary_key=True)
+    x = Column(Float)
+    y = Column(Float)
+
+
+class Segment(Base):
+    __tablename__ = 'segments'
+    id = Column(Integer, primary_key=True)
+    point1_id = Column(Integer, ForeignKey('points.id'))
+    point2_id = Column(Integer, ForeignKey('points.id'))
+
+    point1 = relationship('Point', foreign_keys=point1_id)
+    point2 = relationship('Point', foreign_keys=point2_id)
