@@ -40,6 +40,12 @@ class LayerTable(object):
 
         self.db = self.__kr.db
 
+        # Initialize events
+        self.setCurrentEvent = PyCadEvent()
+        self.deleteEvent = PyCadEvent()
+        self.insertEvent = PyCadEvent()
+        self.updateEvent = PyCadEvent()
+
         # Add a default layer if none exists
         layer_count = self.getLayerCount()
         if not layer_count:
@@ -55,14 +61,15 @@ class LayerTable(object):
 
             self.__activeLayer = layer
         else:
+            # TODO: Clean up
             self.settings['active_layer'] = self.db.query(Setting).filter_by(name='active_layer').first()
-            layer = self.db.query(Layer).get(int(self.settings['active_layer'].value))
-            self.__activeLayer = layer
-
-        self.setCurrentEvent = PyCadEvent()
-        self.deleteEvent = PyCadEvent()
-        self.insertEvent = PyCadEvent()
-        self.updateEvent = PyCadEvent()
+            if self.settings['active_layer']:
+                layer = self.db.query(Layer).get(int(self.settings['active_layer'].value))
+            else:
+                self.settings['active_layer'] = Setting(name='active_layer')
+                self.db.add(self.settings['active_layer']) # commited in setActiveLayer
+                layer = self.getVisibleLayer()
+            self.setActiveLayer(layer)
 
     def setActiveLayer(self, layer):
         self.__activeLayer=layer
@@ -74,7 +81,7 @@ class LayerTable(object):
         return self.__activeLayer
 
     def insert(self, layer):
-        self.__activeLayer=layer
+        self.setActiveLayer(layer)
         self.insertEvent()
 
     def _getLayerConstructionElement(self, pyCadEnt):
