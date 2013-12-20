@@ -28,10 +28,9 @@ import sip
 sip.setapi('QString', 2)
 sip.setapi('QVariant', 2)
 
-from PyQt4                              import QtCore, QtGui
+from PyQt4 import QtCore, QtGui
 
-from Kernel.layer                       import Layer
-from Kernel.exception                   import PythonCadWarning
+from Kernel.Db.schema import Layer
 
 NAME, VISIBLE = range(2)
 
@@ -44,7 +43,7 @@ class LayerItem(object):
     @property
     def id(self):
         # TODO: Name interferes with built-in symbol
-        return self._id
+        return self._kernelItem.id
 
     @property
     def name(self):
@@ -57,7 +56,7 @@ class LayerItem(object):
 class LayerModel(QtCore.QAbstractTableModel):
     """
     The model of the Qt Model/View pattern
-    
+
     Represents the data in a table as a two dimensional array
     """
     def __init__(self, parent):
@@ -140,7 +139,7 @@ class LayerDelegate(QtGui.QStyledItemDelegate):
     def paint(self, painter, option, index):
         if index.column() == NAME:
             layer = index.model().layers[index.row()]
-            active_layer_id = self._document.getTreeTable.getActiveLayer().getId()
+            active_layer_id = self._document.getTreeTable.getActiveLayer().id
             if layer.id == active_layer_id:
                 painter.fillRect(option.rect, QtCore.Qt.lightGray)
         QtGui.QStyledItemDelegate.paint(self, painter, option, index)
@@ -148,7 +147,7 @@ class LayerDelegate(QtGui.QStyledItemDelegate):
 class LayerView(QtGui.QTableView):
     """
     The view of the Qt Model/View pattern
-    
+
     Displays the layers in a simple table instead of a tree. This allows for
     easier management of layers.
     """
@@ -182,40 +181,39 @@ class LayerView(QtGui.QTableView):
         self.connect(self.model, QtCore.SIGNAL('hide_layer'), self._hide)
         self.connect(self.model, QtCore.SIGNAL('show_layer'), self._show)
 
-    def updateView(self, layer):
+    def updateView(self):
         self.model.clear()
         self.populateStructure()
         self.reset()
 
     def populateStructure(self):
         layers = self._document.getTreeTable.getLayers()
-        activeLayer = self._document.getTreeTable.getActiveLayer()
-        activeLayerId = activeLayer.getId()
-        for key in layers:
-            c = layers[key]
-            if key == activeLayerId:
-                self.model.layers.append(LayerItem(c, id=key, active=True))
+        active_layer = self._document.getTreeTable.getActiveLayer()
+        for layer in layers:
+            if layer.id == active_layer.id:
+                # TODO: Can layer model be used directly
+                self.model.layers.append(LayerItem(layer, id=layer.id, active=True))
             else:
-                self.model.layers.append(LayerItem(c, id=key, active=False))
+                self.model.layers.append(LayerItem(layer, id=layer.id, active=False))
         self.resizeRowsToContents()
 
     def contextMenuEvent(self, event):
         contextMenu = QtGui.QMenu(self)
-        
+
         addLayerAction = QtGui.QAction('Add Layer', self, triggered=self._addLayer)
         renameLayerAction = QtGui.QAction('Rename Layer', self, triggered=self._rename)
         removeAction = QtGui.QAction('Remove Layer', self, triggered=self._remove)
         hideAction = QtGui.QAction('Hide', self, triggered=self._hide)
         showAction = QtGui.QAction('Show', self, triggered=self._show)
         setCurrentAction = QtGui.QAction('Set Current', self, triggered=self._setCurrent)
-        
+
         contextMenu.addAction(addLayerAction)
         contextMenu.addAction(renameLayerAction)
         contextMenu.addAction(removeAction)
         contextMenu.addAction(hideAction)
         contextMenu.addAction(showAction)
         contextMenu.addAction(setCurrentAction)
-        
+
         contextMenu.exec_(event.globalPos())
         del(contextMenu)
 
@@ -227,47 +225,55 @@ class LayerView(QtGui.QTableView):
             # TODO: Give user a warning message
             return False
 
-        newLayer = self._document.saveEntity(Layer(layer_name))
-        self._document.getTreeTable.insert(newLayer)
+        # TODO: Move to manager
+        new_layer = Layer(name=layer_name)
+        self._document.db.add(new_layer)
+        self._document.db.commit()
+
+        self._document.getTreeTable.insert(new_layer)
 
     def _remove(self):
         # TODO: Add warning
-        layerId = self.current_selection.id
-        self._document.getTreeTable.delete(layerId)
+        layer = self.current_selection._kernelItem
+        self._document.getTreeTable.delete(layer)
 
     def _rename(self):
         text, ok = QtGui.QInputDialog.getText(self, 'Rename Layer', 'Enter New Layer Name')
         if ok:
-            layerId = self.current_selection.id
-            self._document.getTreeTable.rename(layerId, text)
+            layer = self.current_selection._kernelItem
+            self._document.getTreeTable.rename(layer, text)
 
-    def _hide(self, layer_id = None):
+    def _hide(self, layer=None):
         # TODO: Move to object property
         tree_table = self._document.getTreeTable
         if tree_table.getLayerCount() <= 1:
             QtGui.QMessageBox.warning(self, 'Error', 'You cannot hide the only layer')
             return False
 
-        if not layer_id:
-            layer_id = self.current_selection.id
+        if not layer:
+            layer = self.current_selection._kernelItem
 
-        if layer_id is tree_table.getActiveLayer().getId():
-            visible_layer = tree_table.getVisibleLayer(ignore = [layer_id, ])
+        active_layer = tree_table.getActiveLayer()
+
+        if layer == active_layer:
+            visible_layer = tree_table.getVisibleLayer(ignore = [layer.id, ])
             if not visible_layer:
                 QtGui.QMessageBox.warning(self, 'Error', 'Unable to hide the last visible layer')
                 return False
 
-        self._document.getTreeTable.hide(layer_id)
+        self._document.getTreeTable.hide(layer)
 
-    def _show(self, layer_id = None):
-        if not layer_id:
-            layer_id = self.current_selection.id
-        self._document.getTreeTable.show(layer_id)
+    def _show(self, layer=None):
+        if not layer:
+            layer = self.current_selection._kernelItem
+        self._document.getTreeTable.show(layer)
 
     def _setCurrent(self):
+        # TODO: Can you even click on this without having a selection
         cito = self.current_selection
         if cito != None:
-            self._document.getTreeTable.setActiveLayer(cito.id)
+            # TODO: Convert LayerItem to Layer model
+            self._document.getTreeTable.setActiveLayer(cito._kernelItem)
 
     @property
     def current_selection(self):
