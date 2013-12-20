@@ -46,7 +46,8 @@ class Application(object):
         baseDbName=os.path.join(pyUserDir, 'PythonCAD_Local.pdr')
         #--
         # Kernel document is used for application settings
-        self.kernel=Document(baseDbName)
+        # TODO: Convert to 'application document'
+        self.kernel = Document(baseDbName)
         self.__applicationCommand=APPLICATION_COMMAND
         # Setting up Application Events
         self.startUpEvent=PyCadEvent()
@@ -164,11 +165,11 @@ class Application(object):
         """
             Create a new document empty document in the application
         """
-        newDoc=   Document(fileName)
-        fileName=newDoc.dbPath
-        self.__Documents[fileName]=newDoc
+        newDoc = Document(fileName)
+        fileName = newDoc.dbPath
+        self.__Documents[fileName] = newDoc
         self.afterOpenDocumentEvent(self, self.__Documents[fileName])   #   Fire the open document event
-        self.ActiveDocument=self.__Documents[fileName]              #   Set Active the document
+        self.ActiveDocument = self.__Documents[fileName]              #   Set Active the document
         self.addRecentFiles(fileName)
         return self.__Documents[fileName]
 

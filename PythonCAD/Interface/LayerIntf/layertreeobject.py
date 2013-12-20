@@ -34,30 +34,13 @@ from Kernel.Db.schema import Layer
 
 NAME, VISIBLE = range(2)
 
-class LayerItem(object):
-    def __init__(self, kernelItem, id=None, active=True):
-        self._kernelItem = kernelItem
-        self._id = id
-        self._active = active
-
-    @property
-    def id(self):
-        # TODO: Name interferes with built-in symbol
-        return self._kernelItem.id
-
-    @property
-    def name(self):
-        return self._kernelItem.name
-
-    @property
-    def active(self):
-        return self._active
 
 class LayerModel(QtCore.QAbstractTableModel):
     """
     The model of the Qt Model/View pattern
 
     Represents the data in a table as a two dimensional array
+
     """
     def __init__(self, parent):
         super(LayerModel, self).__init__(parent)
@@ -85,21 +68,21 @@ class LayerModel(QtCore.QAbstractTableModel):
 
         if role == QtCore.Qt.CheckStateRole:
             if column == VISIBLE:
-                if layer._kernelItem.visible:
+                if layer.visible:
                     return QtCore.Qt.Checked
                 else:
                     return QtCore.Qt.Unchecked
 
         if role == QtCore.Qt.DisplayRole:
             if column == NAME:
-                return layer._kernelItem.name
+                return layer.name
 
     def setData(self, index, value, role = QtCore.Qt.EditRole):
         if index.isValid() and role == QtCore.Qt.CheckStateRole:
             column = index.column()
             if column == VISIBLE:
                 layer = self.layers[index.row()]
-                if layer._kernelItem.visible:
+                if layer.visible:
                     # Replace with a 'toggle' signal
                     self.emit(QtCore.SIGNAL('hide_layer'), layer.id)
                 else:
@@ -130,6 +113,7 @@ class LayerModel(QtCore.QAbstractTableModel):
         self.removeRows(0, self.rowCount())
         self.reset()
 
+
 class LayerDelegate(QtGui.QStyledItemDelegate):
 
     def __init__(self, document, parent=None):
@@ -139,10 +123,11 @@ class LayerDelegate(QtGui.QStyledItemDelegate):
     def paint(self, painter, option, index):
         if index.column() == NAME:
             layer = index.model().layers[index.row()]
-            active_layer_id = self._document.getTreeTable.getActiveLayer().id
-            if layer.id == active_layer_id:
+            active_layer = self._document.getTreeTable.getActiveLayer()
+            if layer == active_layer:
                 painter.fillRect(option.rect, QtCore.Qt.lightGray)
         QtGui.QStyledItemDelegate.paint(self, painter, option, index)
+
 
 class LayerView(QtGui.QTableView):
     """
@@ -190,11 +175,7 @@ class LayerView(QtGui.QTableView):
         layers = self._document.getTreeTable.getLayers()
         active_layer = self._document.getTreeTable.getActiveLayer()
         for layer in layers:
-            if layer.id == active_layer.id:
-                # TODO: Can layer model be used directly
-                self.model.layers.append(LayerItem(layer, id=layer.id, active=True))
-            else:
-                self.model.layers.append(LayerItem(layer, id=layer.id, active=False))
+            self.model.layers.append(layer)
         self.resizeRowsToContents()
 
     def contextMenuEvent(self, event):
@@ -234,13 +215,13 @@ class LayerView(QtGui.QTableView):
 
     def _remove(self):
         # TODO: Add warning
-        layer = self.current_selection._kernelItem
+        layer = self.current_selection
         self._document.getTreeTable.delete(layer)
 
     def _rename(self):
         text, ok = QtGui.QInputDialog.getText(self, 'Rename Layer', 'Enter New Layer Name')
         if ok:
-            layer = self.current_selection._kernelItem
+            layer = self.current_selection
             self._document.getTreeTable.rename(layer, text)
 
     def _hide(self, layer=None):
@@ -251,7 +232,7 @@ class LayerView(QtGui.QTableView):
             return False
 
         if not layer:
-            layer = self.current_selection._kernelItem
+            layer = self.current_selection
 
         active_layer = tree_table.getActiveLayer()
 
@@ -265,15 +246,14 @@ class LayerView(QtGui.QTableView):
 
     def _show(self, layer=None):
         if not layer:
-            layer = self.current_selection._kernelItem
+            layer = self.current_selection
         self._document.getTreeTable.show(layer)
 
     def _setCurrent(self):
         # TODO: Can you even click on this without having a selection
         cito = self.current_selection
         if cito != None:
-            # TODO: Convert LayerItem to Layer model
-            self._document.getTreeTable.setActiveLayer(cito._kernelItem)
+            self._document.getTreeTable.setActiveLayer(cito)
 
     @property
     def current_selection(self):

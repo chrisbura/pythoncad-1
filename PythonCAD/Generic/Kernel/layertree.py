@@ -39,7 +39,6 @@ class LayerTable(object):
 
         self.db = self.__kr.db
 
-        # TODO: Check why a layer is created without a document open
         # Add a default layer if none exists
         layer_count = self.getLayerCount()
         if not layer_count:
