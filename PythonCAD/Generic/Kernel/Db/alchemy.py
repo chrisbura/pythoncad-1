@@ -8,7 +8,7 @@ class Connection(object):
     document instances or application settings instances.
 
     """
-    def __init__(self, db_schema, db_path=None):
+    def __init__(self, db_path=None):
         self.db_path = db_path
 
         # If document path is not supplied, create a new file in user's temp directory
@@ -23,7 +23,8 @@ class Connection(object):
         Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
         self.session = Session()
         # TODO: Check if it will add new tables when a file is opened, warn about changes if so
-        db_schema.metadata.create_all(bind=engine, checkfirst=True)
+        from Kernel.Db.schema import *
+        Base.metadata.create_all(bind=engine, checkfirst=True)
 
     def cursor(self):
         return self.session

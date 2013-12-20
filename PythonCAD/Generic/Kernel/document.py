@@ -73,7 +73,7 @@ class Document(BaseDb):
         This class provide basic operation on the pycad db database
         dbPath: is the path the database if None look in the some directory.
     """
-    def __init__(self,dbPath=None, schema=None):
+    def __init__(self,dbPath=None):
         """
             init of the kernel
         """
@@ -91,7 +91,7 @@ class Document(BaseDb):
         self.undoRedoEvent=PyCadEvent()
         self.handledErrorEvent=PyCadEvent()
         #create Connection
-        self.createConnection(dbPath, schema) #
+        self.createConnection(dbPath) #
         # inizialize extentionObject
         self.__UndoDb=UndoDb(self.getConnection())
         self.__EntityDb=EntityDb(self.getConnection())
@@ -115,13 +115,13 @@ class Document(BaseDb):
         except StructuralError:
             raise StructuralError, 'Unable to create LayerTree structure'
         self.__logger.debug('Done inizialization')
-    
+
     def addPropertie(self,name,value):
         """
             add a properties to the object
         """
         self.__property[name]=value
-        
+
     def getPropertie(self,name):
         """
             get the properties with a given name
@@ -129,14 +129,14 @@ class Document(BaseDb):
         if name in self.__property:
             return self.__property[name]
         raise EntityMissing("No entity with name %s"%str(name))
-    
+
     @property
     def properties(self):
         """
             get all the properties from the entity
         """
         return self.__property
-    
+
     def getMainStyle(self):
         """
             get all the db styles
@@ -616,7 +616,7 @@ class Document(BaseDb):
             self.__logger.error('UnsupportedFormat')
             _err={'object':extFormat, 'error':DxfUnsupportedFormat}
             self.handledErrorEvent(self,_err)#todo : test it not sure it works
-    
+
     @property
     def getTreeTable(self):
         return self.__LayerTable

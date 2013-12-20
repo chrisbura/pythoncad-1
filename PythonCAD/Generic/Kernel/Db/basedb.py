@@ -39,20 +39,17 @@ class BaseDb(object):
         self.__dbConnection=None
         self.dbPath=None
 
-    def createConnection(self, dbPath=None, schema=None):
+    def createConnection(self, dbPath=None):
         """
             create the connection with the database
         """
-
-        if schema is None:
-            raise NotImplementedError('Schema needs to be passed')
 
         if dbPath is None:
             f=tempfile.NamedTemporaryFile(prefix='PyCad_',suffix='.pdr')
             dbPath=f.name
             f.close()
 
-        self.connection = Connection(schema, dbPath)
+        self.connection = Connection(dbPath)
         self.db = self.connection.session
         self.db_path = self.connection.db_path
 
@@ -113,7 +110,7 @@ class BaseDb(object):
         if _row is None or _row[0] is None:
             return None
         return _row[0]
-            
+
     def makeUpdateInsert(self,statment, tupleArgs=None):
         """
             make an update Inster operation
