@@ -29,37 +29,29 @@
 import sip
 sip.setapi('QString', 2)
 sip.setapi('QVariant', 2)
-    
+
 from PyQt4  import QtCore, QtGui
 
-from Interface.pycadapp                         import PyCadApp
-from Interface.LayerIntf.layertreeobject        import LayerView
+from Interface.LayerIntf.layertreeobject import LayerView
 
 class LayerDock(QtGui.QDockWidget):
-    
+
     def __init__(self, parent, document, model):
-        '''
+        """
+        # TODO:
         Creates an edit line in which commands or expressions are evaluated.
         Evaluation of expressions is done by the FunctionHandler object.
-        '''
+
+        """
         super(LayerDock, self).__init__('Layers', parent)
-        # only dock at the left or right
         self.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
-        #self.__layer_ctrl = QtGui.QTreeWidget(self, itemDoubleClicked=self._itemActivated, itemActivated=self._itemActivated, itemSelectionChanged=self._itemSelectionChanged)
-        #self.setWidget(self.__layer_ctrl)
         self._layerModel=LayerView(self, document, model)
         self.setWidget(self._layerModel)
-  
-    def ShowAllLayers(self):
-        '''
-            Show all layers from the kernel in the control
-        '''
-        if self._layerTreeObject:
-            self._populateLayerCtrl(self.__layer_ctrl.invisibleRootItem(), layer_tree)
-        return
-        
+
     def RefreshStructure(self):
-        '''
-            refresh the tree view
-        '''
+        """
+        Refresh the tree view
+
+        """
+        # TODO:
         self._layerModel.updateView(None)
