@@ -25,7 +25,7 @@
 
 from Kernel.exception import *
 from Kernel.pycadevent import PyCadEvent
-from Kernel.Db.schema import Layer
+from Kernel.Db.schema import Layer, Setting
 
 
 class LayerTable(object):
@@ -36,20 +36,28 @@ class LayerTable(object):
 
     def __init__(self, kernel):
         self.__kr = kernel
+        self.settings = {}
 
         self.db = self.__kr.db
 
         # Add a default layer if none exists
         layer_count = self.getLayerCount()
         if not layer_count:
+
+            # Create 'Default' layer on new document creation
             layer = Layer(name='Default')
             self.db.add(layer)
+            self.db.flush()
+
+            self.settings['active_layer'] = Setting(name='active_layer', value=layer.id)
+            self.db.add(self.settings['active_layer'])
             self.db.commit()
+
             self.__activeLayer = layer
         else:
-            # Set active layer to first visible layer it finds
-            # TODO: Save active layer between sessions
-            self.__activeLayer = self.getVisibleLayer()
+            self.settings['active_layer'] = self.db.query(Setting).filter_by(name='active_layer').first()
+            layer = self.db.query(Layer).get(int(self.settings['active_layer'].value))
+            self.__activeLayer = layer
 
         self.setCurrentEvent = PyCadEvent()
         self.deleteEvent = PyCadEvent()
@@ -58,6 +66,8 @@ class LayerTable(object):
 
     def setActiveLayer(self, layer):
         self.__activeLayer=layer
+        self.settings['active_layer'].value = layer.id
+        self.db.commit()
         self.setCurrentEvent()
 
     def getActiveLayer(self):

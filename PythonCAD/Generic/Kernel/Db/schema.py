@@ -28,3 +28,14 @@ class Segment(Base):
 
     point1 = relationship('Point', foreign_keys=point1_id)
     point2 = relationship('Point', foreign_keys=point2_id)
+
+
+class Setting(Base):
+    """
+    Setting represents individual document settings such as active_layer
+
+    """
+    __tablename__ = 'settings'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50), unique=True)
+    value = Column(String(50))
