@@ -83,7 +83,7 @@ class LayerModel(QtCore.QAbstractTableModel):
             if column == VISIBLE:
                 layer = self.layers[index.row()]
                 if layer.visible:
-                    # Replace with a 'toggle' signal
+                    # TODO: Replace with a 'toggle' signal
                     self.emit(QtCore.SIGNAL('hide_layer'), layer)
                 else:
                     self.emit(QtCore.SIGNAL('show_layer'), layer)

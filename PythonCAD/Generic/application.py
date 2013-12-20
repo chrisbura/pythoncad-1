@@ -148,6 +148,8 @@ class Application(object):
         """
         if not self.__ActiveDocument:
             raise EntityMissing("Miss Active document in the application")
+
+        # Check if valid command (from initsettings)
         if self.__applicationCommand.has_key(commandType):
             cmd=self.__applicationCommand[commandType]
             cmdIstance=cmd(self.__ActiveDocument)

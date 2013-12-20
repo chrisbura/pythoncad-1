@@ -414,7 +414,7 @@ class CadWindowMdi(QtGui.QMainWindow):
             return
         for window in window_list:
             entry = self.open_window_menu.addAction(window.document.dbPath)
-            self.connect(entry, QtCore.SIGNAL('triggered()'), 
+            self.connect(entry, QtCore.SIGNAL('triggered()'),
                 functools.partial(self.mdiArea.setActiveSubWindow, window))
             self.open_window_menu.addAction(entry)
 
@@ -429,7 +429,7 @@ class CadWindowMdi(QtGui.QMainWindow):
             return
         for recent_file in recent_files:
             entry = self.open_recent_menu.addAction(recent_file)
-            self.connect(entry, QtCore.SIGNAL('triggered()'), 
+            self.connect(entry, QtCore.SIGNAL('triggered()'),
                 functools.partial(self.openDrawing, recent_file))
             self.open_recent_menu.addAction(entry)
 
@@ -502,7 +502,7 @@ class CadWindowMdi(QtGui.QMainWindow):
         drawing = QtGui.QFileDialog.getSaveFileName(self, "Save As...", "/home", filter ="Drawings (*.pdr *.dxf)");
         if len(drawing)>0:
             self.__application.saveAs(drawing)
-            
+
             # Connection has been closed already so close the child window
             self.mdiArea.closeActiveSubWindow()
             # Create new child window with the new path/filename
@@ -815,7 +815,7 @@ class CadWindowMdi(QtGui.QMainWindow):
         if len(self.scene.selectedItems())>0:
             if  self.scene.activeKernelCommand.activeException()==ExcMultiEntity:
                 qtItems=[item for item in self.scene.selectedItems() if isinstance(item, BaseEntity)]
-                self.scene.activeICommand.addMauseEvent(point=None,
+                self.scene.activeICommand.addMouseEvent(point=None,
                                                     entity=qtItems,
                                                     force=None)
             else:
@@ -832,8 +832,8 @@ class CadWindowMdi(QtGui.QMainWindow):
             self.critical("Wrong command")
 
     def updateInput(self, message):
-            self.__cmd_intf.commandLine.printMsg(str(message))
-            self.statusBar().showMessage(str(message))
+        self.__cmd_intf.commandLine.printMsg(str(message))
+        self.statusBar().showMessage(str(message))
 
     @staticmethod
     def critical(text):

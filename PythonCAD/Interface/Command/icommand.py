@@ -97,7 +97,7 @@ class ICommand(object):
         self._index=-1
         self.removePreviewItemToTheScene()
 
-    def addMauseEvent(self, point, entity,distance=None,angle=None , text=None, force=None, correct=True):
+    def addMouseEvent(self, point, entity, distance=None, angle=None, text=None, force=None, correct=True):
         """
             add value to a new slot of the command
         """

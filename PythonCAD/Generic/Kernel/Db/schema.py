@@ -19,6 +19,9 @@ class Point(Base):
     x = Column(Float)
     y = Column(Float)
 
+    def __repr__(self):
+        return '<Point ({self.x}, {self.y})>'.format(self=self)
+
 
 class Segment(Base):
     __tablename__ = 'segments'

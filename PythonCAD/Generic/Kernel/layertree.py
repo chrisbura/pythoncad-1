@@ -88,6 +88,7 @@ class LayerTable(object):
         """
             Retrive the ConstructionElement in the pyCadEnt
         """
+        # TODO:
         unpickleLayers=pyCadEnt.getConstructionElements()
         for key in unpickleLayers:
             return unpickleLayers[key]
@@ -141,6 +142,7 @@ class LayerTable(object):
         """
             create a dictionary with all the layer nested as db entity
         """
+        # TODO
         rootDbEnt=self.getEntLayerDb(MAIN_LAYER)
         def createNode(layer):
             childs={}
@@ -157,12 +159,14 @@ class LayerTable(object):
             get the parent layer
             ToDo: to be tested
         """
+        # TODO:
         return self.__kr.getRelatioObject().getParentEnt(layer)
 
     def delete(self, layerId):
         """
             delete the current layer and all the entity related to it
         """
+        # TODO:
         deleteLayer = self.__kr.getEntity(layerId)
 
         # If layer is currently active, find the first visible layer and set it active
@@ -184,6 +188,7 @@ class LayerTable(object):
         """
             delete all layer entity
         """
+        # TODO:
         for ent in self.getLayerChildren(layer):
                 self.__kr.deleteEntity(ent.getId())
 

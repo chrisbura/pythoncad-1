@@ -246,7 +246,7 @@ class CadScene(QtGui.QGraphicsScene):
             event add from the handler
         """
         point=Point(self.posHandler.scenePos.x(), self.posHandler.scenePos.y()*-1.0)
-        self.activeICommand.addMauseEvent(point=point,
+        self.activeICommand.addMouseEvent(point=point,
                                             distance=self.posHandler.distance,
                                             angle=self.posHandler.angle)
         self.hideHandler()

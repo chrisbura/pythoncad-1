@@ -38,7 +38,7 @@ class LayerDock(QtGui.QDockWidget):
 
     def __init__(self, parent, document, model):
         """
-        # TODO:
+        # TODO: Wrong docstring
         Creates an edit line in which commands or expressions are evaluated.
         Evaluation of expressions is done by the FunctionHandler object.
 
