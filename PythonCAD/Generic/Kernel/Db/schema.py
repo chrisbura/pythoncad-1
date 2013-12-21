@@ -7,14 +7,14 @@ from Kernel import models
 Base = declarative_base()
 
 class Layer(Base):
-    __tablename__ = 'layers'
+    __tablename__ = 'layer'
     id = Column(Integer, primary_key=True)
     name = Column(String(50))
     visible = Column(Boolean, default=True)
 
 
 class Point(Base):
-    __tablename__ = 'points'
+    __tablename__ = 'point'
     id = Column(Integer, primary_key=True)
     x = Column(Float)
     y = Column(Float)
@@ -24,13 +24,32 @@ class Point(Base):
 
 
 class Segment(Base):
-    __tablename__ = 'segments'
+    __tablename__ = 'segment'
     id = Column(Integer, primary_key=True)
-    point1_id = Column(Integer, ForeignKey('points.id'))
-    point2_id = Column(Integer, ForeignKey('points.id'))
+    point1_id = Column(Integer, ForeignKey('point.id'))
+    point2_id = Column(Integer, ForeignKey('point.id'))
 
     point1 = relationship('Point', foreign_keys=point1_id)
     point2 = relationship('Point', foreign_keys=point2_id)
+
+
+class Circle(Base):
+    __tablename__ = 'circle'
+    id = Column(Integer, primary_key=True)
+    point_id = Column(Integer, ForeignKey('point.id'))
+    radius = Column(Float)
+
+    point = relationship('Point')
+
+
+class Ellipse(Base):
+    __tablename__ = 'ellipse'
+    id = Column(Integer, primary_key=True)
+    point_id = Column(Integer, ForeignKey('point.id'))
+    radius_x = Column(Float)
+    radius_y = Column(Float)
+
+    point = relationship('Point')
 
 
 class Setting(Base):
