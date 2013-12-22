@@ -29,6 +29,7 @@
 import os
 import sys
 import functools
+from functools import partial
 
 from PyQt4 import QtCore, QtGui
 
@@ -77,6 +78,9 @@ class MainWindow(QtGui.QMainWindow):
         # create status bar
         self._createStatusBar()
         self.setUnifiedTitleAndToolBarOnMac(True)
+
+        self.command_toolbar = self.addToolBar('Commands')
+
         self._registerCommands()
         self.updateMenus()
         self.lastDirectory=os.getenv('USERPROFILE') or os.getenv('HOME')
@@ -219,6 +223,10 @@ class MainWindow(QtGui.QMainWindow):
             update menu status
         """
         hasMdiChild = (self.activeMdiChild() is not None)
+
+        self.segment_action.setEnabled(hasMdiChild)
+        self.circle_action.setEnabled(hasMdiChild)
+
         #File
         self.__cmd_intf.setVisible('import', hasMdiChild)
         self.__cmd_intf.setVisible('saveas', hasMdiChild)
@@ -400,7 +408,20 @@ class MainWindow(QtGui.QMainWindow):
         # Help
         self.__cmd_intf.registerCommand(self.__cmd_intf.Category.Help, 'about', '&About PythonCAD', self._onAbout)
 
+        self.segment_action  = QtGui.QAction(QtGui.QIcon('segment.png'), 'Segment', self)
+        self.segment_action.connect(self.segment_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, SegmentCommand))
+
+        self.circle_action  = QtGui.QAction(QtGui.QIcon('circle.png'), 'Circle', self)
+        self.circle_action.connect(self.circle_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, CircleCommand))
+
+        self.command_toolbar.addAction(self.segment_action)
+        self.command_toolbar.addAction(self.circle_action)
+
         return
+
+    def _call_command(self, command):
+        # TODO: can be simplified?
+        self.emit(QtCore.SIGNAL('command_started'), command)
 
     def updateOpenFileList(self):
         # Currently open windows

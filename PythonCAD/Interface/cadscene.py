@@ -39,7 +39,7 @@ from Interface.Entity.arrowitem     import ArrowItem
 from Interface.Entity.actionhandler import PositionHandler
 from Interface.Entity.dinamicentryobject   import DinamicEntryLine
 from Interface.cadinitsetting       import *
-from Interface.Preview.base         import PreviewBase
+from Interface.Preview.base         import PreviewBase, Preview
 
 from Interface.DrawingHelper.snap import *
 from Interface.DrawingHelper.polarguides import GuideHandler
@@ -49,9 +49,22 @@ from Kernel.GeoEntity.point         import Point
 from Kernel.exception               import *
 from Kernel.entity                  import Entity
 
+from Kernel.Command.inputs import PointInput, LengthInput
+from Kernel.Db.schema import Point as Point2
+from Kernel.Db import schema
+from Interface.Preview.factory import getPreviewObject
+
+
 class CadScene(QtGui.QGraphicsScene):
     def __init__(self, document, parent=None):
         super(CadScene, self).__init__(parent)
+
+        self.active_command = None
+        self.active_entity = None
+        self.connect(parent._mainwindow, QtCore.SIGNAL('command_started'), self._start_command)
+        self.connect(self, QtCore.SIGNAL('left_mouse_release'), self._process_click)
+        self.connect(self, QtCore.SIGNAL('mouse_move'), self._process_move)
+
         # drawing limits
         self.setSceneRect(-10000, -10000, 20000, 20000)
         # scene custom event
@@ -64,7 +77,7 @@ class CadScene(QtGui.QGraphicsScene):
         #fire Pan and Zoom events to the view
         self.firePan=PyCadEvent()
         self.fireZoomFit=PyCadEvent()
-        self.__document=document
+        self.__document = document
         self.needPreview=False
         self.forceDirectionEnabled=False
         self.forceDirection=None
@@ -99,6 +112,52 @@ class CadScene(QtGui.QGraphicsScene):
         r, g, b=BACKGROUND_COLOR #defined in cadinitsetting
         self.setBackgroundBrush(QtGui.QBrush(QtGui.QColor(r, g, b), QtCore.Qt.SolidPattern))
 
+    def _start_command(self, command):
+        if self.active_command or self.active_entity:
+            # TODO: Cancel current command (cancel and then start the new one)
+            pass
+
+        self.active_command = command(self.__document)
+        self.active_entity_class = COMMAND_MAP[command]
+
+    def _process_click(self, event):
+        if not self.active_command:
+            return False
+
+        command = self.active_command
+        print command.message
+        current_input = command.inputs[command.active_input]
+
+        if isinstance(current_input, PointInput):
+            point = Point2(x=event.scenePos().x(), y=event.scenePos().y())
+            current_input.value = point
+            print current_input.value
+
+            if command.active_input == command.preview_start:
+                self.preview_item = getPreviewObject(command)
+                self.addItem(self.preview_item)
+
+        command.active_input = command.active_input + 1
+
+        if command.active_input == len(command.inputs):
+            command.apply_command()
+            # Rebuild scene
+            self.end_command()
+
+    def _process_move(self, event):
+        if not self.active_command:
+            return False
+
+        if self.preview_item:
+            self.preview_item.updatePreview(event)
+
+    def end_command(self):
+        self.clearSelection()
+        self.active_command = None
+        self.active_entity = None
+        self.preview_item = None
+        self.clearPreview()
+
     def initSnap(self):
         # Init loading of snap marks
         self.snappingPoint=SnapPoint(self)
@@ -132,6 +191,7 @@ class CadScene(QtGui.QGraphicsScene):
 # ##########################################################
 
     def mouseMoveEvent(self, event):
+        self.emit(QtCore.SIGNAL('mouse_move'), event)
         scenePos=event.scenePos()
         mouseOnSceneX=scenePos.x()
         mouseOnSceneY=scenePos.y()*-1.0
@@ -173,6 +233,7 @@ class CadScene(QtGui.QGraphicsScene):
 
 
     def mousePressEvent(self, event):
+        self.emit(QtCore.SIGNAL('mouse_press'), event)
         if event.button()==QtCore.Qt.MidButton:
             self.isInPan=True
             self.firePan(True, event.scenePos())
@@ -186,6 +247,9 @@ class CadScene(QtGui.QGraphicsScene):
         super(CadScene, self).mousePressEvent(event)
 
     def mouseReleaseEvent(self, event):
+        if event.button() == QtCore.Qt.LeftButton:
+            self.emit(QtCore.SIGNAL('left_mouse_release'), event)
+
         if event.button()==QtCore.Qt.MidButton:
             self.isInPan=False
             self.firePan(False, None)
@@ -357,7 +421,7 @@ class CadScene(QtGui.QGraphicsScene):
         """
             remove the preview items from the scene
         """
-        entitys=[item for item in self.items() if isinstance(item, PreviewBase)]
+        entitys=[item for item in self.items() if isinstance(item, Preview)]
         for ent in entitys:
             self.removeItem(ent)
 
