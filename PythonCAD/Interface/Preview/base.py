@@ -91,7 +91,7 @@ class PreviewBase(QtGui.QGraphicsItem):
 
         self.drawGeometry(painter,option,widget)
         return
-    
+
     def convertToQTObject(self, value):
         """
             convert the input value in a proper value
@@ -104,7 +104,7 @@ class PreviewBase(QtGui.QGraphicsItem):
             return QtCore.QPointF(value.x, value.y)
         else:
             return value
-        
+
     def revertToQTObject(self, value):
         """
             convert the input value in a proper value GeoObject -> qtObject

@@ -40,10 +40,10 @@ from Generic.application            import Application
 from Interface.LayerIntf.layerdock  import LayerDock
 from Interface.cadscene             import CadScene
 from Interface.cadview              import CadView
-from Interface.idocument            import IDocument
+from Interface.subwindow            import SubWindow
 from Interface.CmdIntf.cmdintf      import CmdIntf
 from Interface.Entity.base          import BaseEntity
-from Interface.Command.icommand     import ICommand
+from Interface.Command.icommand     import InterfaceCommand
 from Interface.cadinitsetting       import *
 from Interface.Dialogs.preferences  import Preferences
 #Kernel
@@ -53,9 +53,9 @@ from Kernel.initsetting             import * #SNAP_POINT_ARRAY, ACTIVE_SNAP_POIN
 
 from Interface.DrawingHelper.polarguides import getPolarMenu
 
-class CadWindowMdi(QtGui.QMainWindow):
+class MainWindow(QtGui.QMainWindow):
     def __init__(self):
-        super(CadWindowMdi, self).__init__()
+        super(MainWindow, self).__init__()
         self.mdiArea = QtGui.QMdiArea()
         self.mdiArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.mdiArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
@@ -107,9 +107,6 @@ class CadWindowMdi(QtGui.QMainWindow):
             get the layer tree dockable window
         """
         return self.__layer_dock
-
-# ###############################################STATUSBAR
-# ##########################################################
 
     def _createStatusBar(self):
         '''
@@ -286,18 +283,18 @@ class CadWindowMdi(QtGui.QMainWindow):
 
     def createMdiChild(self, file=None):
         """
-            Create new IDocument
+            Create new SubWindow
         """
         if file:
             newDoc=self.__application.openDocument(file)
         else:
             newDoc=self.__application.newDocument()
         for mdiwind in self.mdiArea.subWindowList():
-            if mdiwind._IDocument__document.dbPath==file:
+            if mdiwind._SubWindow__document.dbPath==file:
                 child=mdiwind
                 break
         else:
-            child = IDocument(newDoc,self.__cmd_intf, self)
+            child = SubWindow(newDoc,self.__cmd_intf, self)
             self.mdiArea.addSubWindow(child)
 
         #child.copyAvailable.connect(self.cutAct.setEnabled)
@@ -920,7 +917,7 @@ class CadWindowMdi(QtGui.QMainWindow):
         if event.key()==QtCore.Qt.Key_Escape:
             self.resetCommand()
 
-        super(CadWindowMdi, self).keyPressEvent(event)
+        super(MainWindow, self).keyPressEvent(event)
 
 # ########################################## SYMPY INTEGRATION
 # ##########################################################

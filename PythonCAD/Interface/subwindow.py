@@ -5,15 +5,15 @@ from Interface.cadscene             import CadScene
 from Interface.cadview              import CadView
 from Interface.LayerIntf.layertreeobject import LayerModel
 
-class IDocument(QtGui.QMdiSubWindow):
+class SubWindow(QtGui.QMdiSubWindow):
     sequenceNumber = 1
     def __init__(self, document, cmdInf, parent):
-        super(IDocument, self).__init__(parent)
-        IDocument.sequenceNumber += 1
+        super(SubWindow, self).__init__(parent)
+        SubWindow.sequenceNumber += 1
         self.__document=document
         self.__document.handledErrorEvent+=self._errorEvent
         self.__cmdInf=cmdInf
-        self.__cadwindow=parent
+        self._mainwindow=parent
         self.setWindowTitle(document.dbPath + '[*]')
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.isUntitled = True
@@ -31,13 +31,16 @@ class IDocument(QtGui.QMdiSubWindow):
         self.setWidget(innerWindows)
         #Inizialize scene
         self._scene.initDocumentEvents()
+
         self._scene.populateScene(document)
+
         self._scene.zoomWindows+=self.__view.zoomWindows
         self._scene.fireCommandlineFocus+=self.__cmdInf.commandLine.setFocus
         self._scene.fireKeyShortcut+=self.keyShortcut
         self._scene.fireKeyEvent+=self.keyEvent
         self._scene.fireWarning+=self.popUpWarning
         self._scene.fireCoords+=self.setStatusbarCoords
+
     @property
     def document(self):
         return self.__document
@@ -131,9 +134,9 @@ class IDocument(QtGui.QMdiSubWindow):
         return
 
     def closeEvent(self, event):
-        super(IDocument, self).closeEvent(event)
+        super(SubWindow, self).closeEvent(event)
         # TODO: Verify if document is being closed (self.__application.closeDocument(path))
-        self.__cadwindow.updateOpenFileList()
+        self._mainwindow.updateOpenFileList()
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------------------------MANAGE SCENE EVENTS
@@ -142,14 +145,14 @@ class IDocument(QtGui.QMdiSubWindow):
     def setStatusbarCoords(self, x, y, status):
         #set statusbar coordinates when mouse move on the scene
         if status=="abs":
-            self.__cadwindow.coordLabel.setText("X="+str("%.3f" % x)+"\n"+"Y="+str("%.3f" % y)) # "%.3f" %  sets the precision decimals to 3
+            self._mainwindow.coordLabel.setText("X="+str("%.3f" % x)+"\n"+"Y="+str("%.3f" % y)) # "%.3f" %  sets the precision decimals to 3
         elif status=="rel":
-            self.__cadwindow.coordLabel.setText("dx="+str("%.3f" % x)+"\n"+"dy="+str("%.3f" % y)) # "%.3f" %  sets the precision decimals to 3
+            self._mainwindow.coordLabel.setText("dx="+str("%.3f" % x)+"\n"+"dy="+str("%.3f" % y)) # "%.3f" %  sets the precision decimals to 3
 
     def keyEvent(self, event): #fire the key event in the scene to the commandline
         self.__cmdInf.commandLine._keyPress(event)
 
 
     def keyShortcut(self, command):
-        self.__cadwindow.statusBar().showMessage(str(command))
-        self.__cadwindow.callCommand(command)
+        self._mainwindow.statusBar().showMessage(str(command))
+        self._mainwindow.callCommand(command)

@@ -304,16 +304,3 @@ class Application(object):
         #apObj=self.kernel.getDbSettingsObject()
         #apObj.setConstructionElement(settingObj)
         self.kernel.saveEntity(settingObj)
-
-if __name__=='__main__':
-    import application_test  as test
-    app= Application()
-    doc=app.newDocument()
-    #doc.importExternalFormat('C:\Users\mboscolo\Desktop\jettrainer.dxf')
-    #segments=doc.getEntityFromType("SEGMENT")
-    #print len(segments)
-    #test.TestSympy()
-    test.TestIntersection()
-
-
-

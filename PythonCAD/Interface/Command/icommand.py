@@ -39,7 +39,7 @@ from Interface.Dialogs.property     import Property
 from Interface.Preview.factory      import *
 from Interface.DrawingHelper.snap   import *
 
-class ICommand(object):
+class InterfaceCommand(object):
     """
         this class provide base command operation
     """
@@ -60,24 +60,28 @@ class ICommand(object):
         self._index=-1
         self.updateInput=PyCadEvent()
         #self.scene.snappingPoint.activeSnap=#SNAP_POINT_ARRAY["LIST"]  # Define the active snap system
+
     @property
     def forceDirection(self):
         """
             get scene force direction
         """
         return self.scene.forceDirection
+
     @property
     def kernelCommand(self):
         """
             get scene the kernel command
         """
         return self.scene.activeKernelCommand
+
     @property
     def scene(self):
         """
             get scene
         """
         return self._scene
+
     @property
     def index(self):
         return self._index

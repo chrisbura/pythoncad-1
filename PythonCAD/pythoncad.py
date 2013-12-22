@@ -16,7 +16,7 @@ import sqlite3 as sqlite
 #
 sys.path.append(os.path.join(os.getcwd(), 'Generic'))
 #
-from Interface.cadwindow    import CadWindowMdi
+from Interface.mainwindow import MainWindow
 #
 def getPythonCAD():
 
@@ -27,10 +27,10 @@ def getPythonCAD():
     splash = QtGui.QSplashScreen(splash_pix, QtCore.Qt.WindowStaysOnTopHint)
     splash.setMask(splash_pix.mask())
     splash.show()
-    
-    w=CadWindowMdi()
+
+    w=MainWindow()
     w.show()
-    
+
     # end splashscreen
     splash.finish(w)
     return w, app
