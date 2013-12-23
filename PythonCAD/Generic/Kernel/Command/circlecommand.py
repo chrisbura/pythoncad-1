@@ -25,6 +25,8 @@ from Kernel.Command.command import Command
 
 class CircleCommand(Command):
     def __init__(self, document):
+        super(CircleCommand, self).__init__(document)
+        self.can_preview = True
         self.preview_start = 0
         self.inputs = (
             PointInput('Enter first point'),
@@ -33,7 +35,6 @@ class CircleCommand(Command):
         # TODO: Add input relation mechanism
         # Want LengthInput to be from PointInput to mouse click
         self.inputs[1].point = self.inputs[0]
-        super(CircleCommand, self).__init__(document)
 
     def apply_command(self):
         center_point = self.inputs[0].value

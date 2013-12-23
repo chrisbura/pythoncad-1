@@ -25,13 +25,14 @@ from Kernel.Command.command import Command
 
 class SegmentCommand(Command):
     def __init__(self, document):
+        super(SegmentCommand, self).__init__(document)
+        self.can_preview = True
         self.preview_start = 0
         # TODO: Add default values
         self.inputs = (
             PointInput('Enter first point'),
             PointInput('Enter second point'),
         )
-        super(SegmentCommand, self).__init__(document)
 
 
     def apply_command(self):

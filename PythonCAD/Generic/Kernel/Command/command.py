@@ -5,6 +5,7 @@ class Command(object):
         self.db = self.document.db
         self.values = []
         self.active_input = 0
+        self.can_preview = False
 
     @property
     def message(self):

@@ -53,6 +53,9 @@ from Kernel.initsetting             import * #SNAP_POINT_ARRAY, ACTIVE_SNAP_POIN
 
 
 from Interface.DrawingHelper.polarguides import getPolarMenu
+from Kernel.Command.circlecommand import CircleCommand
+from Kernel.Command.pointcommand import PointCommand
+
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
@@ -408,12 +411,16 @@ class MainWindow(QtGui.QMainWindow):
         # Help
         self.__cmd_intf.registerCommand(self.__cmd_intf.Category.Help, 'about', '&About PythonCAD', self._onAbout)
 
-        self.segment_action  = QtGui.QAction(QtGui.QIcon('segment.png'), 'Segment', self)
+        self.point_action  = QtGui.QAction(QtGui.QIcon('icons/point.png'), 'Point', self)
+        self.point_action.connect(self.point_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, PointCommand))
+
+        self.segment_action  = QtGui.QAction(QtGui.QIcon('icons/segment.png'), 'Segment', self)
         self.segment_action.connect(self.segment_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, SegmentCommand))
 
-        self.circle_action  = QtGui.QAction(QtGui.QIcon('circle.png'), 'Circle', self)
+        self.circle_action  = QtGui.QAction(QtGui.QIcon('icons/circle.png'), 'Circle', self)
         self.circle_action.connect(self.circle_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, CircleCommand))
 
+        self.command_toolbar.addAction(self.point_action)
         self.command_toolbar.addAction(self.segment_action)
         self.command_toolbar.addAction(self.circle_action)
 

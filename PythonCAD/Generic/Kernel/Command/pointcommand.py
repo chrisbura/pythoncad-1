@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 # Copyright (c) 2010 Matteo Boscolo
+# Copyright (c) 2013 Christopher Bura
 #
 # This file is part of PythonCAD.
 #
@@ -17,25 +18,27 @@
 # You should have received a copy of the GNU General Public License
 # along with PythonCAD; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-#This module provide a class for the point command
-#
-from Kernel.exception               import *
-from Kernel.Command.basecommand     import *
-from Kernel.GeoEntity.point         import Point
 
-class PointCommand(BaseCommand):
-    """
-        this class represents the point command
-    """
-    def __init__(self, kernel):
-        BaseCommand.__init__(self, kernel)
-        self.exception=[ExcPoint]
-        self.defaultValue=[None]
-        self.message=["Give Me the Point Position: "]
+from Kernel.Db.schema import Point, Entity
+from Kernel.Command.inputs import PointInput
+from Kernel.Command.command import Command
 
-    def applyCommand(self):
-        if len(self.value)!=1:
-            raise PyCadWrongInputData("Wrong number of input parameter")
-        point=Point(self.value[0])
-        self.document.saveEntity(point)
+class PointCommand(Command):
+    def __init__(self, document):
+        super(PointCommand, self).__init__(document)
+        self.inputs = (
+            PointInput('Enter point'),
+        )
+
+    def apply_command(self):
+        point = self.inputs[0].value
+
+        entity = Entity()
+        entity.layer = self.document.get_layer_table().getActiveLayer()
+        self.db.add(entity)
+        point.entities = [entity]
+
+        self.db.add(point)
+        self.db.commit()
+
+        return entity
