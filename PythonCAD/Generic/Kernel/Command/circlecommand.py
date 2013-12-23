@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 # Copyright (c) 2010 Matteo Boscolo
+# Copyright (c) 2013 Christopher Bura
 #
 # This file is part of PythonCAD.
 #
@@ -17,35 +18,34 @@
 # You should have received a copy of the GNU General Public License
 # along with PythonCAD; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-#This module provide a class for the arc command
-#
-import math
 
-from Kernel.exception                  import *
-from Kernel.Command.basecommand        import *
-from Kernel.GeoEntity.arc              import Arc
+from Kernel.Db.schema import Point, Circle, Entity
+from Kernel.Command.inputs import PointInput, LengthInput
+from Kernel.Command.command import Command
 
-class CircleCommand(BaseCommand):
-    """
-        this class represents the arc command
-    """
+class CircleCommand(Command):
     def __init__(self, document):
-        BaseCommand.__init__(self, document)
-        self.exception=[ExcPoint, ExcLenght]
-        self.defaultValue=[None, 10, 0, math.pi*2]
-        self.message=["Give Me the center Point",
-                        "Give Me the radius"]
+        self.preview_start = 0
+        self.inputs = (
+            PointInput('Enter first point'),
+            LengthInput('Enter radius'),
+        )
+        # TODO: Add input relation mechanism
+        # Want LengthInput to be from PointInput to mouse click
+        self.inputs[1].point = self.inputs[0]
+        super(CircleCommand, self).__init__(document)
 
-    def applyCommand(self):
-        if len(self.value)<2:
-            raise PyCadWrongInputData("Wrong number of input parameter")
-        self.applyDefault()
-        arg={"ARC_0":self.value[0],
-                "ARC_1":self.value[1],
-                "ARC_2":0,
-                "ARC_3":math.pi*2
-                }
-        arc=Arc(arg)
-        self.document.saveEntity(arc)
+    def apply_command(self):
+        center_point = self.inputs[0].value
+        self.db.add(center_point)
+        circle = Circle(point=center_point, radius=self.inputs[1].value)
 
+        entity = Entity()
+        entity.layer = self.document.get_layer_table().getActiveLayer()
+        self.db.add(entity)
+        circle.entities = [entity]
+
+        self.db.add(circle)
+        self.db.commit()
+
+        return entity

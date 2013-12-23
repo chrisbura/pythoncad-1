@@ -1,5 +1,6 @@
 
 # Copyright (c) 2009,2010 Matteo Boscolo
+# Copyright (c) 2013 Christopher Bura
 #
 # This file is part of PythonCAD.
 #
@@ -16,32 +17,32 @@
 # You should have received a copy of the GNU General Public License
 # along with PythonCAD; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-#
-# classes for interface segment
-#
-from Interface.Entity.base import *
 
-class Segment(BaseEntity):
-    
-    def __init__(self, entity):
-        super(Segment, self).__init__(entity)
-        p1, p2=self.geoItem.getEndpoints()
-        self.x, self.y=p1.getCoords()
-        self.x1, self.y1=p2.getCoords()
-        self.y=self.y*-1.0
-        self.y1=self.y1*-1.0
-        return
+from PyQt4 import QtCore, QtGui
 
-    def drawShape(self, painterPath):    
-        """
-            overloading of the shape method 
-        """
-        painterPath.moveTo(self.x, self.y)
-        painterPath.lineTo(self.x1, self.y1)
-        
-    def drawGeometry(self, painter, option, widget):
-        #Create Segment
-        p1=QtCore.QPointF(self.x, self.y)
-        p2=QtCore.QPointF(self.x1, self.y1)
-        painter.drawLine(p1,p2)
+
+class Segment(QtGui.QGraphicsLineItem):
+    def __init__(self, obj):
+        super(Segment, self).__init__(obj.point1.x, obj.point1.y, obj.point2.x, obj.point2.y)
+        self.setPen(QtGui.QPen(QtCore.Qt.black, 1, QtCore.Qt.SolidLine))
+        self.setAcceptHoverEvents(True)
+
+    # TODO: Refactor all this into a base class
+    def hoverEnterEvent(self, event):
+        self.setPen(QtGui.QPen(QtCore.Qt.red, 1))
+
+    def hoverLeaveEvent(self, event):
+        self.setPen(QtGui.QPen(QtCore.Qt.black, 1))
+
+    def shape(self):
+        shape = super(Segment, self).shape()
+        path_stroker = QtGui.QPainterPathStroker()
+        # TODO: Customizable 'snap'
+        path_stroker.setWidth(6.0)
+        path1 = path_stroker.createStroke(shape)
+        return path1
+
+    def paint(self, painter, option, widget):
+        painter.setPen(QtGui.QPen(QtCore.Qt.cyan))
+        painter.drawPath(self.shape())
+        super(Segment, self).paint(painter, option, widget)
