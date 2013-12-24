@@ -23,6 +23,7 @@
 #
 # How it works:
 #
+import numpy
 import logging
 #
 #Kernel Import
@@ -38,6 +39,8 @@ from Interface.cadinitsetting       import RESTART_COMMAND_OPTION
 from Interface.Dialogs.property     import Property
 from Interface.Preview.factory      import *
 from Interface.DrawingHelper.snap   import *
+
+from Kernel.Command.inputs import PointInput, LengthInput
 
 class InterfaceCommand(object):
     """
@@ -102,88 +105,127 @@ class InterfaceCommand(object):
         self.removePreviewItemToTheScene()
 
     def addMouseEvent(self, point, entity, distance=None, angle=None, text=None, force=None, correct=True):
-        """
-            add value to a new slot of the command
-        """
-        #
-        # Compute snap distance and position force
-        #
-        logging.debug("log: addMauseEvent [%s][%s][%s][%s][%s][%s]"%( str(point), str(entity), str(distance), str(angle), str(text), str(force)))
-        if correct!=None:
-            snap=self.scene.snappingPoint.getSnapPoint(point,self.getEntity(point))
-            snap=self.correctPositionForcedDirection(snap, self._scene.forceDirection)
-        else:
-            snap=point
 
-        if angle==None:
-            angle=self.calculateAngle(snap)
+        # if correct != None:
+        #     snap = self.scene.snappingPoint.getSnapPoint(point,self.getEntity(point))
+        #     snap = self.correctPositionForcedDirection(snap, self._scene.forceDirection)
+        # else:
+        #     snap = point
 
-        if distance==None:
-            distance=self.getDistance(snap)
-        #
-        # Assing value to the object arrays
-        #
-        try:
-            self.kernelCommand[self._index]=(snap,entity,distance, angle, text) #Here you got all the magic
-            self.scene.fromPoint=snap
-            if self.kernelCommand.activeException()==ExcPoint or self.kernelCommand.activeException()==ExcLenght:
-                if snap!=None:
-                    self.scene.GuideHandler.place(snap.getx(), snap.gety())
-                if self.scene.forceDirectionEnabled==True:
-                    self.scene.GuideHandler.show()
-        except Exception,ex:
-            self.updateInput("msg")
-            self.updateInput(self.kernelCommand.activeMessage)
-            self.scene.clearSelection()
-            print "Error ",str(ex)
-            return
-        self._index+=1
-        self._point[self._index]=(point)
-        self._entity[self._index]=(entity)
-        self._distance[self._index]=(distance)
-        self._angle[self._index]=(angle)
-        self._snap[self._index]=(snap)
-        self._forceSnap[self._index]=(force)
-        #self.updatePreview(point,distance,entity )
-        try:
-            self.kernelCommand.next()
-        except StopIteration:
+        # if angle == None:
+        #     angle = self.calculateAngle(snap)
+
+        current_input = self.kernelCommand.inputs[self.kernelCommand.active_input]
+
+        # Handle LengthInput
+        if isinstance(current_input, LengthInput):
+            related_point = current_input.point.value
+
+            dist_x = abs(related_point.x - point.x)
+            dist_y = abs(related_point.y - point.y)
+            distance = numpy.sqrt(numpy.power(dist_x, 2) + numpy.power(dist_y, 2))
+            current_input.value = distance
+            self.updateInput(distance)
+
+        # Handle PointInput
+        if isinstance(current_input, PointInput):
+            current_input.value = point
+            self.updateInput(point)
+
+                # print 'Adding Line'
+                # self._scene.addItem(QtGui.QGraphicsLineItem(current_input.value.x, current_input.value.y, current_input.value.x, current_input.value.y,))
+
+            # if self.kernelCommand.active_input is 0:
+            #     self.line = QtGui.QGraphicsLineItem(
+            #         QtCore.QLineF(current_input.value.x, current_input.value.y,
+            #                       current_input.value.x, current_input.value.y))
+            #     self._scene.addItem(self.line)
+            #     self._scene.connect(self._scene, QtCore.SIGNAL('mouse_move'), self.update_line)
+            # elif self.line:
+                # print self.line.line()
+                # self.line = None
+
+        if self._previewItem == None:
+            self.updatePreview(point, distance, entity)
+
+        self.kernelCommand.active_input = self.kernelCommand.active_input + 1
+
+        if self.kernelCommand.active_input == len(self.kernelCommand.inputs):
             self.applyCommand()
+            self.updateInput('Done')
             return
 
-        self.updateInput(self.kernelCommand.activeMessage)
-        if self.automaticApply and self.kernelCommand.automaticApply:
-            if(self._index>=self.kernelCommand.lenght-1): #Apply the command
-                self.applyCommand()
+        self.updateInput(self.kernelCommand.message)
 
-        if self.kernelCommand.activeException()==ExcDicTuple:
-            dialog=Property(parent =self.scene.parent(),  entity=entity)
-            if dialog.changed:
-                self.kernelCommand[self._index]=(None,entity,None, None, dialog.value)
-                self.applyCommand()
-            else:
-                self.restartCommand()
+        # for i, v in enumerate(self.kernelCommand.inputs):
+        #     print v.__dict__
+
+        # try:
+        #     self.kernelCommand[self._index] = (snap, entity, distance, angle, text) #Here you got all the magic
+        #     self.scene.fromPoint = snap
+        #     if self.kernelCommand.activeException() == ExcPoint or self.kernelCommand.activeException() == ExcLenght:
+        #         if snap != None:
+        #             self.scene.GuideHandler.place(snap.getx(), snap.gety())
+        #         if self.scene.forceDirectionEnabled==True:
+        #             self.scene.GuideHandler.show()
+        # except Exception,ex:
+        #     self.updateInput("msg")
+        #     self.updateInput(self.kernelCommand.activeMessage)
+        #     self.scene.clearSelection()
+        #     print "Error ", str(ex)
+        #     return
+        # self._index+=1
+        # self._point[self._index]=(point)
+        # self._entity[self._index]=(entity)
+        # self._distance[self._index]=(distance)
+        # self._angle[self._index]=(angle)
+        # self._snap[self._index]=(snap)
+        # self._forceSnap[self._index]=(force)
+
+        # try:
+        #     self.kernelCommand.next()
+        # except StopIteration:
+        #     self.applyCommand()
+        #     return
+
+        # self.updateInput(self.kernelCommand.activeMessage)
+        # if self.automaticApply and self.kernelCommand.automaticApply:
+        #     if(self._index>=self.kernelCommand.lenght-1): #Apply the command
+        #         self.applyCommand()
+
+        # if self.kernelCommand.activeException()==ExcDicTuple:
+        #     dialog=Property(parent =self.scene.parent(),  entity=entity)
+        #     if dialog.changed:
+        #         self.kernelCommand[self._index]=(None,entity,None, None, dialog.value)
+        #         self.applyCommand()
+        #     else:
+        #         self.restartCommand()
+
+    def update_line(self, event):
+        line_update = QtCore.QLineF(self.line.line().p1(), event.scenePos())
+        self.line.setLine(line_update)
 
     def addTextEvent(self, value):
         """
-            compute imput from text
+        Compute input from text
+
         """
-        if str(value)=="":
+        if str(value) == "":
             self.kernelCommand.applyDefault()
             self.applyCommand()
             return
-        elif str(value).upper()=="UNDO":
+        elif str(value).upper() == "UNDO":
             #TODO: perform a back operation to the command
             return
-        elif str(value).upper()=="REDO":
+        elif str(value).upper() == "REDO":
             #TODO: perform a forward operation to the command
             return
         else:
             try:
-                tValue=self.decodeText(str(value))
-                self.addMauseEvent(tValue[0], tValue[1], tValue[2], tValue[3], tValue[4], correct=None)
+                tValue = self.decodeText(str(value))
+                self.addMouseEvent(tValue[0], tValue[1], tValue[2], tValue[3], tValue[4], correct=None)
             except PyCadWrongInputData, msg:
-                print "Problem on ICommand.addTextEvent"
+                print "Problem on InterfaceCommand.addTextEvent"
                 self.updateInput(msg)
                 self.updateInput(self.kernelCommand.activeMessage)
                 return
@@ -203,33 +245,32 @@ class InterfaceCommand(object):
                 return
 
     def applyCommand(self):
-        """
-            apply the command
-        """
-        self.scene.hideSnapMarks()
-        try:
-            self.kernelCommand.applyCommand()
-            if RESTART_COMMAND_OPTION and self.kernelCommand.autorestart:
-                    self.restartCommand()
-                    self.updateInput(self.kernelCommand.activeMessage)
-                    self.scene.clearSelection()
-                    self.scene.fromPoint=None
-                    self.scene.isGuided=None
-                    self.scene.isGuideLocked=None
-                    self.scene.GuideHandler.reset()
-            else:
-                self.scene.cancelCommand()
-                self.updateInput("Ready")
-                self.scene.clearPreview()
-                self.removePreviewItemToTheScene()
-                self=None
-                return
-            self.scene.clearPreview()
-            self.removePreviewItemToTheScene()
-        except Exception as e:
-            print type(e)     # the exception instance
-            print "ICommand applyCommand Errore ", str(e)
-            self.restartCommand()
+        self.kernelCommand.apply_command()
+        self.scene.command_finished()
+
+        # self.scene.hideSnapMarks()
+        # try:
+        #     if RESTART_COMMAND_OPTION and self.kernelCommand.autorestart:
+        #             self.restartCommand()
+        #             self.updateInput(self.kernelCommand.activeMessage)
+        #             self.scene.clearSelection()
+        #             self.scene.fromPoint=None
+        #             self.scene.isGuided=None
+        #             self.scene.isGuideLocked=None
+        #             self.scene.GuideHandler.reset()
+        #     else:
+        #         self.scene.cancelCommand()
+        #         self.updateInput("Ready")
+        #         self.scene.clearPreview()
+        #         self.removePreviewItemToTheScene()
+        #         self=None
+        #         return
+        #     self.scene.clearPreview()
+        #     self.removePreviewItemToTheScene()
+        # except Exception as e:
+        #     print type(e)     # the exception instance
+        #     print "InterfaceCommand applyCommand Errore ", str(e)
+        #     self.restartCommand()
 
 
     def getEntity(self, position):
@@ -295,17 +336,19 @@ class InterfaceCommand(object):
 
     def decodeText(self, value):
         """
-            encode the text given from the user
+        Encode the text given from the user
+
         """
-        point=None
-        distance=None
-        entitys=None
-        text=None
-        angle=None
-        value=str(value)
+        point = None
+        distance = None
+        entitys = None
+        text = None
+        angle = None
+        value = str(value)
 
         def niceReturn():
-            return (point,entitys, distance,angle, text)
+            return (point, entitys, distance, angle, text)
+
         try:
             try:
                 raise self.kernelCommand.activeException()(None)
@@ -381,12 +424,15 @@ class InterfaceCommand(object):
         """
         if self.drawPreview:
             if self._previewItem==None:            #Create the Preview Item
-                self._previewItem=getPreviewObject(self.kernelCommand)
+                self._previewItem = getPreviewObject(self.kernelCommand)
                 self.addPreviewItemToTheScene()
+                self._scene.connect(self._scene, QtCore.SIGNAL('mouse_move'), self.update_preview)
             else:                                   #Use the item already stored
-                self._previewItem.updatePreview(point,
-                                                distance,
-                                                    self.kernelCommand)
+                self._previewItem.updatePreview(point)
+
+    def update_preview(self, event):
+        self._previewItem.updatePreview(event)
+
     def addPreviewItemToTheScene(self):
         """
             add the preview item at the scene

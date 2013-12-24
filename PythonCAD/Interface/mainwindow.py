@@ -56,6 +56,7 @@ from Interface.DrawingHelper.polarguides import getPolarMenu
 from Kernel.Command.circlecommand import CircleCommand
 from Kernel.Command.pointcommand import PointCommand
 from Kernel.Command.ellipsecommand import EllipseCommand
+from Kernel.Command.rectanglecommand import RectangleCommand
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -229,8 +230,10 @@ class MainWindow(QtGui.QMainWindow):
         """
         hasMdiChild = (self.activeMdiChild() is not None)
 
+        # TODO: refactor
         self.point_action.setEnabled(hasMdiChild)
         self.segment_action.setEnabled(hasMdiChild)
+        self.rectangle_action.setEnabled(hasMdiChild)
         self.circle_action.setEnabled(hasMdiChild)
         self.ellipse_action.setEnabled(hasMdiChild)
 
@@ -421,6 +424,9 @@ class MainWindow(QtGui.QMainWindow):
         self.segment_action  = QtGui.QAction(QtGui.QIcon('icons/segment.png'), 'Segment', self)
         self.segment_action.connect(self.segment_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, SegmentCommand))
 
+        self.rectangle_action  = QtGui.QAction(QtGui.QIcon('icons/rectangle.png'), 'Rectangle', self)
+        self.rectangle_action.connect(self.rectangle_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, RectangleCommand))
+
         self.circle_action  = QtGui.QAction(QtGui.QIcon('icons/circle.png'), 'Circle', self)
         self.circle_action.connect(self.circle_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, CircleCommand))
 
@@ -429,6 +435,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.command_toolbar.addAction(self.point_action)
         self.command_toolbar.addAction(self.segment_action)
+        self.command_toolbar.addAction(self.rectangle_action)
         self.command_toolbar.addAction(self.circle_action)
         self.command_toolbar.addAction(self.ellipse_action)
 
@@ -823,23 +830,28 @@ class MainWindow(QtGui.QMainWindow):
                    """)
         return
 
-# ########################################## CALL COMMAND
-# ##########################################################
+    def callCommand(self, command_name, commandFrom=None):
+        """
+        Call a document command (kernel)
 
-    def callCommand(self, commandName, commandFrom=None):
         """
-            call a document command (kernel)
-        """
+        # TODO: Pass command directly
+
         try:
-            if commandFrom==None or commandFrom=='kernel':
-                self.scene.activeKernelCommand=self.__application.getCommand(commandName)
+
+            if commandFrom == None or commandFrom == 'kernel':
+                self.scene.activeKernelCommand = self.__application.getCommand(command_name)
             elif commandFrom=='document':
-                self.scene.activeKernelCommand=self.getCommand(commandName)
+                self.scene.activeKernelCommand = self.getCommand(command_name)
             else:
                 return
-            self.scene.activeICommand=ICommand(self.scene)
-            self.scene.activeICommand.updateInput+=self.updateInput
-            self.updateInput(self.scene.activeKernelCommand.activeMessage)
+
+            self.scene.activeICommand = InterfaceCommand(self.scene)
+            self.scene.activeICommand.updateInput += self.updateInput
+            # self.updateInput(self.scene.activeKernelCommand.activeMessage)
+            self.updateInput(self.scene.activeKernelCommand.message)
+
+
         except EntityMissing:
             self.scene.cancelCommand()
             self.critical("You need to have an active document to perform this command")

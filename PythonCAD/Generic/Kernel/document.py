@@ -50,7 +50,7 @@ from Kernel.Db.relationdb           import RelationDb
 
 #****************************************************Entity Import
 from Kernel.GeoEntity.geometricalentity       import GeometricalEntity, GeometricalEntityComposed
-from Kernel.GeoEntity.point        import Point
+# from Kernel.GeoEntity.point        import Point
 from Kernel.GeoEntity.segment      import Segment
 from Kernel.GeoEntity.arc          import Arc
 from Kernel.GeoEntity.ellipse      import Ellipse
@@ -58,12 +58,15 @@ from Kernel.GeoEntity.polyline     import Polyline
 from Kernel.GeoEntity.style        import Style
 from Kernel.GeoEntity.entityutil   import *
 
+from Kernel.Db import schema
+
 #   Define the log
 LEVELS = {'PyCad_Debug':    logging.DEBUG,
           'PyCad_Info':     logging.INFO,
           'PyCad_Warning':  logging.WARNING,
           'PyCad_Error':    logging.ERROR,
           'PyCad_Critical': logging.CRITICAL}
+
 #   Set the debug level
 level = LEVELS.get('PyCad_Warning', logging.NOTSET)
 logging.basicConfig(level=level)
@@ -115,6 +118,9 @@ class Document(BaseDb):
         except StructuralError:
             raise StructuralError, 'Unable to create LayerTree structure'
         self.__logger.debug('Done inizialization')
+
+    def get_layer_table(self):
+        return self.__LayerTable
 
     def addPropertie(self,name,value):
         """
@@ -638,8 +644,3 @@ class Document(BaseDb):
             get the name of the active document
         """
         return self.dbPath
-
-
-
-
-

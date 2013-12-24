@@ -44,6 +44,9 @@ class Application(object):
         if not os.path.exists(pyUserDir):
             os.makedirs(pyUserDir)
         baseDbName=os.path.join(pyUserDir, 'PythonCAD_Local.pdr')
+        # TODO: Dev use only, remove at will
+        if os.path.exists(baseDbName):
+            os.remove(baseDbName)
         #--
         # Kernel document is used for application settings
         # TODO: Convert to 'application document'

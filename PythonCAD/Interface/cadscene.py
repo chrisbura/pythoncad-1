@@ -152,7 +152,7 @@ class CadScene(QtGui.QGraphicsScene):
             if not isinstance(entity, schema.Entity):
                 self.add_entities(entity)
             else:
-            self.addGraficalObject(entity)
+                self.addGraficalObject(entity)
             # TODO: Rebuild scene
             self.end_command()
 
@@ -227,18 +227,19 @@ class CadScene(QtGui.QGraphicsScene):
         #This seems needed to preview commands
         #
         ps=self.geoMousePointOnScene
-        if self.activeICommand:
-            #SNAP PREVIEW
-            if self.activeKernelCommand.activeException()==ExcPoint or self.activeKernelCommand.activeException()==ExcLenght:
-                item=self.activeICommand.getEntity(ps)
-                if item:
-                    ps=self.snappingPoint.getSnapPoint(self.geoMousePointOnScene, item)
-                    if ps!=self.geoMousePointOnScene:
-                        self.endMark.move(ps.getx(), ps.gety()*-1.0)
-                else:
-                    self.hideSnapMarks()
-            qtItem=[self.itemAt(scenePos)]
-            self.activeICommand.updateMauseEvent(ps, qtItem)
+
+        # if self.activeICommand:
+        #     #SNAP PREVIEW
+        #     if self.activeKernelCommand.activeException()==ExcPoint or self.activeKernelCommand.activeException()==ExcLenght:
+        #         item=self.activeICommand.getEntity(ps)
+        #         if item:
+        #             ps=self.snappingPoint.getSnapPoint(self.geoMousePointOnScene, item)
+        #             if ps!=self.geoMousePointOnScene:
+        #                 self.endMark.move(ps.getx(), ps.gety()*-1.0)
+        #         else:
+        #             self.hideSnapMarks()
+        #     qtItem=[self.itemAt(scenePos)]
+        #     self.activeICommand.updateMauseEvent(ps, qtItem)
         super(CadScene, self).mouseMoveEvent(event)
         return
 
@@ -246,6 +247,9 @@ class CadScene(QtGui.QGraphicsScene):
 
     def mousePressEvent(self, event):
         self.emit(QtCore.SIGNAL('mouse_press'), event)
+        # TODO: Ignore groupitems?
+        print self.items(event.scenePos())
+
         if event.button()==QtCore.Qt.MidButton:
             self.isInPan=True
             self.firePan(True, event.scenePos())
@@ -282,10 +286,11 @@ class CadScene(QtGui.QGraphicsScene):
                             self.addItem(self.posHandler)
                         else:
                             self.posHandler.show()
+
                     # fire the mouse to the ICommand class
-                    self.activeICommand.addMauseEvent(point=point,
-                                                    entity=qtItems,
-                                                    force=self.forceDirection)
+                    point_2 = Point2(x=event.scenePos().x(), y=event.scenePos().y() * (-1.0))
+                    self.activeICommand.addMouseEvent(point=point_2,
+                        entity=qtItems, force=self.forceDirection)
             else:
                 self.hideHandler()
 
@@ -345,6 +350,10 @@ class CadScene(QtGui.QGraphicsScene):
             self.fireZoomFit()
         else:
             return QtGui.QGraphicsScene.mouseDoubleClickEvent(self, event)
+
+    # TODO: signal?
+    def command_finished(self):
+        self.cancelCommand()
 
     def cancelCommand(self):
         """
