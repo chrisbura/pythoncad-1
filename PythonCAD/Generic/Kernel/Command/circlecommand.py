@@ -41,8 +41,7 @@ class CircleCommand(Command):
         self.db.add(center_point)
         circle = Circle(point=center_point, radius=self.inputs[1].value)
 
-        entity = Entity()
-        entity.layer = self.document.get_layer_table().getActiveLayer()
+        entity = Entity(layer=self.active_layer)
         self.db.add(entity)
         circle.entities = [entity]
 

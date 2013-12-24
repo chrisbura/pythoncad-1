@@ -45,8 +45,7 @@ class EllipseCommand(Command):
         ellipse = Ellipse(point=center_point, radius_x=self.inputs[1].value,
             radius_y=self.inputs[2].value)
 
-        entity = Entity()
-        entity.layer = self.document.get_layer_table().getActiveLayer()
+        entity = Entity(layer=self.active_layer)
         self.db.add(entity)
         ellipse.entities = [entity]
 

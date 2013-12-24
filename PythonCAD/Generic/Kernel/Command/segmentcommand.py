@@ -44,8 +44,7 @@ class SegmentCommand(Command):
         self.db.add(point2)
         segment.point1, segment.point2 = point1, point2
 
-        entity = Entity()
-        entity.layer = self.document.get_layer_table().getActiveLayer()
+        entity = Entity(layer=self.active_layer)
         self.db.add(entity)
         segment.entities = [entity]
 

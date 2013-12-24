@@ -33,8 +33,7 @@ class PointCommand(Command):
     def apply_command(self):
         point = self.inputs[0].value
 
-        entity = Entity()
-        entity.layer = self.document.get_layer_table().getActiveLayer()
+        entity = Entity(layer=self.active_layer)
         self.db.add(entity)
         point.entities = [entity]
 
