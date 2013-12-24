@@ -247,7 +247,7 @@ class CadScene(QtGui.QGraphicsScene):
     def mousePressEvent(self, event):
         self.emit(QtCore.SIGNAL('mouse_press'), event)
         # TODO: Ignore groupitems?
-        print self.items(event.scenePos())
+        # print self.items(event.scenePos())
 
         if event.button()==QtCore.Qt.MidButton:
             self.isInPan=True

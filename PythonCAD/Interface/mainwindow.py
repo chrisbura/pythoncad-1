@@ -84,7 +84,16 @@ class MainWindow(QtGui.QMainWindow):
         self._createStatusBar()
         self.setUnifiedTitleAndToolBarOnMac(True)
 
+        self.actions = [
+            'point_action',
+            'segment_action',
+            'rectangle_action',
+            'circle_action',
+            'ellipse_action'
+        ]
+
         self.command_toolbar = self.addToolBar('Commands')
+        self.command_toolbar.setObjectName('command_toolbar')
 
         self._registerCommands()
         self.updateMenus()
@@ -231,11 +240,8 @@ class MainWindow(QtGui.QMainWindow):
         hasMdiChild = (self.activeMdiChild() is not None)
 
         # TODO: refactor
-        self.point_action.setEnabled(hasMdiChild)
-        self.segment_action.setEnabled(hasMdiChild)
-        self.rectangle_action.setEnabled(hasMdiChild)
-        self.circle_action.setEnabled(hasMdiChild)
-        self.ellipse_action.setEnabled(hasMdiChild)
+        for action in self.actions:
+            getattr(self, action).setEnabled(hasMdiChild)
 
         #File
         self.__cmd_intf.setVisible('import', hasMdiChild)
@@ -433,11 +439,8 @@ class MainWindow(QtGui.QMainWindow):
         self.ellipse_action  = QtGui.QAction(QtGui.QIcon('icons/ellipse.png'), 'Ellipse', self)
         self.ellipse_action.connect(self.ellipse_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, EllipseCommand))
 
-        self.command_toolbar.addAction(self.point_action)
-        self.command_toolbar.addAction(self.segment_action)
-        self.command_toolbar.addAction(self.rectangle_action)
-        self.command_toolbar.addAction(self.circle_action)
-        self.command_toolbar.addAction(self.ellipse_action)
+        for action in self.actions:
+            self.command_toolbar.addAction(getattr(self, action))
 
         return
 
