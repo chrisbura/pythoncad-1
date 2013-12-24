@@ -30,6 +30,11 @@ from Kernel.GeoEntity.point import Point as GeoPoint
 from Kernel.GeoUtil.geolib  import Vector
 from Kernel.initsetting     import PYTHONCAD_COLOR, PYTHONCAD_PREVIEW_COLOR, MOUSE_GRAPH_DIMENSION
 
+
+class Preview(object):
+    pass
+
+
 class PreviewBase(QtGui.QGraphicsItem):
     showShape=False # This Flag is used for debug porpoise
     showBBox=False  # This Flag is used for debug porpoise

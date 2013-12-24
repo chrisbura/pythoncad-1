@@ -1,5 +1,6 @@
 #
-# Copyright (c) ,2010 Matteo Boscolo
+# Copyright (c) 2010 Matteo Boscolo
+# Copyright (c) 2013 Christopher Bura
 #
 # This file is part of PythonCAD.
 #
@@ -16,37 +17,52 @@
 # You should have received a copy of the GNU General Public License
 # along with PythonCAD; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-#
-# qt ellipse class
-#
-from Interface.Entity.base import *
 
-class Ellipse(BaseEntity):
-    
-    def __init__(self, entity):
-        super(Ellipse, self).__init__(entity)
-        geoEnt=self.geoItem
-        self.xc,self.yc=geoEnt.center.getCoords()
-        self.yc=self.yc*-1.0
-        self.h=geoEnt.verticalRadius
-        self.w=geoEnt.horizontalRadius
-        self.setPos(QtCore.QPointF(self.xc, self.yc))
-        self.rotate(0.0)
-        return
+from PyQt4 import QtGui, QtCore
+from Interface.Entity.point import Point
 
-    def drawShape(self, painterPath):    
-        """
-            called from the shape method 
-        """
-        w2=self.w/2.0
-        h2=self.h/2.0
-        painterPath.addEllipse(-w2,-h2,self.w,self.h )     
-    
-    def drawGeometry(self, painter, option, widget):
-        """
-            called from the paint method
-        """
-        #   Create Ellipse
-        painter.drawEllipse(self.boundingRect())
 
+class Ellipse(QtGui.QGraphicsEllipseItem):
+    def __init__(self, obj):
+        self.center = obj.point
+        self.radius_x = obj.radius_x
+        self.radius_y = obj.radius_y
+
+        super(Ellipse, self).__init__(self.center.x - self.radius_x, self.center.y - self.radius_y, self.radius_x * 2.0, self.radius_y * 2.0)
+
+        self.setPen(QtGui.QPen(QtCore.Qt.black, 1, QtCore.Qt.SolidLine))
+        self.setAcceptHoverEvents(True)
+
+    def hoverEnterEvent(self, event):
+        self.setPen(QtGui.QPen(QtCore.Qt.red, 1))
+
+    def hoverLeaveEvent(self, event):
+        self.setPen(QtGui.QPen(QtCore.Qt.black, 1))
+
+    def shape(self):
+        shape = super(Ellipse, self).shape()
+        path_stroker = QtGui.QPainterPathStroker()
+        # TODO: Customizable 'snap'
+        path_stroker.setWidth(6.0)
+        path1 = path_stroker.createStroke(shape)
+        return path1
+
+    def paint(self, painter, option, widget):
+        painter.setPen(QtGui.QPen(QtCore.Qt.cyan))
+        # painter.drawPath(self.shape())
+        super(Ellipse, self).paint(painter, option, widget)
+
+
+class EllipseComposite(QtGui.QGraphicsItemGroup):
+    def __init__(self, obj):
+        super(EllipseComposite, self).__init__()
+        # Prevent group events from overriding child events
+        self.setHandlesChildEvents(False)
+
+        # Create child entities
+        self.center_point = Point(obj.point)
+        self.ellipse = Ellipse(obj)
+
+        # Add child entities to group
+        self.addToGroup(self.center_point)
+        self.addToGroup(self.ellipse)

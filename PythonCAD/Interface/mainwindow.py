@@ -55,6 +55,7 @@ from Kernel.initsetting             import * #SNAP_POINT_ARRAY, ACTIVE_SNAP_POIN
 from Interface.DrawingHelper.polarguides import getPolarMenu
 from Kernel.Command.circlecommand import CircleCommand
 from Kernel.Command.pointcommand import PointCommand
+from Kernel.Command.ellipsecommand import EllipseCommand
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -92,6 +93,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.updateOpenFileList()
         self.updateRecentFileList()
+
         return
 
     @property
@@ -227,8 +229,10 @@ class MainWindow(QtGui.QMainWindow):
         """
         hasMdiChild = (self.activeMdiChild() is not None)
 
+        self.point_action.setEnabled(hasMdiChild)
         self.segment_action.setEnabled(hasMdiChild)
         self.circle_action.setEnabled(hasMdiChild)
+        self.ellipse_action.setEnabled(hasMdiChild)
 
         #File
         self.__cmd_intf.setVisible('import', hasMdiChild)
@@ -420,9 +424,13 @@ class MainWindow(QtGui.QMainWindow):
         self.circle_action  = QtGui.QAction(QtGui.QIcon('icons/circle.png'), 'Circle', self)
         self.circle_action.connect(self.circle_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, CircleCommand))
 
+        self.ellipse_action  = QtGui.QAction(QtGui.QIcon('icons/ellipse.png'), 'Ellipse', self)
+        self.ellipse_action.connect(self.ellipse_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, EllipseCommand))
+
         self.command_toolbar.addAction(self.point_action)
         self.command_toolbar.addAction(self.segment_action)
         self.command_toolbar.addAction(self.circle_action)
+        self.command_toolbar.addAction(self.ellipse_action)
 
         return
 

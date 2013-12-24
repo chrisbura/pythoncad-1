@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 # Copyright (c) 2010 Matteo Boscolo
+# Copyright (c) 2013 Christopher Bura
 #
 # This file is part of PythonCAD.
 #
@@ -17,26 +18,39 @@
 # You should have received a copy of the GNU General Public License
 # along with PythonCAD; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-#This module provide a class for the ellipse command
-#
-from Kernel.exception                   import *
-from Kernel.Command.basecommand         import *
-from Kernel.GeoEntity.ellipse          import Ellipse
 
-class EllipseCommand(BaseCommand):
+from Kernel.Db.schema import Point, Ellipse, Entity
+from Kernel.Command.inputs import PointInput, LengthInput
+from Kernel.Command.command import Command
+
+class EllipseCommand(Command):
     """
         this class represents the ellipse command
     """
     def __init__(self, document):
-        BaseCommand.__init__(self, document)
-        self.exception=[ExcPoint, ExcLenght, ExcLenght]
-        self.defaultValue=[None, 100, 50]
-        self.message=["Give Me the Center Point (We know input sequence is at the moment very odd, sorry.): ", "Give Me First Axis Lenght: ", "Give Me Second Axis Half Lenght: "]
+        super(EllipseCommand, self).__init__(document)
+        self.can_preview = True
+        self.preview_start = 0
+        self.inputs = (
+            PointInput('Enter first point'),
+            LengthInput('Enter x radius'),
+            LengthInput('Enter y radius'),
+        )
+        self.inputs[1].point = self.inputs[0]
+        self.inputs[2].point = self.inputs[0]
 
-    def applyCommand(self):
-        if len(self.value)>3:
-            raise PyCadWrongInputData("Wrong number of input parameter")
-        arg={"ELLIPSE_0":self.value[0], "ELLIPSE_1":self.value[1], "ELLIPSE_2":self.value[2]}
-        ellipse=Ellipse(arg)
-        self.document.saveEntity(ellipse)
+    def apply_command(self):
+        center_point = self.inputs[0].value
+        self.db.add(center_point)
+        ellipse = Ellipse(point=center_point, radius_x=self.inputs[1].value,
+            radius_y=self.inputs[2].value)
+
+        entity = Entity()
+        entity.layer = self.document.get_layer_table().getActiveLayer()
+        self.db.add(entity)
+        ellipse.entities = [entity]
+
+        self.db.add(ellipse)
+        self.db.commit()
+
+        return entity

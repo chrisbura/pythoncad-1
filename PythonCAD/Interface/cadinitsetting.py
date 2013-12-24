@@ -25,9 +25,10 @@ from Interface.Entity.point         import Point
 from Interface.Entity.segment       import Segment
 from Interface.Entity.arc           import Arc
 from Interface.Entity.text          import Text
-from Interface.Entity.ellipse       import Ellipse
+from Interface.Entity.ellipse import EllipseComposite
 from Interface.Entity.polyline      import Polyline
 from Interface.Entity.dimension     import Dimension
+from Interface.Entity.circle import CircleComposite
 
 from Interface.Dialogs.Widget.widgets import PyCadQColor
 from Interface.Dialogs.Widget.widgets import PyCadQLineType
@@ -37,6 +38,25 @@ from Interface.Dialogs.Widget.widgets import PyCadQFont
 from PyQt4 import QtCore
 
 from Interface.Command.distance2point import Distance2Point
+
+from Kernel.Command.segmentcommand import SegmentCommand
+from Kernel.Command.circlecommand import CircleCommand
+from Kernel.Command.ellipsecommand import EllipseCommand
+from Kernel.Db import schema
+
+ENTITY_MAP = {
+   schema.Point: Point,
+   schema.Segment: Segment,
+   schema.Circle: CircleComposite,
+   schema.Ellipse: EllipseComposite
+}
+
+COMMAND_MAP = {
+   SegmentCommand: Segment,
+   CircleCommand: CircleComposite,
+   EllipseCommand: EllipseComposite
+}
+
 
 SCENE_SUPPORTED_TYPE=["SEGMENT",
                       "POINT",
@@ -52,7 +72,7 @@ SCANE_OBJECT_TYPE=dict(zip(SCENE_SUPPORTED_TYPE,
                         Point,
                         Arc,
                         Text,
-                        Ellipse,
+                        # Ellipse,
                         Polyline,
                         Dimension
                        )))

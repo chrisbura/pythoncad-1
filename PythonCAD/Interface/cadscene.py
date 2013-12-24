@@ -25,6 +25,7 @@
 
 import math, time
 
+import numpy
 from PyQt4 import QtCore, QtGui
 
 from Generic.application import Application
@@ -61,6 +62,7 @@ class CadScene(QtGui.QGraphicsScene):
 
         self.active_command = None
         self.active_entity = None
+        self.preview_item = None
         self.connect(parent._mainwindow, QtCore.SIGNAL('command_started'), self._start_command)
         self.connect(self, QtCore.SIGNAL('left_mouse_release'), self._process_click)
         self.connect(self, QtCore.SIGNAL('mouse_move'), self._process_move)
@@ -125,23 +127,29 @@ class CadScene(QtGui.QGraphicsScene):
             return False
 
         command = self.active_command
-        print command.message
         current_input = command.inputs[command.active_input]
 
         if isinstance(current_input, PointInput):
             point = Point2(x=event.scenePos().x(), y=event.scenePos().y())
             current_input.value = point
-            print current_input.value
 
-            if command.active_input == command.preview_start:
-                self.preview_item = getPreviewObject(command)
-                self.addItem(self.preview_item)
+        if isinstance(current_input, LengthInput):
+            # TODO: Want to pass point and let preview item deal with it
+            a = abs(current_input.point.value.x - event.scenePos().x())
+            b = abs(current_input.point.value.y - event.scenePos().y())
+            c = numpy.sqrt(numpy.power(a, 2) + numpy.power(b, 2))
+            current_input.value = c
+
+        if command.can_preview and (command.active_input == command.preview_start):
+            self.preview_item = getPreviewObject(command)
+            self.addItem(self.preview_item)
 
         command.active_input = command.active_input + 1
 
         if command.active_input == len(command.inputs):
-            command.apply_command()
-            # Rebuild scene
+            entity = command.apply_command()
+            self.addGraficalObject(entity)
+            # TODO: Rebuild scene
             self.end_command()
 
     def _process_move(self, event):
@@ -367,7 +375,7 @@ class CadScene(QtGui.QGraphicsScene):
             else:
                 self.selectionAddMode=True
 
-#        elif event.key()==QtCore.Qt.Key_F8:  <<<<this must maybe be implemented in cadwindow
+#        elif event.key()==QtCore.Qt.Key_F8:  <<<<this must maybe be implemented in mainwindow
 #            if self.forceDirection is None:
 #                self.forceDirection=True
 #            else:
@@ -439,27 +447,35 @@ class CadScene(QtGui.QGraphicsScene):
 
     def populateScene(self, document):
         """
-            Traverse all entities in the document and add these to the scene.
+        Traverse all entities in the document and add these to the scene.
+
         """
-        entities = self.__document.getEntityFromType(SCENE_SUPPORTED_TYPE)
-        for entity in entities:
+        all_entities = self.__document.db.query(schema.Entity)
+        for entity in all_entities:
             self.addGraficalObject(entity)
 
     def addGraficalObject(self, entity):
         """
-            Add the single object
+        Add the single object
+
         """
-        newQtEnt=None
-        entityType=entity.getEntityType()
-        if entityType in SCENE_SUPPORTED_TYPE:
-            newQtEnt=SCANE_OBJECT_TYPE[entityType](entity)
-            self.addGraficalItem(newQtEnt)
+
+        obj = entity.content_object
+        graphical_entity = ENTITY_MAP[obj.__class__](obj)
+        self.addGraficalItem(graphical_entity)
+
+        # newQtEnt=None
+        # entityType=entity.getEntityType()
+        # if entityType in SCENE_SUPPORTED_TYPE:
+        #     newQtEnt=SCANE_OBJECT_TYPE[entityType](entity)
+        #     self.addGraficalItem(newQtEnt)
 
     def addGraficalItem(self, qtItem):
         """
-            add item to the scene
+        Add item to the scene
+
         """
-        if qtItem!=None:
+        if qtItem != None:
             self.addItem(qtItem)
 
     def eventUndoRedo(self, document, entity):

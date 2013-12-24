@@ -30,24 +30,29 @@ from Kernel.Command.polylinecommand     import PolylineCommand
 from Kernel.Command.polygoncommand      import PolygonCommand
 
 from Interface.Preview.point        import PreviewPoint
-from Interface.Preview.segment      import PreviewSegment
+from Interface.Preview.segment      import PreviewSegment, SegmentPreview
 from Interface.Preview.arc          import PreviewArc
+from Interface.Preview.circle import CirclePreview
+from Interface.Preview.ellipse import EllipsePreview
+
 #from Interface.Preview.rectangle    import QtRectangleItem
 #from Interface.Preview.ellipse      import QtEllipseItem
 #from Interface.Preview.polyline     import QtPolylineItem
 #from Interface.Preview.polygon      import QtPolygonItem
 
 def getPreviewObject(command):
-    if isinstance(command , PointCommand):
+    if isinstance(command, PointCommand):
         return PreviewPoint(command)
-    if isinstance(command , SegmentCommand):
-        return PreviewSegment(command)
-    elif isinstance(command , (ArcCommand,CircleCommand)):
+    if isinstance(command, SegmentCommand):
+        return SegmentPreview(command)
+    elif isinstance(command, ArcCommand):
         return PreviewArc(command)
+    elif isinstance(command, CircleCommand):
+        return CirclePreview(command)
 #    elif isinstance(command , RectangleCommand):
 #        return QtRectangleItem(command)
-#    elif isinstance(command , EllipseCommand):
-#        return QtEllipseItem(command)
+    elif isinstance(command , EllipseCommand):
+        return EllipsePreview(command)
 #    elif isinstance(command , PolylineCommand):
 #        return QtPolylineItem(command)
 #    elif isinstance(command ,  PolygonCommand):

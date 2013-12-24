@@ -77,7 +77,7 @@ class Circle(EntityType, Base):
 
 
 class Ellipse(EntityType, Base):
-    # TODO: Conver to three points
+    # TODO: Convert to three points
     point_id = Column(Integer, ForeignKey('point.id'))
     radius_x = Column(Float)
     radius_y = Column(Float)

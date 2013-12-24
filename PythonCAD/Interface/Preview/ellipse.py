@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 # Copyright (c) 2010 Matteo Boscolo
+# Copyright (c) 2013 Christopher Bura
 #
 # This file is part of PythonCAD.
 #
@@ -17,64 +18,61 @@
 # You should have received a copy of the GNU General Public Licensesegmentcmd.py
 # along with PythonCAD; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-# EllipsePreview object
-#
+
+from PyQt4 import QtGui, QtCore
+from Interface.Preview.base import Preview
+import numpy
+
 import math
+from Interface.Preview.base import *
 
-from Interface.Preview.base         import *
+class Point(QtGui.QGraphicsEllipseItem):
+    def __init__(self, point):
+        radius = 2
+        super(Point, self).__init__(
+            point.x - radius,
+            point.y - radius,
+            radius * 1.5,
+            radius * 1.5
+         )
+        self.setAcceptHoverEvents(True)
+        self.setBrush(QtCore.Qt.lightGray)
+        self.setPen(QtGui.QPen(QtCore.Qt.lightGray, 2, QtCore.Qt.SolidLine))
 
-class QtEllipseItem(PreviewBase):
+
+class Ellipse(QtGui.QGraphicsEllipseItem):
+    def __init__(self, center_point, radius_x=1.0, radius_y=1.0):
+        super(Ellipse, self).__init__(
+            center_point.x - radius_x,
+            center_point.y - radius_y,
+            radius_x * 2.0,
+            radius_y * 2.0
+        )
+        self.setPen(QtGui.QPen(QtCore.Qt.black, 1, QtCore.Qt.SolidLine))
+        self.setAcceptHoverEvents(True)
+
+
+class EllipsePreview(Preview, QtGui.QGraphicsItemGroup):
     def __init__(self, command):
-        super(QtEllipseItem, self).__init__(command)
-        # get the geometry
-    
-    def drawGeometry(self, painter,option,widget):
-        """
-            overloading of the paint method
-        """
-        if self.center:
-            xc=self.center.x()
-            yc=self.center.y()
-            painter.drawEllipse(xc-(self.major/2.0),yc-(self.minor/2.0),self.major ,self.minor)
-    
-    def drawShape(self, painterPath):    
-        """
-            overloading of the shape method 
-        """
-        if self.center:
-            xc=self.center.x()
-            yc=self.center.y()
-            painterPath.drawEllipse(xc-(self.major/2.0),yc-(self.minor/2.0),self.major ,self.minor)
-    
-    def boundingRect(self):
-        """
-            overloading of the qt bounding rectangle
-        """
-        if self.center:
-            xc=self.center.x()
-            yc=self.center.y()
-            return QtCore.QRectF(xc-(self.major/2.0),yc- (self.minor/2.0) ,self.major ,self.minor )
-        return QtCore.QRectF(0,0 ,0.1,0.1)
-        
-    @property
-    def center(self):
-        return self.value[0]
-    @center.setter
-    def center(self, value):
-        self.value[0]=value
-        self.update(self.boundingRect())
-    @property
-    def major(self):
-        return self.value[1]
-    @major.setter
-    def major(self, value):
-        self.value[1] =value
-        self.update(self.boundingRect())
-    @property
-    def minor(self):
-        return self.value[2]
-    @minor.setter
-    def minor(self, value):
-        self.value[2]=value
-        self.update(self.boundingRect())
+        self.command = command
+        super(EllipsePreview, self).__init__()
+        self.setHandlesChildEvents(False)
+
+        self.center = self.command.inputs[0].value
+
+        self.center_point = Point(self.center)
+        self.ellipse = Ellipse(self.center)
+
+        self.addToGroup(self.center_point)
+        self.addToGroup(self.ellipse)
+
+    def updatePreview(self, event):
+        if self.command.active_input == 1:
+            distance = abs(self.center.x - event.scenePos().x())
+            ellipse_update = Ellipse(self.center, distance)
+            self.ellipse.setRect(ellipse_update.rect())
+
+        if self.command.active_input == 2:
+            distance = abs(self.center.y - event.scenePos().y())
+            ellipse_update = Ellipse(self.center, self.command.inputs[1].value, distance)
+            self.ellipse.setRect(ellipse_update.rect())
