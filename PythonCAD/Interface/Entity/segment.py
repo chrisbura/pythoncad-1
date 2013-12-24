@@ -44,5 +44,5 @@ class Segment(QtGui.QGraphicsLineItem):
 
     def paint(self, painter, option, widget):
         painter.setPen(QtGui.QPen(QtCore.Qt.cyan))
-        painter.drawPath(self.shape())
+        # painter.drawPath(self.shape())
         super(Segment, self).paint(painter, option, widget)

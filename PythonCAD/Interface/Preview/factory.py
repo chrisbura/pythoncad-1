@@ -30,10 +30,9 @@ from Kernel.Command.polylinecommand     import PolylineCommand
 from Kernel.Command.polygoncommand      import PolygonCommand
 
 from Interface.Preview.point        import PreviewPoint
-from Interface.Preview.segment      import PreviewSegment, SegmentPreview
 from Interface.Preview.arc          import PreviewArc
-from Interface.Preview.circle import CirclePreview
-from Interface.Preview.ellipse import EllipsePreview
+
+from Interface.Preview import *
 
 #from Interface.Preview.rectangle    import QtRectangleItem
 #from Interface.Preview.ellipse      import QtEllipseItem
@@ -49,8 +48,8 @@ def getPreviewObject(command):
         return PreviewArc(command)
     elif isinstance(command, CircleCommand):
         return CirclePreview(command)
-#    elif isinstance(command , RectangleCommand):
-#        return QtRectangleItem(command)
+    elif isinstance(command , RectangleCommand):
+        return RectanglePreview(command)
     elif isinstance(command , EllipseCommand):
         return EllipsePreview(command)
 #    elif isinstance(command , PolylineCommand):

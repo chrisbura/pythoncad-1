@@ -27,8 +27,8 @@ class Point(QtGui.QGraphicsEllipseItem):
         radius = 2.0
         super(Point, self).__init__(self.location.x - radius, self.location.y - radius, radius * 2.0, radius * 2.0)
         self.setAcceptHoverEvents(True)
-        self.setPen(QtGui.QPen(QtCore.Qt.black, 2, QtCore.Qt.SolidLine))
-        self.setBrush(QtCore.Qt.black)
+        self.setPen(QtGui.QPen(QtCore.Qt.lightGray, 2, QtCore.Qt.SolidLine))
+        self.setBrush(QtCore.Qt.lightGray)
 
     def hoverEnterEvent(self, event):
         # TODO: Investigate 'default' qt thickness
@@ -36,7 +36,7 @@ class Point(QtGui.QGraphicsEllipseItem):
         self.setBrush(QtCore.Qt.red)
 
     def hoverLeaveEvent(self, event):
-        self.setPen(QtGui.QPen(QtCore.Qt.black, 2))
+        self.setPen(QtGui.QPen(QtCore.Qt.lightGray, 2))
         self.setBrush(QtCore.Qt.black)
 
     def shape(self):
@@ -48,5 +48,5 @@ class Point(QtGui.QGraphicsEllipseItem):
 
     def paint(self, painter, option, widget):
         painter.setPen(QtGui.QPen(QtCore.Qt.cyan))
-        painter.drawPath(self.shape())
+        # painter.drawPath(self.shape())
         super(Point, self).paint(painter, option, widget)

@@ -148,6 +148,10 @@ class CadScene(QtGui.QGraphicsScene):
 
         if command.active_input == len(command.inputs):
             entity = command.apply_command()
+            # TODO: Better way to check if single or multiple entities
+            if not isinstance(entity, schema.Entity):
+                self.add_entities(entity)
+            else:
             self.addGraficalObject(entity)
             # TODO: Rebuild scene
             self.end_command()
@@ -452,6 +456,10 @@ class CadScene(QtGui.QGraphicsScene):
         """
         all_entities = self.__document.db.query(schema.Entity)
         for entity in all_entities:
+            self.addGraficalObject(entity)
+
+    def add_entities(self, entities):
+        for entity in entities:
             self.addGraficalObject(entity)
 
     def addGraficalObject(self, entity):

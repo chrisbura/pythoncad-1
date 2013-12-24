@@ -1,7 +1,8 @@
 
 from PyQt4 import QtGui, QtCore
-from Interface.Preview.base         import Preview
+from Interface.Preview.base import Preview
 import numpy
+
 
 class Point(QtGui.QGraphicsEllipseItem):
     def __init__(self, point):
