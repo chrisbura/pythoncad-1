@@ -51,13 +51,6 @@ ENTITY_MAP = {
    schema.Ellipse: EllipseComposite
 }
 
-COMMAND_MAP = {
-   SegmentCommand: Segment,
-   CircleCommand: CircleComposite,
-   EllipseCommand: EllipseComposite
-}
-
-
 SCENE_SUPPORTED_TYPE=["SEGMENT",
                       "POINT",
                         "ARC",

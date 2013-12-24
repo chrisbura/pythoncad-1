@@ -120,7 +120,6 @@ class CadScene(QtGui.QGraphicsScene):
             pass
 
         self.active_command = command(self.__document)
-        self.active_entity_class = COMMAND_MAP[command]
 
     def _process_click(self, event):
         if not self.active_command:
