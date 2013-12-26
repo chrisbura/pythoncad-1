@@ -31,6 +31,19 @@ from Kernel.initsetting         import PYTHONCAD_HIGLITGT_COLOR, PYTHONCAD_COLOR
 
 from Kernel.GeoEntity.point     import Point
 
+
+class BaseItem(object):
+    def hoverEnterEvent(self, event):
+        super(BaseItem, self).hoverEnterEvent(event)
+        # TODO: Customizable
+        self.setPen(QtGui.QPen(QtCore.Qt.red, 1))
+
+    def hoverLeaveEvent(self, event):
+        super(BaseItem, self).hoverLeaveEvent(event)
+        # TODO: Customizable
+        self.setPen(QtGui.QPen(QtCore.Qt.black, 1))
+
+
 class BaseEntity(QtGui.QGraphicsItem):
     shapeSize=MOUSE_GRAPH_DIMENSION
     # TODO: Move to application settings ('debug mode')

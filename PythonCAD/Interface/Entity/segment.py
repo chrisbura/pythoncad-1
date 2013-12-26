@@ -19,20 +19,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from PyQt4 import QtCore, QtGui
+from Interface.Entity.base import BaseItem
 
-
-class Segment(QtGui.QGraphicsLineItem):
+class Segment(BaseItem, QtGui.QGraphicsLineItem):
     def __init__(self, obj):
         super(Segment, self).__init__(obj.point1.x, obj.point1.y, obj.point2.x, obj.point2.y)
         self.setPen(QtGui.QPen(QtCore.Qt.black, 1, QtCore.Qt.SolidLine))
         self.setAcceptHoverEvents(True)
-
-    # TODO: Refactor all this into a base class
-    def hoverEnterEvent(self, event):
-        self.setPen(QtGui.QPen(QtCore.Qt.red, 1))
-
-    def hoverLeaveEvent(self, event):
-        self.setPen(QtGui.QPen(QtCore.Qt.black, 1))
 
     def shape(self):
         shape = super(Segment, self).shape()

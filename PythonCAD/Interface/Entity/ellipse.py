@@ -20,9 +20,10 @@
 
 from PyQt4 import QtGui, QtCore
 from Interface.Entity.point import Point
+from Interface.Entity.base import BaseItem
 
 
-class Ellipse(QtGui.QGraphicsEllipseItem):
+class Ellipse(BaseItem, QtGui.QGraphicsEllipseItem):
     def __init__(self, obj):
         self.center = obj.point
         self.radius_x = obj.radius_x
@@ -32,12 +33,6 @@ class Ellipse(QtGui.QGraphicsEllipseItem):
 
         self.setPen(QtGui.QPen(QtCore.Qt.black, 1, QtCore.Qt.SolidLine))
         self.setAcceptHoverEvents(True)
-
-    def hoverEnterEvent(self, event):
-        self.setPen(QtGui.QPen(QtCore.Qt.red, 1))
-
-    def hoverLeaveEvent(self, event):
-        self.setPen(QtGui.QPen(QtCore.Qt.black, 1))
 
     def shape(self):
         shape = super(Ellipse, self).shape()

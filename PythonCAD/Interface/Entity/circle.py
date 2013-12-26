@@ -1,21 +1,16 @@
 
 from PyQt4 import QtGui, QtCore
 from Interface.Entity.point import Point
+from Interface.Entity.base import BaseItem
 
 
-class Circle(QtGui.QGraphicsEllipseItem):
+class Circle(BaseItem, QtGui.QGraphicsEllipseItem):
     def __init__(self, obj):
         self.center = obj.point
         self.radius = obj.radius
         super(Circle, self).__init__(self.center.x - self.radius, self.center.y - self.radius, self.radius * 2.0, self.radius * 2.0)
         self.setPen(QtGui.QPen(QtCore.Qt.black, 1, QtCore.Qt.SolidLine))
         self.setAcceptHoverEvents(True)
-
-    def hoverEnterEvent(self, event):
-        self.setPen(QtGui.QPen(QtCore.Qt.red, 1))
-
-    def hoverLeaveEvent(self, event):
-        self.setPen(QtGui.QPen(QtCore.Qt.black, 1))
 
     def shape(self):
         shape = super(Circle, self).shape()

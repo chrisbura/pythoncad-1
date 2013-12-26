@@ -37,7 +37,7 @@ class Point(QtGui.QGraphicsEllipseItem):
 
     def hoverLeaveEvent(self, event):
         self.setPen(QtGui.QPen(QtCore.Qt.lightGray, 2))
-        self.setBrush(QtCore.Qt.black)
+        self.setBrush(QtCore.Qt.lightGray)
 
     def shape(self):
         shape = super(Point, self).shape()
