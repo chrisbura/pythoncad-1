@@ -8,9 +8,13 @@ class Circle(BaseItem, QtGui.QGraphicsEllipseItem):
     def __init__(self, obj):
         self.center = obj.point
         self.radius = obj.radius
-        super(Circle, self).__init__(self.center.x - self.radius, self.center.y - self.radius, self.radius * 2.0, self.radius * 2.0)
-        self.setPen(QtGui.QPen(QtCore.Qt.black, 1, QtCore.Qt.SolidLine))
-        self.setAcceptHoverEvents(True)
+
+        super(Circle, self).__init__(
+            self.center.x - self.radius,
+            self.center.y - self.radius,
+            self.radius * 2.0,
+            self.radius * 2.0
+        )
 
     def shape(self):
         shape = super(Circle, self).shape()

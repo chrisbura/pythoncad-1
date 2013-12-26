@@ -33,15 +33,22 @@ from Kernel.GeoEntity.point     import Point
 
 
 class BaseItem(object):
+    def __init__(self, *args, **kwargs):
+        super(BaseItem, self).__init__(*args, **kwargs)
+        # TODO: Customizable
+        self.pen_thickness = 1
+        self.setPen(QtGui.QPen(QtCore.Qt.black, self.pen_thickness, QtCore.Qt.SolidLine))
+        self.setAcceptHoverEvents(True)
+
     def hoverEnterEvent(self, event):
         super(BaseItem, self).hoverEnterEvent(event)
         # TODO: Customizable
-        self.setPen(QtGui.QPen(QtCore.Qt.red, 1))
+        self.setPen(QtGui.QPen(QtCore.Qt.red, self.pen_thickness))
 
     def hoverLeaveEvent(self, event):
         super(BaseItem, self).hoverLeaveEvent(event)
         # TODO: Customizable
-        self.setPen(QtGui.QPen(QtCore.Qt.black, 1))
+        self.setPen(QtGui.QPen(QtCore.Qt.black, self.pen_thickness))
 
 
 class BaseEntity(QtGui.QGraphicsItem):

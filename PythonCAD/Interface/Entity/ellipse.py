@@ -29,10 +29,12 @@ class Ellipse(BaseItem, QtGui.QGraphicsEllipseItem):
         self.radius_x = obj.radius_x
         self.radius_y = obj.radius_y
 
-        super(Ellipse, self).__init__(self.center.x - self.radius_x, self.center.y - self.radius_y, self.radius_x * 2.0, self.radius_y * 2.0)
-
-        self.setPen(QtGui.QPen(QtCore.Qt.black, 1, QtCore.Qt.SolidLine))
-        self.setAcceptHoverEvents(True)
+        super(Ellipse, self).__init__(
+            self.center.x - self.radius_x,
+            self.center.y - self.radius_y,
+            self.radius_x * 2.0,
+            self.radius_y * 2.0
+        )
 
     def shape(self):
         shape = super(Ellipse, self).shape()

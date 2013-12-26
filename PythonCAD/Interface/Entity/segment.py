@@ -23,9 +23,12 @@ from Interface.Entity.base import BaseItem
 
 class Segment(BaseItem, QtGui.QGraphicsLineItem):
     def __init__(self, obj):
-        super(Segment, self).__init__(obj.point1.x, obj.point1.y, obj.point2.x, obj.point2.y)
-        self.setPen(QtGui.QPen(QtCore.Qt.black, 1, QtCore.Qt.SolidLine))
-        self.setAcceptHoverEvents(True)
+        super(Segment, self).__init__(
+            obj.point1.x,
+            obj.point1.y,
+            obj.point2.x,
+            obj.point2.y
+        )
 
     def shape(self):
         shape = super(Segment, self).shape()
