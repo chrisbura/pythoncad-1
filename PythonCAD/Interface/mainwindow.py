@@ -35,28 +35,28 @@ from PyQt4 import QtCore, QtGui
 
 import cadwindow_rc
 
-from Generic.application            import Application
+from application            import Application
 
 #Interface
-from Interface.LayerIntf.layerdock  import LayerDock
-from Interface.cadscene             import CadScene
-from Interface.cadview              import CadView
-from Interface.subwindow            import SubWindow
-from Interface.CmdIntf.cmdintf      import CmdIntf
-from Interface.Entity.base          import BaseEntity
-from Interface.Command.icommand     import InterfaceCommand
-from Interface.cadinitsetting       import *
-from Interface.Dialogs.preferences  import Preferences
+from interface.layerintf.layerdock  import LayerDock
+from interface.cadscene             import CadScene
+from interface.cadview              import CadView
+from interface.subwindow            import SubWindow
+from interface.cmdintf.cmdintf      import CmdIntf
+from interface.entity.base          import BaseEntity
+from interface.command.icommand     import InterfaceCommand
+from interface.cadinitsetting       import *
+from interface.dialogs.preferences  import Preferences
 #Kernel
-from Kernel.exception               import *
-from Kernel.initsetting             import * #SNAP_POINT_ARRAY, ACTIVE_SNAP_POINT
+from kernel.exception               import *
+from kernel.initsetting             import * #SNAP_POINT_ARRAY, ACTIVE_SNAP_POINT
 
 
-from Interface.DrawingHelper.polarguides import getPolarMenu
-from Kernel.Command.circlecommand import CircleCommand
-from Kernel.Command.pointcommand import PointCommand
-from Kernel.Command.ellipsecommand import EllipseCommand
-from Kernel.Command.rectanglecommand import RectangleCommand
+from interface.drawinghelper.polarguides import getPolarMenu
+from kernel.command.circlecommand import CircleCommand
+from kernel.command.pointcommand import PointCommand
+from kernel.command.ellipsecommand import EllipseCommand
+from kernel.command.rectanglecommand import RectangleCommand
 
 
 class MainWindow(QtGui.QMainWindow):

@@ -28,32 +28,30 @@ import math, time
 import numpy
 from PyQt4 import QtCore, QtGui
 
-from Generic.application import Application
+from interface.pycadapp             import PyCadApp
+from interface.entity.base          import BaseEntity
+from interface.entity.segment       import Segment
+from interface.entity.arc           import Arc
+from interface.entity.text          import Text
+from interface.entity.ellipse       import Ellipse
+from interface.entity.arrowitem     import ArrowItem
+from interface.entity.actionhandler import PositionHandler
+from interface.entity.dinamicentryobject   import DinamicEntryLine
+from interface.cadinitsetting       import *
+from interface.preview.base         import PreviewBase, Preview
 
-from Interface.pycadapp             import PyCadApp
-from Interface.Entity.base          import BaseEntity
-from Interface.Entity.segment       import Segment
-from Interface.Entity.arc           import Arc
-from Interface.Entity.text          import Text
-from Interface.Entity.ellipse       import Ellipse
-from Interface.Entity.arrowitem     import ArrowItem
-from Interface.Entity.actionhandler import PositionHandler
-from Interface.Entity.dinamicentryobject   import DinamicEntryLine
-from Interface.cadinitsetting       import *
-from Interface.Preview.base         import PreviewBase, Preview
+from interface.drawinghelper.snap import *
+from interface.drawinghelper.polarguides import GuideHandler
 
-from Interface.DrawingHelper.snap import *
-from Interface.DrawingHelper.polarguides import GuideHandler
+from kernel.pycadevent              import PyCadEvent
+from kernel.geoentity.point         import Point
+from kernel.exception               import *
+from kernel.entity                  import Entity
 
-from Kernel.pycadevent              import PyCadEvent
-from Kernel.GeoEntity.point         import Point
-from Kernel.exception               import *
-from Kernel.entity                  import Entity
-
-from Kernel.Command.inputs import PointInput, LengthInput
-from Kernel.Db.schema import Point as Point2
-from Kernel.Db import schema
-from Interface.Preview.factory import getPreviewObject
+from kernel.command.inputs import PointInput, LengthInput
+from kernel.db.schema import Point as Point2
+from kernel.db import schema
+from interface.preview.factory import getPreviewObject
 
 
 class CadScene(QtGui.QGraphicsScene):

@@ -22,8 +22,8 @@
 #
 import math
 
-from Kernel.exception                  import *
-from Kernel.Command.basecommand        import *
+from kernel.exception                  import *
+from kernel.command.basecommand        import *
 
 class PropertyCommand(BaseCommand):
     """

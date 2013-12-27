@@ -24,14 +24,14 @@
 
 import math
 
-from PythonCAD.Generic.Kernel.Entity.point import Point
-from PythonCAD.Generic.Kernel.Entity import Segment
-from PythonCAD.Generic.Kernel.Entity import Circle
-from PythonCAD.Generic.Kernel.Entity import Arc
-from PythonCAD.Generic.Kernel.Entity import Segjoint
-from PythonCAD.Generic.Kernel.Entity import Layer
-from PythonCAD.Generic.Kernel.Entity.util import *
-from PythonCAD.Generic.Kernel.Entity.geometricalentity  import *
+from kernel.entity.point import Point
+from kernel.entity import Segment
+from kernel.entity import Circle
+from kernel.entity import Arc
+from kernel.entity import Segjoint
+from kernel.entity import Layer
+from kernel.entity.util import *
+from kernel.entity.geometricalentity  import *
 
 class Path(geometricalentity):
     """

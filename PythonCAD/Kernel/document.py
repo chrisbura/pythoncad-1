@@ -30,35 +30,35 @@ import time
 
 
 #***************************************************Kernel Import
-from Kernel.pycadevent              import PyCadEvent
-from Kernel.initsetting             import *
-from Kernel.ExternalFormat.externalformat  import ExtFormat
-from Kernel.ExternalFormat.Dxf.dxf  import Dxf
-from Kernel.exception               import *
-from Kernel.settings                import *
-from Kernel.entity                  import Entity
-from Kernel.composedentity          import ComposedEntity
-from Kernel.layertree               import LayerTable
-from Kernel.layer                   import Layer
+from kernel.pycadevent              import PyCadEvent
+from kernel.initsetting             import *
+from kernel.externalformat.externalformat  import ExtFormat
+from kernel.externalformat.dxf.dxf  import Dxf
+from kernel.exception               import *
+from kernel.settings                import *
+from kernel.entity                  import Entity
+from kernel.composedentity          import ComposedEntity
+from kernel.layertree               import LayerTable
+from kernel.layer                   import Layer
 
 #***************************************************Db Import
-from Kernel.Db.undodb               import UndoDb
-from Kernel.Db.entitydb             import EntityDb
-from Kernel.Db.basedb               import BaseDb
-from Kernel.Db.relationdb           import RelationDb
+from kernel.db.undodb               import UndoDb
+from kernel.db.entitydb             import EntityDb
+from kernel.db.basedb               import BaseDb
+from kernel.db.relationdb           import RelationDb
 
 
 #****************************************************Entity Import
-from Kernel.GeoEntity.geometricalentity       import GeometricalEntity, GeometricalEntityComposed
-# from Kernel.GeoEntity.point        import Point
-from Kernel.GeoEntity.segment      import Segment
-from Kernel.GeoEntity.arc          import Arc
-from Kernel.GeoEntity.ellipse      import Ellipse
-from Kernel.GeoEntity.polyline     import Polyline
-from Kernel.GeoEntity.style        import Style
-from Kernel.GeoEntity.entityutil   import *
+from kernel.geoentity.geometricalentity       import GeometricalEntity, GeometricalEntityComposed
+# from kernel.geoentity.point        import Point
+from kernel.geoentity.segment      import Segment
+from kernel.geoentity.arc          import Arc
+from kernel.geoentity.ellipse      import Ellipse
+from kernel.geoentity.polyline     import Polyline
+from kernel.geoentity.style        import Style
+from kernel.geoentity.entityutil   import *
 
-from Kernel.Db import schema
+from kernel.db import schema
 
 #   Define the log
 LEVELS = {'PyCad_Debug':    logging.DEBUG,

@@ -22,7 +22,7 @@
 # system
 #
 # How it works:
-# 
+#
 #
 #
 # Qt Import
@@ -33,13 +33,13 @@ from PyQt4.QtCore   import pyqtSignature
 
 from Ui_property    import Ui_Dialog
 
-from Interface.cadinitsetting import *
-from Interface.Dialogs.dataModel import populateTable
+from interface.cadinitsetting import *
+from interface.dialogs.dataModel import populateTable
 
 class Property(QDialog, Ui_Dialog):
     """
         this class define the entity property dialog
-        it automaticaly retrive the style property 
+        it automaticaly retrive the style property
         and show it in the form
     """
     def __init__(self, parent = None, entity=None):
@@ -58,36 +58,36 @@ class Property(QDialog, Ui_Dialog):
                 self.propertyConteiner.addLayout(self.containers[propName])
         self.populateCustomProperty(entity)
         self.exec_()
-    
+
     def populateCustomProperty(self,entity):
         """
             populate the dialog with the custom property
         """
         tableObject=[[k,v] for k,v in entity[0]._entity.properties.items()]
         populateTable(self.customProperty,tableObject,['Name','Value'])
-     
+
     def customPropertyContextMenuEvent(self,event):
         contexMenu=QMenu(self)
         #
         # Create Actions
         #
         newAction   =   QAction("New", self, triggered=self._newCustomProperty)
-        delAction   =   QAction("Delete", self, triggered=self._delCustomProperty)  
+        delAction   =   QAction("Delete", self, triggered=self._delCustomProperty)
         #
-        # Add action to the context menu   
+        # Add action to the context menu
         #
         contexMenu.addAction(newAction)
         contexMenu.addAction(delAction)
         #
         contexMenu.exec_(event.globalPos())
-        del(contexMenu)       
-    
+        del(contexMenu)
+
     def _newCustomProperty(self):
         """
             Open an empty ParameterUi
         """
         self.customProperty.model().addNewRow()
-                
+
     def _delCustomProperty(self):
         """
             Edit the selected parameter values
@@ -96,11 +96,11 @@ class Property(QDialog, Ui_Dialog):
         if len(rows)>0:
             row=rows[0]
             self.customProperty.model().removeRow(row.row())
-    
+
     def uppdateCustomProperty(self):
         """
             update the custom property
-        """ 
+        """
         self._properties = dict(self.customProperty.model().arraydata)
 
     @pyqtSignature("")
@@ -111,7 +111,7 @@ class Property(QDialog, Ui_Dialog):
         self.uppdateCustomProperty()
         self._isOk=True
         self.close()
-        
+
     @pyqtSignature("")
     def on_buttonBox_rejected(self):
         """
@@ -119,13 +119,13 @@ class Property(QDialog, Ui_Dialog):
         """
         self._isOk=False
         self.close()
-    @property 
+    @property
     def changed(self):
         """
             tells if the object is changed
         """
         return self._isOk
-        
+
     @property
     def value(self):
         exitVal={}

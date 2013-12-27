@@ -23,8 +23,8 @@
 
 import sys
 
-from Kernel.Db.basedb           import BaseDb
-from Kernel.exception           import UndoDbExc
+from kernel.db.basedb           import BaseDb
+from kernel.exception           import UndoDbExc
 
 class UndoDb(BaseDb):
     """

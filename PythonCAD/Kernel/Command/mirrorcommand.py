@@ -21,9 +21,9 @@
 #This module provide a class for the polyline command
 #
 
-from Kernel.exception               import *
-from Kernel.Command.basecommand     import *
-from Kernel.GeoEntity.point            import Point
+from kernel.exception               import *
+from kernel.command.basecommand     import *
+from kernel.geoentity.point            import Point
 
 class MirrorCommand(BaseCommand):
     """

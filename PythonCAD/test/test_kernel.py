@@ -6,23 +6,23 @@ import platform
 
 import sqlite3 as sqlite
 
-    
+
 # This is needed for me to use unpickle objects
-sys.path.append(os.path.join(os.getcwd(), 'Generic', 'Kernel'))    
-    
+sys.path.append(os.path.join(os.getcwd(), 'Generic', 'Kernel'))
+
 from random                             import random
-from Generic.Kernel.document            import *
-from Generic.Kernel.application         import Application
-from Generic.Kernel.Entity.point        import Point
-from Generic.Kernel.Entity.style        import Style
-from Generic.Kernel.Entity.segjoint     import Chamfer
+from kernel.document            import *
+from kernel.application         import Application
+from kernel.entity.point        import Point
+from kernel.entity.style        import Style
+from kernel.entity.segjoint     import Chamfer
 
 def printId(kernel,obj):
     """
         print the id of the obj
     """
     print "Save Entity: %s"%str(type(obj))
-    
+
 def testSinglePoint(kernel):
     """
         test single point operation
@@ -33,8 +33,8 @@ def testSinglePoint(kernel):
     print "singlePoint ",type(basePoint)
     kernel.saveEntity(basePoint)
     endTime=time.clock()-startTime
-    print "Time for saving  a single point   %ss"%str(endTime)   
-    
+    print "Time for saving  a single point   %ss"%str(endTime)
+
 def testMultiPoints(kernel,nPoint)    :
     """
         test the point operatoin
@@ -51,7 +51,7 @@ def testMultiPoints(kernel,nPoint)    :
 def testMultiSegments(kernel,nSegments):
     """
         create a single segment
-    """    
+    """
     startTime=time.clock()
     kernel.startMassiveCreation()
     for i in range(nSegments):
@@ -62,11 +62,11 @@ def testMultiSegments(kernel,nSegments):
     kernel.performCommit()
     endTime=time.clock()-startTime
     print "Create n: %s entity in : %ss"%(str(nSegments ),str(endTime))
-    
+
 def testSingleSegment(kernel):
     """
         create a single segment
-    """    
+    """
     _p1=Point(10,10)
     _p2=Point(10,20)
     _s=Segment(_p1,_p2)
@@ -102,7 +102,7 @@ def testPerformanceInCreation(kr):
 def createSegment(kernel):
     """
         create a single segment
-    """    
+    """
     _p1=Point(10,10)
     _p2=Point(10,20)
     _s=Segment(_p1,_p2)
@@ -116,16 +116,16 @@ def CreateModifieEntity(kr):
     celement={'POINT_1':Point(100,100), 'POINT_2':Point(200,200)}
     ent.setConstructionElement(celement)
     kr.saveEntity(ent)
- 
+
 def deleteTable(tableName):
     """
-    delete the table name 
+    delete the table name
     """
     #import sqlite3 as sql
     # sqlite + R*Tree module
     from pysqlite2 import dbapi2 as sql
 
-    dbPath='pythoncad.pdr' 
+    dbPath='pythoncad.pdr'
     dbConnection = sql.connect(dbPath)
     statment="drop table pycadrel"
     _cursor = dbConnection.cursor()
@@ -135,13 +135,13 @@ def deleteTable(tableName):
 
 def testPointDb(nLoop):
     """
-    Test point creation 
+    Test point creation
     """
     #import sqlite3 as sql
     # sqlite + R*Tree module
     from pysqlite2 import dbapi2 as sql
     import cPickle as pickle
-    
+
     dbConnection = sql.connect(":memory:")
     cursor=dbConnection.cursor()
     _sqlCreation="""CREATE TABLE pycadent(
@@ -176,28 +176,28 @@ def testPointDb(nLoop):
 
 def testPointDb1(nLoop):
     """
-    Test point creation 
+    Test point creation
     """
     #import sqlite3 as sql
     # sqlite + R*Tree module
     from pysqlite2 import dbapi2 as sql
     import cPickle as pickle
-    
+
     dbConnection = sql.connect(":memory:")
     cursor=dbConnection.cursor()
     _sqlCreation="""CREATE TABLE pycadent(
                     pycad_X REAL,
                     pycad_Y REAL)"""
     cursor.execute(_sqlCreation)
-    dbConnection.commit()    
+    dbConnection.commit()
     dic=[(x,y) for x in range(20) for y in range(1)]
     startTime=time.clock()
     for i in range(nLoop):
         for x,y in dic:
-            _sql="""INSERT INTO pycadent (pycad_X,pycad_Y) 
+            _sql="""INSERT INTO pycadent (pycad_X,pycad_Y)
                 VALUES (%s,%s)"""%(str(x),str(y))
             cursor.execute(_sql)
-    dbConnection.commit()   
+    dbConnection.commit()
     endTime=time.clock()-startTime
     everage=endTime/nLoop
     print "End time for nLoop %s in %s everage %s "%(str(nLoop), str(endTime), str(everage))
@@ -216,7 +216,7 @@ def getAllSegment(kr):
     ent=kr.getEntityFromType('SEGMENT')
     for e in ent:
         print "e >>>>", e.eType
-       
+
 def test():
     print ">>Create pycad object"
     kr=PyCadDbKernel()
@@ -229,13 +229,13 @@ def test():
 
 class ioKernel(object):
     """
-        This class provide a simple interface for using 
+        This class provide a simple interface for using
         PythonCad Kernel
     """
     def __init__(self):
         startTime=time.clock()
         self.__kr=PyCadDbKernel()
-        endTime=time.clock()-startTime    
+        endTime=time.clock()-startTime
         print "Inizialize kernel object in : %s"%str(endTime)
         self.__command={}
         #Basic Command
@@ -264,17 +264,17 @@ class ioKernel(object):
         self.__command['Hide']=self.hideEntity
         self.__command['UnHide']=self.unHideEntity
         self.__kr.handledError=self.printError
-        
+
     def printError(self, **args):
         """
             print the error/warning caming from the kernel
-        """    
+        """
         if args.has_key('error'):
             if args['error']=='DxfReport':
                 print "dxfReport" #todo : improve this sistem
             elif args['error']=='DxfUnsupportedFormat':
                 print "DxfUnsupportedFormat" #todo : improve this sistem
-                
+
     def mainLoop(self):
         """
             mainLoop operation
@@ -295,8 +295,8 @@ class ioKernel(object):
         kmd.sort()
         for s in kmd:
             print "command :" , s
-        print "*"*10   
-        
+        print "*"*10
+
     def newSegment(self):
         """
             create a new segment
@@ -310,15 +310,15 @@ class ioKernel(object):
             self.__kr.saveEntity(_s)
         except:
             print "---->Error on point creation !!"
-            
-    def getDrawingEntity(self):        
+
+    def getDrawingEntity(self):
         """
             get all the drawing entity
         """
         print "--<< Looking for All entitys"
         startTime=time.clock()
         ents=self.__kr.getAllDrawingEntity()
-        endTime=time.clock()-startTime       
+        endTime=time.clock()-startTime
         printEntity(ents)
         print "Exec query get %s ent in %s s"%(str(len(ents)), str(endTime))
         print "********************************"
@@ -329,7 +329,7 @@ class ioKernel(object):
         """
         try:
             print "-->>Perform Redo"
-            self.__kr.reDo()  
+            self.__kr.reDo()
         except UndoDb:
             print "----<<Err>>No more redo to performe"
     def unDo(self):
@@ -338,7 +338,7 @@ class ioKernel(object):
         """
         try:
             print "-->>Perform unDo"
-            self.__kr.unDo()  
+            self.__kr.unDo()
         except UndoDb:
             print "----<<Err>>No more unDo to performe"
     def delete(self):
@@ -370,13 +370,13 @@ class ioKernel(object):
             self.__kr.unHideEntity(entityId=entId)
         except:
             print "----<<Err>>On unHide the id : %s "%entId
-        
+
     def endApplication(self):
         """
             close the application
         """
         sys.exit(0)
-        
+
     def release(self):
         """
             release the current drawing
@@ -403,10 +403,10 @@ class ioKernel(object):
             newLayer=Layer(layerName)
             dbLayer=self.__kr.saveEntity(newLayer)
             self.__kr.getLayerTree().insert(dbLayer,activeLayer)
-            
+
         except:
             print "----<<Err>>Unable to create the layer : %s "%layerName
-    
+
     def setCurrentLayer(self):
         """
             set the current layer
@@ -416,7 +416,7 @@ class ioKernel(object):
             self.__kr.getLayerTree().setActiveLayer(LayerName)
         except:
             print "----<<Err>>Unable to create the layer : %s "%LayerName
-            
+
     def getCurrentLayerName(self):
         """
             get the current layer name
@@ -437,7 +437,7 @@ class ioKernel(object):
             self.__kr.importExternalFormat(fileName)
         except:
             print "----<<Err>> importExt the  : %s we get en error "%fileName
-            
+
     def deleteLayer(self):
         """
             Delete the layer
@@ -447,11 +447,11 @@ class ioKernel(object):
             self.__kr.getLayerTree().delete(layerId)
         except:
             print "----<<Err>> deleteLayer id : %s we get en error "%layerId
-    
+
     def newArc(self):
         """
             Create a new arc
-        """ 
+        """
         radius=raw_input("-->Insert the radius :")
         val=raw_input("-->insert The center position x,y:")
         xy=val.split(',')
@@ -460,7 +460,7 @@ class ioKernel(object):
         else:
             print "Errore valore incorretto inserire un valore 10,20 in questo formato"
             return
-            
+
         start_angle=raw_input("-->insert startAngle [Empty in case of circle]:")
         if start_angle:
             end_angle=raw_input("-->insert The end Angle :")
@@ -468,7 +468,7 @@ class ioKernel(object):
             start_angle=end_angle=0
         arc=Arc(center, float(radius), float(start_angle), float(end_angle))
         self.__kr.saveEntity(arc)
-    
+
     def getEntType(self):
         """
             get all the entity from a specifie type
@@ -478,11 +478,11 @@ class ioKernel(object):
             type="ALL"
         startTime=time.clock()
         ents=self.__kr.getEntityFromType(type)
-        endTime=time.clock()-startTime       
+        endTime=time.clock()-startTime
         printEntity(ents)
         print "Exec query get %s ent in %s s"%(str(len(ents)), str(endTime))
         print "********************************"
-        
+
 def printEntity(ents):
     """
         print a query result
@@ -498,7 +498,7 @@ def printEntity(ents):
 def printTree(cls, indent):
     """
         print the tree structure
-    """  
+    """
     if cls:
         for l in cls:
             parent, childs=cls[l]
@@ -542,8 +542,8 @@ class textApplication(object):
                     self.outputMsg("Wrong Command !!")
             except EntityMissing, err:
                 self.outputMsg("Application Error %s "%str(err))
-                
-    def printHelp(self):            
+
+    def printHelp(self):
         """
             print the command list
         """
@@ -566,16 +566,16 @@ class textApplication(object):
             if activeDoc == None:
                 self.outputMsg("No Object opened")
                 return
-                
+
             ents=activeDoc.getEntityFromType(type)
-            endTime=time.clock()-startTime       
+            endTime=time.clock()-startTime
             self.printEntity(ents)
             self.outputMsg("Exec query get %s ent in %s s"%(str(len(ents)), str(endTime)))
             self.outputMsg("********************************")
         except:
-            self.outputMsg("Unable To Perform the getEnts")   
+            self.outputMsg("Unable To Perform the getEnts")
 
-        
+
     def printEntity(self, ents):
         """
             print a query result
@@ -595,8 +595,8 @@ class textApplication(object):
             self.__pyCadApplication.newDocument(None)
         except (IOError, EmptyFile):
             self.outputMsg("Unable To open the file %s"%str(filePath))
-    
-    def createStyle(self):        
+
+    def createStyle(self):
         """
             create a new style object
         """
@@ -604,17 +604,17 @@ class textApplication(object):
         stl=Style(styleName)
         doc=self.__pyCadApplication.ActiveDocument
         doc.saveEntity(stl);
-        
-    def getActiveDoc(self):            
+
+    def getActiveDoc(self):
         """
             print the active document
-        """ 
+        """
         try:
             doc=self.__pyCadApplication.ActiveDocument
             self.outputMsg("Active Document is %s"%str(doc.dbPath))
         except:
-            self.outputMsg("Unable To Perform the getActiveDoc") 
-   
+            self.outputMsg("Unable To Perform the getActiveDoc")
+
     def setActiveDoc(self):
         """
             set the active docuement
@@ -632,10 +632,10 @@ class textApplication(object):
                     return
                 i+=1
             else:
-                self.outputMsg("Document not found") 
+                self.outputMsg("Document not found")
         except:
-            self.outputMsg("Unable To Perform the setActiveDoc") 
-            
+            self.outputMsg("Unable To Perform the setActiveDoc")
+
     def showDocuments(self):
         """
             show The list of documents
@@ -649,7 +649,7 @@ class textApplication(object):
             self.outputMsg("***********************************")
         except:
             self.outputMsg("Unable To Perform the GetDocuments")
-    
+
     def closeFile(self):
         """
             close the active Document
@@ -689,7 +689,7 @@ class textApplication(object):
                 try:
                     raise exception(None)
                 except ExcPoint:
-                    cObject[iv]=self.imputPoint(message)                    
+                    cObject[iv]=self.imputPoint(message)
                 except (ExcLenght, ExcAngle):
                     cObject[iv]=self.inputFloat(message)
                 except (ExText):
@@ -698,12 +698,12 @@ class textApplication(object):
                     cObject[iv]=self.inputInt(message)
                 except:
                     print "Bad error !!"
-                    raise 
+                    raise
             else:
                 cObject.applyCommand()
         except PyCadWrongCommand:
             self.outputMsg("Wrong Command")
-            
+
     def featureTest(self):
         """
             this function make a basic test
@@ -727,7 +727,7 @@ class textApplication(object):
         self.performCommandRandomly("POLYLINE")
         self.outputMsg("Create ACLine")
         self.performCommandRandomly("ACLINE")
-        
+
         self.outputMsg("Get Entitys for doc 1")
         self.__pyCadApplication.ActiveDocument=doc1
         activeDoc=self.__pyCadApplication.ActiveDocument
@@ -748,7 +748,7 @@ class textApplication(object):
         self.performCommandRandomly("SEGMENT")
         self.outputMsg("Create Arc")
         self.performCommandRandomly("ARC")
-        
+
         self.outputMsg("Create NewStyle1")
         stl1=Style("NewStyle1")
         self.__pyCadApplication.setApplicationStyle(stl1)
@@ -761,7 +761,7 @@ class textApplication(object):
         self.performCommandRandomly("SEGMENT")
         self.outputMsg("Create Arc")
         self.performCommandRandomly("ARC")
-        
+
         self.outputMsg("Create NewStyle2 ")
         stl1=Style("NewStyle2")
         stl12=activeDoc.saveEntity(stl1)
@@ -772,10 +772,10 @@ class textApplication(object):
         self.outputMsg("Done")
         # Test  Geometrical chamfer ent
         self.GeotestChamfer()
-        # Test Chamfer Command 
+        # Test Chamfer Command
         self.testChamferCommand()
-        
-    def testGeoChamfer(self):    
+
+    def testGeoChamfer(self):
         self.outputMsg("Test Chamfer")
         p1=Point(0.0, 0.0)
         p2=Point(10.0, 0.0)
@@ -792,7 +792,7 @@ class textApplication(object):
                 self.outputMsg("P1 Cords %s,%s"%(str(x), str(y)))
         else:
             self.outputMsg("Chamfer segment in None")
-    
+
     def testChamferCommand(self):
         """
             this function is usefoul for short test
@@ -800,13 +800,13 @@ class textApplication(object):
         """
         newDoc=self.__pyCadApplication.newDocument()
         intPoint=Point(0.0, 0.0)
-        
+
         s1=Segment(intPoint, Point(10.0, 0.0))
         s2=Segment(intPoint, Point(0.0, 10.0))
-        
+
         ent1=newDoc.saveEntity(s1)
         ent2=newDoc.saveEntity(s2)
-       
+
         cObject=self.__pyCadApplication.getCommand("CHAMFER")
         keys=cObject.keys()
         cObject[keys[0]]=ent1
@@ -816,7 +816,7 @@ class textApplication(object):
         cObject[keys[4]]=None
         cObject[keys[5]]=None
         cObject.applyCommand()
-    
+
     def easyTest(self):
         """
             this function is usefoul for short test
@@ -825,13 +825,13 @@ class textApplication(object):
         pass
         newDoc=self.__pyCadApplication.newDocument()
         intPoint=Point(2.0, 2.0)
-        
+
         s1=Segment(intPoint, Point(10.0, 0.0))
         s2=Segment(intPoint, Point(0.0, 10.0))
-        
+
         ent1=newDoc.saveEntity(s1)
         ent2=newDoc.saveEntity(s2)
-       
+
         cObject=self.__pyCadApplication.getCommand("CHAMFER")
         keys=cObject.keys()
         cObject[keys[0]]=ent1
@@ -841,7 +841,7 @@ class textApplication(object):
         cObject[keys[4]]=None
         cObject[keys[5]]=None
         cObject.applyCommand()
-        
+
     def performCommandRandomly(self, commandName, andLoop=10):
         """
             set some random Value at the command imput
@@ -864,13 +864,13 @@ class textApplication(object):
                 cObject[iv]=100
             except:
                 self.outputMsg("Bad error !!")
-                raise 
+                raise
             i+=1
         else:
             self.outputMsg("Apply Command")
             cObject.applyCommand()
-            
-            
+
+
     def getRandomPoint(self):
         """
             get e random point
@@ -878,15 +878,15 @@ class textApplication(object):
         x=random()*1000
         y=random()*1000
         return Point(x, y)
-    def inputInt(self, msg):   
+    def inputInt(self, msg):
         """
             return an int from user
-        """        
+        """
         value=self.inputMsg(msg)
         if value:
             return int(value)
         return None
-        
+
     def inputFloat(self, msg):
         """
             return a float number
@@ -895,10 +895,10 @@ class textApplication(object):
         if value:
             return float(value)
         return None
-        
+
     def imputPoint(self, msg):
         """
-            ask at the user to imput a point 
+            ask at the user to imput a point
         """
         msg=msg + " x,y "
         value=self.inputMsg(msg)
@@ -908,13 +908,13 @@ class textApplication(object):
             y=float(coords[1])
             return Point(x, y)
         return None
-        
+
     def outputMsg(self,msg):
         """
             print an output message
         """
         print """<PythonCad> %s"""%(str(msg))
-        
+
     def inputMsg(self,msg):
         """
             print and ask for a value

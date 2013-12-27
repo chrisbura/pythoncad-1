@@ -28,19 +28,19 @@ import logging
 #
 #Kernel Import
 #
-from Kernel.GeoUtil.intersection    import *
-from Kernel.pycadevent              import *
-from Kernel.exception               import *
-from Kernel.unitparser              import *
+from kernel.geoutil.intersection    import *
+from kernel.pycadevent              import *
+from kernel.exception               import *
+from kernel.unitparser              import *
 #
 # Interface Import
 #
-from Interface.cadinitsetting       import RESTART_COMMAND_OPTION
-from Interface.Dialogs.property     import Property
-from Interface.Preview.factory      import *
-from Interface.DrawingHelper.snap   import *
+from interface.cadinitsetting       import RESTART_COMMAND_OPTION
+from interface.dialogs.property     import Property
+from interface.preview.factory      import *
+from interface.drawinghelper.snap   import *
 
-from Kernel.Command.inputs import PointInput, LengthInput
+from kernel.command.inputs import PointInput, LengthInput
 
 class InterfaceCommand(object):
     """

@@ -48,10 +48,10 @@ class GeometricalEntity(dict):
                 raise TypeError, "Wrong argument %s "%str(k)
         self.arguments=argNameType
         self._properties={}
-    
+
     def updateSnapPoint(self, force=None, fromPoint=None, fromEnt=None):
         pass
-    
+
     def getUpdatedSnapPoints(self, force, fromPoint=None,  fromEnt=None):
         """
             update the snappoint with force argument and return an array of geopoint
@@ -65,70 +65,70 @@ class GeometricalEntity(dict):
             return the snap points
         """
         return self._snapPoints
-        
+
     @snapPoints.setter
     def snapPoints(self, value):
         self._snapPoints=value
-        
+
     def getArgumentsName(self):
         """
             get the construction arguments Name
         """
         return self.arguments
-    
+
     def getConstructionElements(self):
         """
             Get the construction element of entity..
         """
         return self
-        
+
     def setConstructionElements(self, kw):
         """
             set the construction elemtnts
         """
         self=kw
-        
+
     def move(self, fromPoint, toPoint):
         """
             this method must be defined for moving operation
         """
-        from Kernel.GeoUtil.geolib import Vector
-        from Kernel.GeoEntity.point import Point
+        from kernel.geoutil.geolib import Vector
+        from kernel.geoentity.point import Point
         v=Vector(fromPoint, toPoint)
         for key in self:
             if isinstance(self[key] , Point):
                 self[key]+=v.point
         return v.point
-    
+
     def rotate(self, rotationPoint, angle):
         """
             this method must be defined for rotation
         """
-        from Kernel.GeoUtil.geolib import Vector
-        from Kernel.GeoEntity.point import Point
-        
+        from kernel.geoutil.geolib import Vector
+        from kernel.geoentity.point import Point
+
         for key in self:
             if isinstance(self[key] , Point):
                 v=Vector(rotationPoint,self[key] )
                 v.rotate(angle)
                 self[key]=rotationPoint+v.point
-        
-    
+
+
     def getSympy(self):
         """
             get the sympy object
         """
         pass
-        
-    def setFromSympy(self, sympyPoint):    
+
+    def setFromSympy(self, sympyPoint):
         """
             update the points cord from a sympyobject
         """
-        pass   
+        pass
 
 class GeometricalEntityComposed(dict):
     """
-        this class provide the basic object for composed entity 
+        this class provide the basic object for composed entity
         like dimension labels ...
     """
     def __init__(self, kw, argNameType):
@@ -153,7 +153,7 @@ class GeometricalEntityComposed(dict):
             else:
                 raise TypeError, "Wrong argument %s "%str(k)
         self.arguments=argNameType
-    
+
     def getArgumentsName(self):
         """
             get the construction arguments Name
@@ -170,4 +170,4 @@ class GeometricalEntityComposed(dict):
             Get The releted object to be updated
         """
         pass
-    
+

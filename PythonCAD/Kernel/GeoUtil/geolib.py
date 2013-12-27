@@ -22,8 +22,8 @@
 
 import math
 
-from Kernel.GeoEntity.point  import Point
-from Kernel.exception import EntityMissing
+from kernel.geoentity.point  import Point
+from kernel.exception import EntityMissing
 
 class Vector:
     """
@@ -41,7 +41,7 @@ class Vector:
         x1,y1=p2.getCoords()
         self.X=x1-x
         self.Y=y1-y
-        
+
     def mag(self):
         """
             Get the versor
@@ -51,7 +51,7 @@ class Vector:
         p2=Point(math.cos(_a), math.sin(_a))
         return Vector(p1,p2)
 
-    @property    
+    @property
     def norm(self):
         """
           Get The Norm Of the vector
@@ -60,17 +60,17 @@ class Vector:
     def __eq__(self,vector):
         """
             the 2 vecror are equal
-        """ 
+        """
         if(not isinstance(vector,Vector)):
-            raise TypeError,"Invalid Argument vector: Vector Required"   
+            raise TypeError,"Invalid Argument vector: Vector Required"
         if(self.point==vector.point):
-            return True             
+            return True
         else:
             return False
     @property
     def point(self):
         """
-              Return The Point 
+              Return The Point
         """
         return Point(self.X,self.Y)
     @property
@@ -90,31 +90,31 @@ class Vector:
             Compute The Dot Product
         """
         if(not isinstance(vector,Vector)):
-            raise TypeError,"Invalid Argument vector: Vector Required"  
+            raise TypeError,"Invalid Argument vector: Vector Required"
         v0=self.point.getCoords()
         v1=vector.point.getCoords()
         som=0
         for a, b in zip(v0, v1):
             som+=a*b
-        return som  
-        
+        return som
+
     def cross(self,vector):
         """
             Compute The Cross Product
         """
         if(not isinstance(vector,Vector)):
-            raise TypeError,"Invalid Argument vector: Vector Required"  
+            raise TypeError,"Invalid Argument vector: Vector Required"
         x1,y1=self.point.getCoords()
         x2,y2=vector.point.getCoords()
         cros=x1*y2 - y1*x2
         return cros
-        
+
     def ang(self,vector):
         """
             Calculate the angle Between the two vector
         """
         if(not isinstance(vector,Vector)):
-            raise TypeError,"Invalid Argument vector: Vector Required"  
+            raise TypeError,"Invalid Argument vector: Vector Required"
         vself=self.mag()
         vvector=vector.mag()
         dot=vself.dot(vvector)
@@ -124,7 +124,7 @@ class Vector:
             dot=1
         ang=math.acos(dot)
         return ang
-    @property    
+    @property
     def absAng(self):
         """
             return the angle from the cartesian reference
@@ -134,7 +134,7 @@ class Vector:
         if _y<0:
             ang=ang+2*math.pi
         return ang
-        
+
     def mult(self,scalar):
         """
             Multiplae the vector for a scalar value
@@ -142,7 +142,7 @@ class Vector:
         self.X=scalar*self.norm*math.cos(self.absAng)
         self.Y=scalar*self.norm*math.sin(self.absAng)
 
-    
+
     def map(self,pPro):
         """
             Get a vector for the mapping point
@@ -154,8 +154,8 @@ class Vector:
         projectionUnitDistance=vProjNorm*math.cos(ang)
         vSelfMag=self.mag()
         vSelfMag.mult(projectionUnitDistance)
-        return vSelfMag    
-    
+        return vSelfMag
+
     def rotate(self, angle):
         """
             rotate the vector of a given angle
@@ -170,7 +170,7 @@ class Vector:
             Invert the vector
         """
         self.rotate(math.pi)
-    def __str__(self):    
+    def __str__(self):
         """
             print the vector
         """

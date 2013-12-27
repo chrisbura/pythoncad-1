@@ -25,9 +25,9 @@
 
 import math
 
-from Kernel.GeoEntity.cline import CLine
-from Kernel.GeoEntity.ccircle import CCircle
-from Kernel.exception import *
+from kernel.geoentity.cline import CLine
+from kernel.geoentity.ccircle import CCircle
+from kernel.exception import *
 
 #
 # common constants
@@ -38,7 +38,7 @@ _piover2 = math.pi/2.0
 
 def _get_two_point_projection(x1, y1, x2, y2, x, y):
     """
-        project a point to a segment 
+        project a point to a segment
     """
     _sqlen = pow((x2 - x1), 2) + pow((y2 - y1), 2)
     _rn = ((x - x1) * (x2 - x1)) + ((y - y1) * (y2 - y1))

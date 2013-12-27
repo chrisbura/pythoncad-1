@@ -26,10 +26,10 @@
 import math
 import array
 
-from Kernel.exception                   import *
-from Kernel.Command.basecommand         import *
-from Kernel.GeoEntity.point             import Point
-from Kernel.GeoEntity.segment           import Segment
+from kernel.exception                   import *
+from kernel.command.basecommand         import *
+from kernel.geoentity.point             import Point
+from kernel.geoentity.segment           import Segment
 
 class PolygonCommand(BaseCommand):
     """
@@ -41,14 +41,14 @@ class PolygonCommand(BaseCommand):
     """
     def __init__(self, document):
         BaseCommand.__init__(self, document)
-        self.exception=[ExcPoint, 
-                        ExcPoint, 
-                        ExcInt, 
+        self.exception=[ExcPoint,
+                        ExcPoint,
+                        ExcInt,
                         ExcText]
         self.defaultValue=[None, None,6,"I"]
         self.message=["Give Me the Polygon Center Point: ",
-                        "Give Me a Point to Define Circumference: ", 
-                        "Give Me The Number of Sides: ", 
+                        "Give Me a Point to Define Circumference: ",
+                        "Give Me The Number of Sides: ",
                         "Inscribed or Circumscribed [I]: "]
         self.__xpts = array.array("d")
         self.__ypts = array.array("d")
@@ -67,7 +67,7 @@ class PolygonCommand(BaseCommand):
     @side.setter
     def side(self, value):
         self.value[2]=value
-        
+
     def updateSide(self):
         """
             Set the number of sides of the polygon to create.
@@ -100,7 +100,7 @@ class PolygonCommand(BaseCommand):
         else:
             self.value[3] = False
 
-    @property  
+    @property
     def externalPick(self):
         """
             get user external pick
@@ -133,7 +133,7 @@ class PolygonCommand(BaseCommand):
         else:
             raise TypeError, "p must be a of type Point"
 
-    
+
     def getCoord(self, i):
         """
             Get one of the coordinates of the polygon corners.
@@ -167,7 +167,7 @@ class PolygonCommand(BaseCommand):
             _angle = _angle + self.__increment
         self.__xpts=_xp
         self.__ypts=_yp
-        
+
     def getEntsToSave(self):
         """
             return a list of segment
@@ -189,8 +189,8 @@ class PolygonCommand(BaseCommand):
             # now add closing segment ...
             segArg={"SEGMENT_0":_p1, "SEGMENT_1":_p0}
             objEnt.append(Segment(segArg))
-        return  objEnt   
-        
+        return  objEnt
+
     def applyCommand(self):
         """
             Create a Polygon from Segments and add it to the kernel.
@@ -202,4 +202,4 @@ class PolygonCommand(BaseCommand):
                 self.document.saveEntity(_ent)
         finally:
             self.document.stopMassiveCreation()
- 
+

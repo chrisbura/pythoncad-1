@@ -23,8 +23,8 @@
 #
 
 from PyQt4 import QtGui, QtCore
-from Interface.Preview.base         import PreviewBase, Preview
-from Interface.Entity.segment       import Segment
+from interface.preview.base         import PreviewBase, Preview
+from interface.entity.segment       import Segment
 
 
 class SegmentPreview(Preview, QtGui.QGraphicsLineItem):

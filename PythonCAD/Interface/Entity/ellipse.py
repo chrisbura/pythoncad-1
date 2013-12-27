@@ -19,8 +19,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from PyQt4 import QtGui, QtCore
-from Interface.Entity.point import Point
-from Interface.Entity.base import BaseItem
+from interface.entity.point import Point
+from interface.entity.base import BaseItem
 
 
 class Ellipse(BaseItem, QtGui.QGraphicsEllipseItem):

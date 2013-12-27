@@ -32,7 +32,7 @@ sip.setapi('QVariant', 2)
 
 from PyQt4  import QtCore, QtGui
 
-from Interface.LayerIntf.layertreeobject import LayerView
+from interface.layerintf.layertreeobject import LayerView
 
 class LayerDock(QtGui.QDockWidget):
 

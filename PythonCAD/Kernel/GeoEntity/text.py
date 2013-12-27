@@ -26,8 +26,8 @@
 from geometricalentity      import GeometricalEntity
 
 
-from Kernel.GeoUtil.util import *
-from Kernel.GeoEntity.point import Point
+from kernel.geoutil.util import *
+from kernel.geoentity.point import Point
 #
 # Text
 #
@@ -39,21 +39,21 @@ class Text(GeometricalEntity):
     def __init__(self,kw):
         """
             Initialize a Arc/Circle.
-            kw['TEXT_0'] position point must be a point 
+            kw['TEXT_0'] position point must be a point
             kw['TEXT_1'] text must be a valid text
             kw['TEXT_2'] angle must be a valid radiant float value or None
             kw['TEXT_3'] position of the text refered to the position point must be a valid string value or None
         """
         argDescription={
                         "TEXT_0":Point,
-                        "TEXT_1":(float, str, unicode), 
-                        "TEXT_2":(float, int), 
+                        "TEXT_1":(float, str, unicode),
+                        "TEXT_2":(float, int),
                         "TEXT_3":(str, unicode)
                         }
-        
+
         if kw['TEXT_2']==None:
             kw['TEXT_2'] = 0
-        from Kernel.initsetting             import TEXT_POSITION
+        from kernel.initsetting             import TEXT_POSITION
         if kw['TEXT_3']==None:
             kw['TEXT_3'] = 'sw'
         else:
@@ -65,7 +65,7 @@ class Text(GeometricalEntity):
                 #    raise TypeError, "Argument for TEXT_3 not supported"
 
         GeometricalEntity.__init__(self,kw, argDescription)
-        
+
     def __eq__(self, objTest):
         if isistance(objTest,Text):
             if(self.text== objTest.text and
@@ -79,8 +79,8 @@ class Text(GeometricalEntity):
             raise TypeError,"obj must be of type Text"
     @property
     def info(self):
-        return "Text: %s"%str(self.location) 
-    @property            
+        return "Text: %s"%str(self.location)
+    @property
     def text(self):
         """
             Get the current text within the Text.
@@ -123,19 +123,19 @@ class Text(GeometricalEntity):
     @property
     def pointPosition(self):
         """
-            return the position of the textrefered to the point 
+            return the position of the textrefered to the point
         """
         return self['TEXT_3']
     @pointPosition.setter
     def pointPosition(self, position):
         """
-            set the position of the textrefered to the point 
+            set the position of the textrefered to the point
         """
-        from Kernel.initsetting             import TEXT_POSITION
-        from Kernel.exception               import PythopnCadWarning
+        from kernel.initsetting             import TEXT_POSITION
+        from kernel.exception               import PythopnCadWarning
         if position in TEXT_POSITION:
             self['TEXT_3']=position
-        raise TypeError,"bad Point position"    
+        raise TypeError,"bad Point position"
     def getLineCount(self):
         """
             Return the number of lines of text in the Text
@@ -145,7 +145,7 @@ class Text(GeometricalEntity):
         # so the temporary list would not need to be created ...
         #
         return len(self.text.splitlines())
-    
+
     def clone(self):
         """
             Return an identical copy of a Text.
@@ -156,24 +156,24 @@ class Text(GeometricalEntity):
         _tb.angle = self.getAngle()
         _tb.pointPosition=self.pointPosition
         return _tb
-   
+
     def mirror(self, mirrorRef):
         """
             perform the mirror of the line
         """
-        # TODO Look at the qt text implementation to understand better the text 
-        # mirror 
+        # TODO Look at the qt text implementation to understand better the text
+        # mirror
         pass
         if not isinstance(mirrorRef, ( Segment)):
             raise TypeError, "mirrorObject must be Cline Segment or a tuple of points"
 
         pl=self.getLocation()
         pl.mirror(mirrorRef)
-    
+
     def rotate(self, rotationPoint, angle):
         """
-            overloading of the rotate base method 
+            overloading of the rotate base method
         """
         GeometricalEntity.rotate(self, rotationPoint, angle)
         self.angle=self.angle-angle
-        
+

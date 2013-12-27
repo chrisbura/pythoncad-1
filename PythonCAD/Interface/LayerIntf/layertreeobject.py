@@ -30,7 +30,7 @@ sip.setapi('QVariant', 2)
 
 from PyQt4 import QtCore, QtGui
 
-from Kernel.Db.schema import Layer
+from kernel.db.schema import Layer
 
 NAME, VISIBLE = range(2)
 

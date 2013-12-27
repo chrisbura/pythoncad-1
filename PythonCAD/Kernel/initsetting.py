@@ -24,53 +24,53 @@
 #
 # Command List
 #
-from Kernel.Command                     import *
-from Kernel.Command.segmentcommand      import SegmentCommand
-from Kernel.Command.circlecommand       import CircleCommand
-from Kernel.Command.arccommand          import ArcCommand
-from Kernel.Command.pointcommand        import PointCommand
-from Kernel.Command.ellipsecommand      import EllipseCommand
-from Kernel.Command.polylinecommand     import PolylineCommand
-#from Kernel.Command.aclinecommand       import ACLineCommand
-from Kernel.Command.ccirclecommand      import CCircleCommand
-from Kernel.Command.textcommand         import TextCommand
-from Kernel.Command.chamfercommand      import ChamferCommand
-from Kernel.Command.filletcommand       import FilletCommand
-from Kernel.Command.bisectorcommand     import BisectorCommand
-from Kernel.Command.rectanglecommand    import RectangleCommand
-from Kernel.Command.polygoncommand      import PolygonCommand
-from Kernel.Command.copycommand         import CopyCommand
-from Kernel.Command.movecommand         import MoveCommand
-from Kernel.Command.mirrorcommand       import MirrorCommand
-from Kernel.Command.rotatecommand       import RotateCommand
-from Kernel.Command.trimcommand         import TrimCommand
-from Kernel.Command.deletecommand       import DeleteCommand
-from Kernel.Command.dimensioncommand    import DimensionCommand
-from Kernel.Command.propertycommand     import PropertyCommand
+from kernel.command                     import *
+from kernel.command.segmentcommand      import SegmentCommand
+from kernel.command.circlecommand       import CircleCommand
+from kernel.command.arccommand          import ArcCommand
+from kernel.command.pointcommand        import PointCommand
+from kernel.command.ellipsecommand      import EllipseCommand
+from kernel.command.polylinecommand     import PolylineCommand
+#from kernel.command.aclinecommand       import ACLineCommand
+from kernel.command.ccirclecommand      import CCircleCommand
+from kernel.command.textcommand         import TextCommand
+from kernel.command.chamfercommand      import ChamferCommand
+from kernel.command.filletcommand       import FilletCommand
+from kernel.command.bisectorcommand     import BisectorCommand
+from kernel.command.rectanglecommand    import RectangleCommand
+from kernel.command.polygoncommand      import PolygonCommand
+from kernel.command.copycommand         import CopyCommand
+from kernel.command.movecommand         import MoveCommand
+from kernel.command.mirrorcommand       import MirrorCommand
+from kernel.command.rotatecommand       import RotateCommand
+from kernel.command.trimcommand         import TrimCommand
+from kernel.command.deletecommand       import DeleteCommand
+from kernel.command.dimensioncommand    import DimensionCommand
+from kernel.command.propertycommand     import PropertyCommand
 #
 # Entity List
 #
-from Kernel.GeoEntity.point        import Point
-from Kernel.GeoEntity.segment      import Segment
-from Kernel.GeoEntity.arc          import Arc
-from Kernel.GeoEntity.ellipse      import Ellipse
-from Kernel.GeoEntity.polyline     import Polyline
-from Kernel.GeoEntity.style        import Style
-from Kernel.GeoEntity.cline        import CLine
-from Kernel.GeoEntity.ccircle      import CCircle
-from Kernel.GeoEntity.text         import Text
-from Kernel.GeoEntity.dimension    import Dimension
+from kernel.geoentity.point        import Point
+from kernel.geoentity.segment      import Segment
+from kernel.geoentity.arc          import Arc
+from kernel.geoentity.ellipse      import Ellipse
+from kernel.geoentity.polyline     import Polyline
+from kernel.geoentity.style        import Style
+from kernel.geoentity.cline        import CLine
+from kernel.geoentity.ccircle      import CCircle
+from kernel.geoentity.text         import Text
+from kernel.geoentity.dimension    import Dimension
 
-from Kernel.GeoComposedEntity.chamfer   import Chamfer
-from Kernel.GeoComposedEntity.fillet    import Fillet
-from Kernel.GeoComposedEntity.bisector  import Bisector
+from kernel.geocomposedentity.chamfer   import Chamfer
+from kernel.geocomposedentity.fillet    import Fillet
+from kernel.geocomposedentity.bisector  import Bisector
 #
 # db Ent
 #
-from Kernel.settings            import *
-from Kernel.entity              import Entity
-from Kernel.layer               import Layer
-from Kernel.composedentity      import ComposedEntity
+from kernel.settings            import *
+from kernel.entity              import Entity
+from kernel.layer               import Layer
+from kernel.composedentity      import ComposedEntity
 #
 # Max Number of recent file
 #

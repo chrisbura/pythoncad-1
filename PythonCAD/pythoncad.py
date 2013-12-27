@@ -15,13 +15,13 @@ def getPythonCAD():
 
     app = QtGui.QApplication(sys.argv)
     # splashscreen
-    splashPath=os.path.join(os.getcwd(), 'icons', 'splashScreen1.png')
+    splashPath = os.path.join(os.getcwd(), 'icons', 'splashScreen1.png')
     splash_pix = QtGui.QPixmap(splashPath)
     splash = QtGui.QSplashScreen(splash_pix, QtCore.Qt.WindowStaysOnTopHint)
     splash.setMask(splash_pix.mask())
     splash.show()
 
-    w=MainWindow()
+    w = MainWindow()
     w.show()
 
     # end splashscreen
@@ -29,5 +29,5 @@ def getPythonCAD():
     return w, app
 #
 if __name__ == '__main__':
-    w,app=getPythonCAD()
+    w,app = getPythonCAD()
     sys.exit(app.exec_())

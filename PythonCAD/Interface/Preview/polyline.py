@@ -22,16 +22,16 @@
 #
 import math
 
-from Interface.Preview.base         import *
+from interface.preview.base         import *
 
 class QtPolylineItem(PreviewBase):
     def __init__(self, command):
         super(QtPolylineItem, self).__init__(command)
 
-        
-    def drawShape(self, painterPath):    
+
+    def drawShape(self, painterPath):
         """
-            overloading of the shape method 
+            overloading of the shape method
         """
         first=True
         for p in self.value:
@@ -39,8 +39,8 @@ class QtPolylineItem(PreviewBase):
                 painterPath.moveTo(p)
                 first=false
             elif p:
-                painterPath.lineTo(p)    
-    
+                painterPath.lineTo(p)
+
     def boundingRect(self):
         """
             overloading of the qt bounding rectangle
@@ -56,7 +56,7 @@ class QtPolylineItem(PreviewBase):
             w=abs(ymin-ymax)
             return QtCore.QRectF(xmin,ymin,h ,w)
         return QtCore.QRectF(0,0 ,0.1,0.1)
-        
+
     def drawGeometry(self, painter, option, widget):
         """
             overloading of the paint method
@@ -69,5 +69,5 @@ class QtPolylineItem(PreviewBase):
             pol.append(p)
         if len(points)>1:
             painter.drawPolyline(pol)
-        
+
         #painter.drawRect(self.boundingRect())

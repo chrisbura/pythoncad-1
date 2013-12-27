@@ -22,9 +22,9 @@
 #
 import math
 
-from Kernel.exception                  import *
-from Kernel.Command.basecommand        import *
-from Kernel.GeoEntity.arc              import Arc
+from kernel.exception                  import *
+from kernel.command.basecommand        import *
+from kernel.geoentity.arc              import Arc
 
 class ArcCommand(BaseCommand):
     """

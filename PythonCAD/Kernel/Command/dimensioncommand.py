@@ -20,10 +20,10 @@
 #
 #This module provide a class for the segment command
 #
-from Kernel.exception               import *
-from Kernel.Command.basecommand     import *
-from Kernel.GeoUtil.geolib          import Vector
-from Kernel.GeoEntity.dimension     import Dimension
+from kernel.exception               import *
+from kernel.command.basecommand     import *
+from kernel.geoutil.geolib          import Vector
+from kernel.geoentity.dimension     import Dimension
 
 class DimensionCommand(BaseCommand):
     """

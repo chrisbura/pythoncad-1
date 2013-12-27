@@ -21,7 +21,7 @@
 # qt text class
 #
 
-from Interface.Entity.base import *
+from interface.entity.base import *
 from math import degrees
 class Text(BaseEntity):
     def __init__(self, entity):
@@ -36,19 +36,19 @@ class Text(BaseEntity):
         self.setPos(self.location)
         self.rotate(self.angle)
         return
-            
-    def drawShape(self, painterPath):    
+
+    def drawShape(self, painterPath):
         """
-            overloading of the shape method 
+            overloading of the shape method
         """
-        painterPath.addText(QtCore.QPointF(0.0, 0.0), self.font, self.text)        
+        painterPath.addText(QtCore.QPointF(0.0, 0.0), self.font, self.text)
         return
-        
-        
+
+
     def drawGeometry(self, painter, option, widget):
         #Create Text
         painter.drawText(self.boundingRect(),QtCore.Qt.AlignCenter,  self.text)
-        
-        
-        
-        
+
+
+
+

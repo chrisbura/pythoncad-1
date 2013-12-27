@@ -1,5 +1,5 @@
 
-from Kernel.Db import schema
+from kernel.db import schema
 
 class Input(object):
     def __init__(self, message):

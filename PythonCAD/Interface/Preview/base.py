@@ -25,10 +25,10 @@ import math
 
 from PyQt4 import QtCore, QtGui
 
-from Kernel.exception       import *
-from Kernel.GeoEntity.point import Point as GeoPoint
-from Kernel.GeoUtil.geolib  import Vector
-from Kernel.initsetting     import PYTHONCAD_COLOR, PYTHONCAD_PREVIEW_COLOR, MOUSE_GRAPH_DIMENSION
+from kernel.exception       import *
+from kernel.geoentity.point import Point as GeoPoint
+from kernel.geoutil.geolib  import Vector
+from kernel.initsetting     import PYTHONCAD_COLOR, PYTHONCAD_PREVIEW_COLOR, MOUSE_GRAPH_DIMENSION
 
 
 class Preview(object):

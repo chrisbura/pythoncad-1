@@ -21,13 +21,13 @@
 # code for base for Bisector
 #
 
-from Kernel.GeoComposedEntity.objoint import *
-from Kernel.GeoUtil.geolib import Vector
+from kernel.geocomposedentity.objoint import *
+from kernel.geoutil.geolib import Vector
 import math
 
 class Bisector(ObjectJoint):
     """
-        A Bisector class 
+        A Bisector class
     """
     def __init__(self, kw):
         """
@@ -79,7 +79,7 @@ class Bisector(ObjectJoint):
         newPoint=self.intersection[0]+bisecVector.point
         arg={"SEGMENT_0":self.intersection[0], "SEGMENT_1":newPoint}
         self.bisector=Segment(arg)
-        
+
     @property
     def lengh(self):
         """
@@ -103,7 +103,7 @@ class Bisector(ObjectJoint):
     @bisector.setter
     def bisector(self, value):
         self.__bisector=value
-        
+
     def getDefaultLeng(self):
         """
             get the default bisector lengh
@@ -114,17 +114,17 @@ class Bisector(ObjectJoint):
         import sympy.geometry   as geoSympy
         t=geoSympy.Triangle(pp1,pp1,ppi)
         return float(t.bisectors[ppi].length)
-        
+
     def clone(self):
         """
-            Clone the Chamfer .. 
+            Clone the Chamfer ..
             I do not why somone whant to clone a chamfer ..
             But Tis is the functionality .. :-)
         """
-        newChamfer=Chamfer(self._obj1 , 
+        newChamfer=Chamfer(self._obj1 ,
                     self._obj2 ,
 
-                    self.pointClick1, 
+                    self.pointClick1,
                     self.pointClick2)
         return newChamfer
 
@@ -133,5 +133,5 @@ class Bisector(ObjectJoint):
             return the element to be written in the db and used for renderin
         """
         return self.bisector
-    
-        
+
+

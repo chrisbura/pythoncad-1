@@ -22,33 +22,33 @@
 #
 import math
 from PyQt4 import QtCore, QtGui
-from Interface.Preview.base         import PreviewBase
-from Interface.Entity.arc           import Arc
-from Kernel.entity                  import Point
-from Kernel.exception               import *
-from Kernel.GeoEntity.point         import Point as GeoPoint
-from Kernel.GeoUtil.geolib  import Vector
+from interface.preview.base         import PreviewBase
+from interface.entity.arc           import Arc
+from kernel.entity                  import Point
+from kernel.exception               import *
+from kernel.geoentity.point         import Point as GeoPoint
+from kernel.geoutil.geolib  import Vector
 
-#TODO+: find a good way to retrive the geometry staff from a item in Interface.Entity.arc ..
+#TODO+: find a good way to retrive the geometry staff from a item in Interface.entity.arc ..
 #extend it for all the preview entity
 
 class PreviewArc(PreviewBase):
     def __init__(self,command):
         super(PreviewArc, self).__init__(command)
-    
+
     @property
     def canDraw(self):
         if self.value[0]!=None:
             self.xc         =   self.value[0].x()
             self.yc         =   self.value[0].y()
             self.h          =   self.value[1]*2
-          
+
             self.xc=self.xc-(self.h/2.0)
             self.yc=self.yc-(self.h/2.0)
-            
+
             self.startAngle =  (self.value[2]*180/math.pi)*16
-            self.spanAngle  =  (self.value[3]*180/math.pi)*16 
-            return True       
+            self.spanAngle  =  (self.value[3]*180/math.pi)*16
+            return True
         return False
 
     def drawGeometry(self, painter,option,widget):
@@ -64,7 +64,7 @@ class PreviewArc(PreviewBase):
         """
         if self.canDraw:
             Arc.__dict__['drawShape'](self, painterPath)
-    
+
     def updatePreview(self,  position, distance, kernelCommand):
         """
             update the data at the preview item
@@ -91,6 +91,6 @@ class PreviewArc(PreviewBase):
         except:
             print "updatePreview: Exception not managed"
             return
-      
-        
-        
+
+
+

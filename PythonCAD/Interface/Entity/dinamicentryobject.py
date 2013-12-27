@@ -25,7 +25,7 @@
 import math
 
 from PyQt4 import QtCore, QtGui
-from Kernel.pycadevent          import PyCadEvent
+from kernel.pycadevent          import PyCadEvent
 
 class DinamicEntryLine(QtGui.QLineEdit):
     def __init__(self):
@@ -34,7 +34,7 @@ class DinamicEntryLine(QtGui.QLineEdit):
         self.h=20
         self.w=60
         self.onEnter=PyCadEvent()
-        
+
     def setPos(self, x, y):
         self.setGeometry(x, y, self.w, self.h)
     @property
@@ -43,13 +43,13 @@ class DinamicEntryLine(QtGui.QLineEdit):
     @text.setter
     def text(self, value):
         super(DinamicEntryLine, self).settext(value)
-        
+
     def show(self):
         self.setFocus(7)
-        super(DinamicEntryLine, self).show()  
-        
+        super(DinamicEntryLine, self).show()
+
     def keyPressEvent(self, event):
         if event.key()==QtCore.Qt.Key_Return:
             self.onEnter()
-            super(DinamicEntryLine, self).hide()  
+            super(DinamicEntryLine, self).hide()
         super(DinamicEntryLine, self).keyPressEvent(event)

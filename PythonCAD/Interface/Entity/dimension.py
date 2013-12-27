@@ -23,9 +23,9 @@
 
 from math import degrees
 
-from Kernel.GeoUtil.geolib                 import Vector
+from kernel.geoutil.geolib                 import Vector
 
-from Interface.Entity.base import *
+from interface.entity.base import *
 
 class Dimension(BaseEntity):
     def __init__(self, entity):

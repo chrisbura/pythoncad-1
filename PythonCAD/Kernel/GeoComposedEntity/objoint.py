@@ -24,14 +24,14 @@
 #
 from math import hypot, pi, sin, cos, tan, atan2
 
-from Kernel.GeoEntity.geometricalentity    import *
-from Kernel.GeoUtil.util                   import *
-from Kernel.GeoUtil.intersection           import *
-from Kernel.GeoEntity.segment              import Segment
-#from Kernel.GeoEntity.acline               import ACLine
-from Kernel.GeoEntity.arc                  import Arc
-from Kernel.GeoEntity.ccircle              import CCircle
-from Kernel.GeoUtil.geolib                 import Vector
+from kernel.geoentity.geometricalentity    import *
+from kernel.geoutil.util                   import *
+from kernel.geoutil.intersection           import *
+from kernel.geoentity.segment              import Segment
+#from kernel.geoentity.acline               import ACLine
+from kernel.geoentity.arc                  import Arc
+from kernel.geoentity.ccircle              import CCircle
+from kernel.geoutil.geolib                 import Vector
 
 
 #ALLOW_CHAMFER_ENTITY=(Segment, ACLine)
@@ -42,18 +42,18 @@ class ObjectJoint(GeometricalEntityComposed):
         A ObjectJoint object has the following methods:
     """
     def __init__(self, kw, argDes=None):
-        from Kernel.initsetting import DRAWIN_ENTITY
+        from kernel.initsetting import DRAWIN_ENTITY
         classNames=tuple(DRAWIN_ENTITY.keys())
-        argDescription={"OBJECTJOINT_0":classNames, 
-                        "OBJECTJOINT_1":classNames, 
-                        "OBJECTJOINT_2":(Point,None), 
-                        "OBJECTJOINT_3":(Point,None), 
+        argDescription={"OBJECTJOINT_0":classNames,
+                        "OBJECTJOINT_1":classNames,
+                        "OBJECTJOINT_2":(Point,None),
+                        "OBJECTJOINT_3":(Point,None),
                         "OBJECTJOINT_4":(str, unicode)
                         }
         if argDes:
             for k in argDes:
                 argDescription[k]=argDes[k]
-                
+
         self.trimModeKey={"FIRST":0, "SECOND":1, "BOTH":2, "NO_TRIM":3}
         GeometricalEntityComposed.__init__(self, kw, argDescription)
         self._externalIntersectio=False
@@ -71,7 +71,7 @@ class ObjectJoint(GeometricalEntityComposed):
         v2=self.getAngledVector(self.obj2, self.pointClick2)
         ang=v1.ang(v2)
         return ang
-        
+
     @property
     def trimMode(self):
         """
@@ -83,10 +83,10 @@ class ObjectJoint(GeometricalEntityComposed):
         if value in self.trimModeKey:
             self["OBJECTJOINT_4"]=value
         else:
-            raise AttributeError, "Bad trim mode use FIRST SECOND BOTH NO_TRIM" 
-    
+            raise AttributeError, "Bad trim mode use FIRST SECOND BOTH NO_TRIM"
+
     @property
-    def obj1(self):    
+    def obj1(self):
         """
             First object
         """
@@ -94,9 +94,9 @@ class ObjectJoint(GeometricalEntityComposed):
     @obj1.setter
     def obj1(self, value):
         self["OBJECTJOINT_0"]=value
-        
+
     @property
-    def obj2(self):    
+    def obj2(self):
         """
            second object
         """
@@ -104,8 +104,8 @@ class ObjectJoint(GeometricalEntityComposed):
     @obj2.setter
     def obj2(self, value):
         self["OBJECTJOINT_1"]=value
-        
-    @property    
+
+    @property
     def pointClick1(self):
         """
             get the clicked point
@@ -115,7 +115,7 @@ class ObjectJoint(GeometricalEntityComposed):
     def pointClick1(self, value):
         self["OBJECTJOINT_2"]=value
 
-    @property  
+    @property
     def pointClick2(self):
         """
             get the clicked point
@@ -124,17 +124,17 @@ class ObjectJoint(GeometricalEntityComposed):
     @pointClick2.setter
     def pointClick2(self, value):
         self["OBJECTJOINT_3"]=value
-        
-    @property    
+
+    @property
     def intersection(self):
         """
             Return the intersection points of the ObjectJoint Entity Object.
 
-            This method returns an array of intersection point 
+            This method returns an array of intersection point
             [] no intersection
         """
         return self._intersectionPoints
-        
+
     def getConstructionElements(self):
         """
             Return the two Entity Object joined by the ObjectJoint.
@@ -143,7 +143,7 @@ class ObjectJoint(GeometricalEntityComposed):
         """
         return self
 
-    
+
     def getReletedComponent(self):
         """
             return the releted compont of the ObjectJoint
@@ -169,5 +169,5 @@ class ObjectJoint(GeometricalEntityComposed):
             if abs(vj.absAng-vs1.absAng)<0.00001:
                 return Vector(pi, p1)
             else:
-                return Vector(pi, p2)  
+                return Vector(pi, p2)
 

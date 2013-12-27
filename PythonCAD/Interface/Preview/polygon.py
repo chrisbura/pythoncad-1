@@ -22,9 +22,9 @@
 #
 import math
 
-from Interface.Preview.base         import *
-from Kernel.GeoUtil.geolib          import Vector
-from Kernel.GeoEntity.point         import Point
+from interface.preview.base         import *
+from kernel.geoutil.geolib          import Vector
+from kernel.geoentity.point         import Point
 
 
 class QtPolygonItem(PreviewBase):
@@ -55,32 +55,32 @@ class QtPolygonItem(PreviewBase):
             pol.append(p)
             if not pFirst:
                 pFirst=p
-        if pFirst:        
+        if pFirst:
             pol.append(pFirst)
         return pol
-        
+
     def drawGeometry(self, painter,option,widget):
         """
             overloading of the paint method
         """
         if self.center and self.vertex:
             painter.drawPolyline(self.polygonPoint)
-    
-    def drawShape(self, painterPath):    
+
+    def drawShape(self, painterPath):
         """
-            overloading of the shape method 
+            overloading of the shape method
         """
         if self.center and self.vertex:
             painter.drawPolyline(self.polygonPoint)
-    
+
     def boundingRect(self):
         """
             overloading of the qt bounding rectangle
         """
         if self.center and self.vertex:
-            return self.polygonPoint.boundingRect() 
+            return self.polygonPoint.boundingRect()
         return QtCore.QRectF(0,0 ,0.1,0.1)
-        
+
     @property
     def center(self):
         return self.value[0]
@@ -89,7 +89,7 @@ class QtPolygonItem(PreviewBase):
         self.value[0]=value
         self.update(self.boundingRect())
     @property
-    def vertex(self):    
+    def vertex(self):
         return self.value[1]
     @vertex.setter
     def vertex(self, value):
@@ -98,4 +98,4 @@ class QtPolygonItem(PreviewBase):
     @property
     def side(self):
         return self.value[2]
-        
+

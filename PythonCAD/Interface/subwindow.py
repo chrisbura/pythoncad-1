@@ -1,9 +1,9 @@
 from PyQt4 import QtCore, QtGui
-from Generic.Kernel.document import *
-from Interface.LayerIntf.layerdock  import LayerDock
-from Interface.cadscene             import CadScene
-from Interface.cadview              import CadView
-from Interface.LayerIntf.layertreeobject import LayerModel
+from kernel.document import *
+from interface.layerintf.layerdock  import LayerDock
+from interface.cadscene             import CadScene
+from interface.cadview              import CadView
+from interface.layerintf.layertreeobject import LayerModel
 
 class SubWindow(QtGui.QMdiSubWindow):
     sequenceNumber = 1

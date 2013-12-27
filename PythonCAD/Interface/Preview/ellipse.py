@@ -20,11 +20,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from PyQt4 import QtGui, QtCore
-from Interface.Preview.base import Preview
+from interface.preview.base import Preview
 import numpy
 
 import math
-from Interface.Preview.base import *
+from interface.preview.base import *
 
 class Point(QtGui.QGraphicsEllipseItem):
     def __init__(self, point):

@@ -2,8 +2,8 @@
 import math
 from PyQt4 import QtCore, QtGui
 
-from Interface.Entity.base import *
-from Interface.Preview.base import *
+from interface.entity.base import *
+from interface.preview.base import *
 
 class CadView(QtGui.QGraphicsView):
     def __init__(self, scene, parent=None):

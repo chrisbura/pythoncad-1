@@ -1,6 +1,6 @@
 
 from PyQt4 import QtGui, QtCore
-from Interface.Preview.base import Preview
+from interface.preview.base import Preview
 import numpy
 
 

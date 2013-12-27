@@ -26,11 +26,11 @@ from __future__ import generators
 
 import math
 
-from Kernel.GeoUtil.util                    import *
-from Kernel.GeoUtil.geolib                  import Vector
-from Kernel.GeoEntity.point                 import Point
-from Kernel.GeoEntity.cline                 import CLine
-from Kernel.GeoEntity.geometricalentity     import *
+from kernel.geoutil.util                    import *
+from kernel.geoutil.geolib                  import Vector
+from kernel.geoentity.point                 import Point
+from kernel.geoentity.cline                 import CLine
+from kernel.geoentity.geometricalentity     import *
 
 
 class Segment(GeometricalEntity):
@@ -40,8 +40,8 @@ class Segment(GeometricalEntity):
     def __init__(self,kw):
         """
             Initialize a Segment object.
-            kw['SEGMENT_0'] must be a point 
-            kw['SEGMENT_1'] must be a point 
+            kw['SEGMENT_0'] must be a point
+            kw['SEGMENT_1'] must be a point
         """
         argDescription={
                         "SEGMENT_0":Point,
@@ -50,14 +50,14 @@ class Segment(GeometricalEntity):
         GeometricalEntity.__init__(self,kw, argDescription)
         if self.p1.dist(self.p2)<0.000001:
             print "distance =0", self
-            #raise StructuralError("Wrong point imput distance between point mast be >0.000001") 
-                
-    
+            #raise StructuralError("Wrong point imput distance between point mast be >0.000001")
+
+
     def __str__(self):
         return "Segment: %s to %s l=%s" % (self.p1, self.p2, self.length)
     @property
     def info(self):
-        return "Segment: %s to %s l=%s" % (self.p1, self.p2, self.length)    
+        return "Segment: %s to %s l=%s" % (self.p1, self.p2, self.length)
     def __eq__(self, obj):
         """
             Compare a Segment to another for equality.
@@ -93,13 +93,13 @@ class Segment(GeometricalEntity):
             that are the endpoints of the segment.
         """
         return self.p1, self.p2
-        
+
     def getKeypoints(self):
         """
             wrapper function for CLine compatibility
         """
         return self.getEndpoints()
-        
+
     def getP1(self):
         """
             Return the first endpoint Point of the Segment.
@@ -139,7 +139,7 @@ class Segment(GeometricalEntity):
             self["SEGMENT_1"] = p
         self.updateSnapPoint()
     p2 = property(getP2, setP2, None, "Second endpoint of the Segment.")
-    
+
     @property
     def length(self):
         """
@@ -345,16 +345,16 @@ class Segment(GeometricalEntity):
         _sp1=self.p1.getSympy()
         _sp2=self.p2.getSympy()
         return geoSympy.Segment(_sp1, _sp2)
-    
-    def getSympyLine(self):    
+
+    def getSympyLine(self):
         """
             Get The simpy line
         """
         _sp1=self.p1.getSympy()
         _sp2=self.p2.getSympy()
-        return geoSympy.Line(_sp1, _sp2) 
-        
-    def setFromSympy(self, sympySegment):    
+        return geoSympy.Line(_sp1, _sp2)
+
+    def setFromSympy(self, sympySegment):
         """
             update the points cord from a sympyobject
         """
@@ -366,7 +366,7 @@ class Segment(GeometricalEntity):
             Get The vector of the Segment
         """
         return Vector(self.p1, self.p2)
-        
+
     def mirror(self, mirrorRef):
         """
             perform the mirror of the line

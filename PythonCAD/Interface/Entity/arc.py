@@ -21,16 +21,16 @@
 # qt arc class
 #
 from PyQt4 import QtCore, QtGui
-from Interface.Entity.base import *
+from interface.entity.base import *
 
 class Arc(BaseEntity):
     """
-        this class define the arcQT object 
+        this class define the arcQT object
     """
     def __init__(self, entity):
         super(Arc, self).__init__(entity)
         geoEnt=self.geoItem  # get the geometry from kernel
-        self.startPoint, p2=geoEnt.getEndpoints()     
+        self.startPoint, p2=geoEnt.getEndpoints()
         self.xc, self.yc=geoEnt.center.getCoords()
         startAngle=geoEnt.startAngle
         self.sa=startAngle
@@ -43,10 +43,10 @@ class Arc(BaseEntity):
         self.startAngle=(startAngle*180/math.pi)*16
         self.spanAngle=(spanAngle*180/math.pi)*16-self.startAngle
         return
-    
-    def drawShape(self, painterPath):    
+
+    def drawShape(self, painterPath):
         """
-            extending of the shape method 
+            extending of the shape method
         """
         qRect=QtCore.QRectF(self.xc,
                              self.yc,
@@ -54,9 +54,9 @@ class Arc(BaseEntity):
                              self.h)
         #x, y=self.startPoint.getCoords()
         painterPath.moveTo(self.xc, self.yc*-1.0)
-        painterPath.arcTo(qRect,self.startAngle,self.spanAngle) 
+        painterPath.arcTo(qRect,self.startAngle,self.spanAngle)
         return
-    
+
     def drawGeometry(self, painter, option, widget):
         """
             extending of the paint method
@@ -68,11 +68,11 @@ class Arc(BaseEntity):
                              self.h)
         painter.drawArc(qRect,self.startAngle,  self.spanAngle)
 
-    
-    
-    
-    
-    
-    
-    
-  
+
+
+
+
+
+
+
+

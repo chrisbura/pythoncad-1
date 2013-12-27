@@ -4,17 +4,17 @@
 # Copyright (c) 2010 Matteo Boscolo
 #
 # This file is part of PythonCAD.
-# 
+#
 # PythonCAD is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # PythonCAD is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with PythonCAD; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -25,13 +25,13 @@
 
 from math import hypot, fmod, atan2, sin, cos, pi
 
-from Kernel.GeoEntity.util     import *
-from Kernel.GeoEntity.point    import Point
-from Kernel.GeoEntity.segment  import Segment
-from Kernel.GeoEntity.arc      import Arc
-from Kernel.GeoEntity.cline    import CLine
-from Kernel.GeoEntity.ccircle  import CCircle
-from Kernel.GeoEntity.polyline import Polyline
+from kernel.geoentity.util     import *
+from kernel.geoentity.point    import Point
+from kernel.geoentity.segment  import Segment
+from kernel.geoentity.arc      import Arc
+from kernel.geoentity.cline    import CLine
+from kernel.geoentity.ccircle  import CCircle
+from kernel.geoentity.polyline import Polyline
 
 
 #from PythonCAD.Generic.segjoint import Chamfer, Fillet
@@ -69,7 +69,7 @@ def _xfrm_point(pt, objdict, cx, cy, ra):
         else:
             _np = _most_used(_pts)
     return _np
-    
+
 def _adjust_dimensions(op, np):
     _objs = 0
     _dims = []
@@ -122,7 +122,7 @@ def _used_by(obj, plist):
         if _objpt is not None:
             break
     return _objpt
-    
+
 def _can_move(obj, objdict):
     raise DeprecatedError,"The can move have no more relevance from Version R38"
     for _user in obj.getUsers():
@@ -171,7 +171,7 @@ def _rotate_leader(obj, objdict, cx, cy, ra):
     _layer = obj.getParent()
     if _layer is None:
         raise RuntimeError, "Leader parent is None"
-    _p1, _p2, _p3 = obj.getPoints()    
+    _p1, _p2, _p3 = obj.getPoints()
     if _p1.getParent() is not _layer:
         raise RuntimeError, "Leader/P1 parent object conflict!"
     if _p2.getParent() is not _layer:
@@ -212,7 +212,7 @@ def _adjust_endpoint(arc, pt, objdict, cx, cy, ra):
     for _user in pt.getUsers():
         _users.append(_user)
     _np = None
-    _x, _y = _calc_coords(pt, cx, cy, ra)    
+    _x, _y = _calc_coords(pt, cx, cy, ra)
     if len(_users) == 1 and _users[0] is arc:
         if _can_move(pt, objdict) and objdict.get(_pid) is not False:
             pt.setCoords(_x, _y)
@@ -237,12 +237,12 @@ def _adjust_endpoint(arc, pt, objdict, cx, cy, ra):
             _layer.delObject(pt)
     if objdict.get(_pid) is not False:
         objdict[_pid] = False
-    
+
 def _rotate_arc(obj, objdict, cx, cy, ra):
     _layer = obj.getParent()
     if _layer is None:
         raise RuntimeError, "Arc parent is None"
-    _cp = obj.getCenter()    
+    _cp = obj.getCenter()
     if _cp.getParent() is not _layer:
         raise RuntimeError, "Arc/center parent object conflict!"
     _ep1, _ep2 = obj.getEndpoints()
@@ -278,7 +278,7 @@ def _rotate_circ_ccirc(obj, objdict, cx, cy, ra):
     _layer = obj.getParent()
     if _layer is None:
         raise RuntimeError, "%s parent is None" % _objtype
-    _cp = obj.getCenter()    
+    _cp = obj.getCenter()
     if _cp.getParent() is not _layer:
         raise RuntimeError, "%s/center parent object conflict!" % _objtype
     _np = _xfrm_point(_cp, objdict, cx, cy, ra)
@@ -356,7 +356,7 @@ def _adjust_point_users(pt, objdict, da):
             else:
                 if not isinstance(_user, Dimension):
                     objdict[_uid] = False
-    
+
 def rotate_objects(objs, cx, cy, angle):
     """Rotate a list of objects.
 

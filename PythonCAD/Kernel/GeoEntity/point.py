@@ -25,8 +25,8 @@ from __future__ import generators
 
 import math
 
-from Kernel.GeoEntity.geometricalentity  import *
-from Kernel.GeoUtil.util                 import *
+from kernel.geoentity.geometricalentity  import *
+from kernel.geoutil.util                 import *
 
 
 
@@ -58,17 +58,17 @@ class Point(GeometricalEntity):
             raise SyntaxError, "Invalid call to Point()."
         self.__x = _x
         self.__y = _y
-        
+
     def getPoint(self):
         return self
-    
+
     def __str__(self):
         return "Point : (%g,%g)" % (self.__x, self.__y)
-    
+
     @property
     def info(self):
         return "Point : (%g,%g)" % (self.__x, self.__y)
-    
+
     def __sub__(self, p):
         """
             Return the separation between two points.
@@ -130,14 +130,14 @@ class Point(GeometricalEntity):
             Get the construction element of entity..
         """
         return {"POINT_0":self.__x, "POINT_1":self.__y}
-    
+
     def setConstructionElements(self, p1, p2):
         """
             Set the construction element of entity..
         """
         self__x=p1
         self__y=p2
-        
+
     def getx(self):
         """
             Return the x-coordinate of a Point.
@@ -252,36 +252,36 @@ class Point(GeometricalEntity):
         """
         self.__x=float(sympyPoint[0])
         self.__y=float(sympyPoint[1])
-    
+
     def move(self,fromPoint, toPoint):
         """
             perform the move operation
         """
-        from Kernel.GeoUtil.geolib  import Vector
+        from kernel.geoutil.geolib  import Vector
         v=Vector(fromPoint, toPoint)
         p=self+v.point
         self.__x=p.x
         self.__y=p.y
-    
+
     def rotate(self, rotationPoint, angle):
         """
             this method must be defined for rotation
         """
-        from Kernel.GeoUtil.geolib import Vector
-        from Kernel.GeoEntity.point import Point
+        from kernel.geoutil.geolib import Vector
+        from kernel.geoentity.point import Point
         v=Vector(rotationPoint,self)
         v.rotate(angle)
-        p=rotationPoint+v.point    
+        p=rotationPoint+v.point
         self.__x=p.x
         self.__y=p.y
-        
+
     def mirror(self, mirrorRef):
         """
             perform the mirror of the line
         """
-        from Kernel.GeoEntity.cline              import CLine
-        from Kernel.GeoEntity.segment            import Segment
-        from Kernel.GeoUtil.geolib               import Vector
+        from kernel.geoentity.cline              import CLine
+        from kernel.geoentity.segment            import Segment
+        from kernel.geoutil.geolib               import Vector
         if not isinstance(mirrorRef, (CLine, Segment)):
             raise TypeError, "mirrorObject must be Cline Segment or a tuple of points"
         #

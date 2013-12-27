@@ -20,12 +20,12 @@
 #
 #This module provide a class for the fillet command
 #
-from Kernel.exception                      import *
-from Kernel.composedentity                 import ComposedEntity
-from Kernel.Command.basecommand            import *
-from Kernel.GeoComposedEntity.fillet       import Fillet
-from Kernel.GeoEntity.segment              import Segment
-from Kernel.GeoUtil.util                   import getIdPoint
+from kernel.exception                      import *
+from kernel.composedentity                 import ComposedEntity
+from kernel.command.basecommand            import *
+from kernel.geocomposedentity.fillet       import Fillet
+from kernel.geoentity.segment              import Segment
+from kernel.geoutil.util                   import getIdPoint
 
 class FilletCommand(BaseCommand):
     """

@@ -7,9 +7,9 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from Interface.CmdIntf.cmdcategory  import CmdCategory
-from Interface.CmdIntf.cmdaction    import CmdAction
-from Interface.CmdIntf.cmdlinedock  import CmdLineDock
+from interface.cmdintf.cmdcategory  import CmdCategory
+from interface.cmdintf.cmdaction    import CmdAction
+from interface.cmdintf.cmdlinedock  import CmdLineDock
 
 
 class CmdIntf(object):

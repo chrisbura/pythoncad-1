@@ -21,28 +21,28 @@
 #
 # This  module PROVIDE ALL GLOBAL VARIABLE NEEDE TO THE SCENE
 #
-from Interface.Entity.point         import Point
-from Interface.Entity.segment       import Segment
-from Interface.Entity.arc           import Arc
-from Interface.Entity.text          import Text
-from Interface.Entity.ellipse import EllipseComposite
-from Interface.Entity.polyline      import Polyline
-from Interface.Entity.dimension     import Dimension
-from Interface.Entity.circle import CircleComposite
+from interface.entity.point         import Point
+from interface.entity.segment       import Segment
+from interface.entity.arc           import Arc
+from interface.entity.text          import Text
+from interface.entity.ellipse import EllipseComposite
+from interface.entity.polyline      import Polyline
+from interface.entity.dimension     import Dimension
+from interface.entity.circle import CircleComposite
 
-from Interface.Dialogs.Widget.widgets import PyCadQColor
-from Interface.Dialogs.Widget.widgets import PyCadQLineType
-from Interface.Dialogs.Widget.widgets import PyCadQDouble
-from Interface.Dialogs.Widget.widgets import PyCadQFont
+from interface.dialogs.widget.widgets import PyCadQColor
+from interface.dialogs.widget.widgets import PyCadQLineType
+from interface.dialogs.widget.widgets import PyCadQDouble
+from interface.dialogs.widget.widgets import PyCadQFont
 
 from PyQt4 import QtCore
 
-from Interface.Command.distance2point import Distance2Point
+from interface.command.distance2point import Distance2Point
 
-from Kernel.Command.segmentcommand import SegmentCommand
-from Kernel.Command.circlecommand import CircleCommand
-from Kernel.Command.ellipsecommand import EllipseCommand
-from Kernel.Db import schema
+from kernel.command.segmentcommand import SegmentCommand
+from kernel.command.circlecommand import CircleCommand
+from kernel.command.ellipsecommand import EllipseCommand
+from kernel.db import schema
 
 ENTITY_MAP = {
    schema.Point: Point,

@@ -23,13 +23,13 @@
 # This  module Provide custom exception for the db module and kernel
 #
 
-from Kernel.GeoEntity.point     import Point
-from Kernel.GeoUtil.geolib      import Vector
-from Kernel.pycadevent          import PyCadEvent
-from Kernel.unitparser          import  convertLengh, convertAngle
+from kernel.geoentity.point     import Point
+from kernel.geoutil.geolib      import Vector
+from kernel.pycadevent          import PyCadEvent
+from kernel.unitparser          import  convertLengh, convertAngle
 
-from Interface.DrawingHelper.evaluator      import Evaluator
-from Interface.Preview.factory              import getPreviewObject
+from interface.drawinghelper.evaluator      import Evaluator
+from interface.preview.factory              import getPreviewObject
 
 class FunctionHandler(object):
     '''

@@ -20,12 +20,12 @@
 #
 #This module provide a class for the bisector command
 #
-from Kernel.exception                      import *
-from Kernel.composedentity                 import ComposedEntity
-from Kernel.Command.basecommand            import *
-from Kernel.GeoComposedEntity.bisector     import Bisector
-from Kernel.GeoEntity.segment              import Segment
-from Kernel.GeoUtil.util                    import getIdPoint
+from kernel.exception                      import *
+from kernel.composedentity                 import ComposedEntity
+from kernel.command.basecommand            import *
+from kernel.geocomposedentity.bisector     import Bisector
+from kernel.geoentity.segment              import Segment
+from kernel.geoutil.util                    import getIdPoint
 
 class BisectorCommand(BaseCommand):
     """

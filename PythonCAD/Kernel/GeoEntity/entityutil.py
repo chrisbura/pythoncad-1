@@ -18,17 +18,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-# This module provide some utility  for the entity 
+# This module provide some utility  for the entity
 #
 import math
 
 import sympy            as mainSympy
 import sympy.geometry   as geoSympy
 
-from Kernel.GeoEntity.point        import Point
-from Kernel.GeoEntity.segment      import Segment
-from Kernel.GeoEntity.arc          import Arc
-from Kernel.GeoEntity.ellipse      import Ellipse
+from kernel.geoentity.point        import Point
+from kernel.geoentity.segment      import Segment
+from kernel.geoentity.arc          import Arc
+from kernel.geoentity.ellipse      import Ellipse
 
 
 #    "Ray",
@@ -37,17 +37,17 @@ from Kernel.GeoEntity.ellipse      import Ellipse
 #    "RegularPolygon",
 #    "Polygon",
 #    "Curve"
-    
+
 def getEntityEntity(sympyEntity):
     """
         convert sympy object into PyCAD object
     """
     if isinstance(sympyEntity, geoSympy.Circle):
-        arg={"ARC_0":Point(0.0, 0.0), 
-             "ARC_1":1, 
-             "ARC_2":None, 
+        arg={"ARC_0":Point(0.0, 0.0),
+             "ARC_1":1,
+             "ARC_2":None,
              "ARC_3":None
-             }    
+             }
         arc=Arc(arg)
         arc.setFromSympy(sympyEntity)
         return arc

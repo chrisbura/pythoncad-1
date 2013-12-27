@@ -21,7 +21,7 @@
 # evaluator Class to manage  command computation
 #
 from math import *
-from Interface.pycadapp import PyCadApp
+from interface.pycadapp import PyCadApp
 from sympy.physics import units as u
 
 RESERVED_WORK=['self._print', 'self._error', 'self._ok','self._cadApplication','self.evaluate', 'self._eval', 'self._exec'  ]

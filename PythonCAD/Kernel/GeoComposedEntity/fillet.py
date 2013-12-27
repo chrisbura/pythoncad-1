@@ -23,10 +23,10 @@
 # code for base for Fillet
 #
 
-from Kernel.GeoComposedEntity.objoint import *
-from Kernel.GeoComposedEntity.bisector import Bisector
-from Kernel.exception           import *
-from Kernel.GeoUtil.util import *
+from kernel.geocomposedentity.objoint import *
+from kernel.geocomposedentity.bisector import Bisector
+from kernel.exception           import *
+from kernel.geoutil.util import *
 
 _dtr = 180.0/pi
 
@@ -65,8 +65,8 @@ class Fillet(ObjectJoint):
         bisectorLengh=math.sqrt(self.radius**2*(1+1/tan**2))
         arg={"OBJECTJOINT_0":self.obj1,
             "OBJECTJOINT_1":self.obj2,
-            "OBJECTJOINT_2":self.pointClick1, 
-            "OBJECTJOINT_3":self.pointClick2, 
+            "OBJECTJOINT_2":self.pointClick1,
+            "OBJECTJOINT_3":self.pointClick2,
             "OBJECTJOINT_5":bisectorLengh}
         bisect=Bisector(arg)
         p1, p2=bisect.bisector.getEndpoints() #bisector is a segment so the getEndPoints is made on segment object
@@ -74,8 +74,8 @@ class Fillet(ObjectJoint):
             self.__center=p1
         else:
             self.__center=p2
-        
-    def _UpdateFilletArc(self):           
+
+    def _UpdateFilletArc(self):
         """
             Recompute the Fillet segment
         """
@@ -86,7 +86,7 @@ class Fillet(ObjectJoint):
         obj1, pc1=self._updateSegment(self.obj1, self.pointClick1 )
         obj2, pc2=self._updateSegment(self.obj2, self.pointClick2 )
         if not self.trimMode:
-            self.trimMode="BOTH"    
+            self.trimMode="BOTH"
         if self.trimModeKey[self.trimMode]!=self.trimModeKey["NO_TRIM"]:
             if self.trimModeKey[self.trimMode]==self.trimModeKey["FIRST"] or self.trimModeKey[self.trimMode]==self.trimModeKey["BOTH"]:
                 self.obj1=obj1
@@ -95,7 +95,7 @@ class Fillet(ObjectJoint):
         self._UpdateAngle(pc1, pc2)
         arg={"ARC_0":self.center, "ARC_1":self.radius, "ARC_2":self.startAngle, "ARC_3":self.endAngle}
         self.filletArc=Arc(arg)
-    
+
     def _UpdateAngle(self, pc1, pc2):
         """
             update the Fillet arc angle
@@ -113,18 +113,18 @@ class Fillet(ObjectJoint):
         else:
             raise StructuralError, "_UpdateAngle Unable to upgrade the angle"
 
-        
+
     def _updateSegment(self,objSegment,objPoint):
         """
             Get the point used for the trim
         """
         objProjection=objSegment.getProjection(self.center)
         objInterPoint=self.intersection[0]
-        _p1 , _p2 = objSegment.getEndpoints()       
+        _p1 , _p2 = objSegment.getEndpoints()
         _objPoint=Point(objSegment.getProjection(objPoint))
         if not (_p1==objInterPoint or _p2==objInterPoint):
-            pickIntVect=Vector(objInterPoint,_objPoint).mag()                    
-            p1IntVect=Vector(objInterPoint,_p1).mag()            
+            pickIntVect=Vector(objInterPoint,_objPoint).mag()
+            p1IntVect=Vector(objInterPoint,_p1).mag()
             if(pickIntVect==p1IntVect):
                 arg={"SEGMENT_0":_p1,"SEGMENT_1":objProjection}
                 return Segment(arg), objProjection
@@ -138,8 +138,8 @@ class Fillet(ObjectJoint):
             return Segment(arg), objProjection
         else:
             arg={"SEGMENT_0":objProjection,"SEGMENT_1":_p2}
-            return Segment(arg), objProjection  
-        
+            return Segment(arg), objProjection
+
     @property
     def startAngle(self):
         """
@@ -149,7 +149,7 @@ class Fillet(ObjectJoint):
     @startAngle.setter
     def startAngle(self, value):
         self.__StartAngle=value
-        
+
     @property
     def endAngle(self):
         """
@@ -191,14 +191,14 @@ class Fillet(ObjectJoint):
             return: Point
         """
         return self.__center
-  
+
     def clone(self):
         return Fillet(self)
-    
+
     def getReletedComponent(self):
         """
             get the releted componet from the fillet
             usually the entity to save
         """
         return self.obj1, self.obj2, self.filletArc
-        
+

@@ -27,9 +27,9 @@ sip.setapi('QVariant', 2)
 import math
 from PyQt4  import QtCore, QtGui
 
-from Kernel.initsetting         import PYTHONCAD_HIGLITGT_COLOR, PYTHONCAD_COLOR, MOUSE_GRAPH_DIMENSION
+from kernel.initsetting         import PYTHONCAD_HIGLITGT_COLOR, PYTHONCAD_COLOR, MOUSE_GRAPH_DIMENSION
 
-from Kernel.GeoEntity.point     import Point
+from kernel.geoentity.point     import Point
 
 
 class BaseItem(object):

@@ -28,21 +28,21 @@ from __future__ import generators
 import math
 
 
-from Kernel.GeoEntity.geometricalentity    import *
-from Kernel.GeoUtil.tolerance              import *
-from Kernel.GeoUtil.util                   import *
-from Kernel.GeoEntity.point                import Point
-from Kernel.GeoUtil.geolib                 import Vector
+from kernel.geoentity.geometricalentity    import *
+from kernel.geoutil.tolerance              import *
+from kernel.geoutil.util                   import *
+from kernel.geoentity.point                import Point
+from kernel.geoutil.geolib                 import Vector
 
 class CLine(GeometricalEntity):
     """
         A class for single point construction lines From Two points.
     """
-    
+
     def __init__(self, kw):
         """
             Initialize an CLine object.
-            kw must be a dict with 2 argument 
+            kw must be a dict with 2 argument
             CLINE_0=Point: First Point object where the line passes through
             CLINE_1=Point: Second Point object where the line passes through
         """
@@ -50,15 +50,15 @@ class CLine(GeometricalEntity):
         GeometricalEntity.__init__(self,kw, argDescription)
 
     def __str__(self):
-        return "Construction line through point %s at %s " % (self.p1, self.p2)   
+        return "Construction line through point %s at %s " % (self.p1, self.p2)
     @property
     def info(self):
         return "CLine: %s, %s"%(str(self.p1), str(self.p2))
-    
+
     def rotate(self, rotationPoint, angle):
         """
             rotate the acline for a given angle
-        """    
+        """
         self.p1=GeometricalEntity.rotate(self, rotationPoint,self.p1, angle )
         self.p2=GeometricalEntity.rotate(self, rotationPoint,self.p2, angle )
 
@@ -79,7 +79,7 @@ class CLine(GeometricalEntity):
         if not isinstance(p, Point):
             raise TypeError, "Unexpected type for point: " + `type(p)`
         self['CLINE_0']=p
-        
+
     p1=property(getP1, setP1, None, "Set the location of the first point of the line")
 
     def getP2(self):
@@ -89,27 +89,27 @@ class CLine(GeometricalEntity):
         if not isinstance(p, Point):
             raise TypeError, "Unexpected type for point: " + `type(p)`
         self['CLINE_1']=p
-        
+
     p2=property(getP2, setP2, None, "Set the location of the first point of the line")
 
     def getKeypoints(self):
         """
-            Return the 2 construction point 
+            Return the 2 construction point
         """
         return p1, p2
-        
+
     def getAngle(self):
         """
-            get the getAngle 
+            get the getAngle
         """
         return float(mainSympy.atan(getSympy.slope))
-        
+
     def clone(self):
         """
             Create an identical copy of an CLine.
         """
         return CLine(self)
-        
+
     def getSympy(self):
         """
             get the sympy object
@@ -117,8 +117,8 @@ class CLine(GeometricalEntity):
         _sp1=self.p1.getSympy()
         _sp2=self.p2.getSympy()
         return geoSympy.Line(_sp1, _sp2)
-        
-    def setFromSympy(self, sympySegment):    
+
+    def setFromSympy(self, sympySegment):
         """
             update the points cord from a sympyobject
         """
@@ -130,12 +130,12 @@ class CLine(GeometricalEntity):
             Get The vector of the CLine
         """
         return Vector(self.p1, self.p2)
-    
+
     def mirror(self, mirrorRef):
         """
             perform the mirror of the line
         """
-        from Kernel.GeoEntity.segment              import Segment
+        from kernel.geoentity.segment              import Segment
         if not isinstance(mirrorRef, (CLine, Segment)):
             raise TypeError, "mirrorObject must be Cline Segment or a tuple of points"
         #

@@ -21,17 +21,17 @@
 # qt arc class
 #
 
-from Interface.Entity.base import *
+from interface.entity.base import *
 
 class Polyline(BaseEntity):
     """
-        this class define the polyline object 
+        this class define the polyline object
     """
     def __init__(self, entity):
         super(Polyline, self).__init__(entity)
         self.qtPoints=self.getQtPointF()
         return
-        
+
     def getQtPointF(self):
         qtPoints=[]
         geoPolyline=self.geoItem
@@ -41,14 +41,14 @@ class Polyline(BaseEntity):
             qtPoints.append(qtPointf)
         return qtPoints
 
-    def drawShape(self, painterPath):    
+    def drawShape(self, painterPath):
         """
-            overloading of the shape method 
+            overloading of the shape method
         """
         painterPath.moveTo(self.qtPoints[0])
         for i in range(1,len(self.qtPoints)):
-            painterPath.lineTo(self.qtPoints[i])    
-    
+            painterPath.lineTo(self.qtPoints[i])
+
     def drawGeometry(self, painter, option, widget):
         """
             overloading of the paint method
@@ -57,12 +57,12 @@ class Polyline(BaseEntity):
         pol=QtGui.QPolygonF(self.qtPoints)
         painter.drawPolyline(pol)
         #painter.drawRect(self.boundingRect())
-    
-    
-    
-    
-    
-    
-    
-    
-  
+
+
+
+
+
+
+
+
+

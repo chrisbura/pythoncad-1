@@ -22,26 +22,26 @@
 #
 
 
-from Kernel.Db.pycadobject             import *
-from Kernel.GeoEntity.point            import Point
-from Kernel.GeoEntity.style            import Style
+from kernel.db.pycadobject             import *
+from kernel.geoentity.point            import Point
+from kernel.geoentity.style            import Style
 
 class Entity(PyCadObject):
     """
         basic PythonCAD entity structure
     """
     def __init__(self,entType,constructionElements,style,objId):
-        from Kernel.initsetting             import PY_CAD_ENT
+        from kernel.initsetting             import PY_CAD_ENT
         if not entType in PY_CAD_ENT:
             raise TypeError,'entType not supported'
         if not isinstance(constructionElements,dict):
             raise TypeError,'type error in dictionary'
         PyCadObject.__init__(self,eType=entType, objId=objId,style=style)
         self.setConstructionElements(constructionElements)
-        
+
         self._snapPoints=[]
-    
-    
+
+
     def __str__(self):
         return 'Entity : %s'%self.eType
     def getBBox(self):
@@ -87,12 +87,12 @@ class Entity(PyCadObject):
         """
         self._constructionElements=constructionElements
         self.updateBBox()
-    
+
     def toGeometricalEntity(self):
         """
             Convert an entity into a geometrical entity
-        """ 
-        from Kernel.initsetting             import DRAWIN_ENTITY
+        """
+        from kernel.initsetting             import DRAWIN_ENTITY
         geoEnt=None
         cObjecs=self.getConstructionElements()
         cType=self.getEntityType()

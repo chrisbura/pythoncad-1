@@ -23,9 +23,9 @@
 
 import math
 #
-from Interface.Preview.base         import *
-from Kernel.GeoEntity.segment       import Segment as geoSegment
-from Kernel.initsetting             import PYTHONCAD_PREVIEW_COLOR
+from interface.preview.base         import *
+from kernel.geoentity.segment       import Segment as geoSegment
+from kernel.initsetting             import PYTHONCAD_PREVIEW_COLOR
 #
 from PyQt4 import QtCore, QtGui
 

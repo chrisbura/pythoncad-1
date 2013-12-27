@@ -23,7 +23,7 @@ class Connection(object):
         Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
         self.session = Session()
         # TODO: Check if it will add new tables when a file is opened, warn about changes if so
-        from Kernel.Db.schema import *
+        from kernel.db.schema import *
         Base.metadata.create_all(bind=engine, checkfirst=True)
 
     def cursor(self):

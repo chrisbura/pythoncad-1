@@ -23,11 +23,11 @@
 # code for base for Chamfer
 #
 
-from Kernel.GeoComposedEntity.objoint import *
+from kernel.geocomposedentity.objoint import *
 
 class Chamfer(ObjectJoint):
     """
-        A Chamfer class 
+        A Chamfer class
     """
     def __init__(self, kw):
         """
@@ -40,23 +40,23 @@ class Chamfer(ObjectJoint):
             "OBJECTJOINT_5" distance1   :Real distance from intersection point to chamfer
             "OBJECTJOINT_6" distance2   :Real distance from intersection point to chamfer
         """
-        argDes={"OBJECTJOINT_5":(float, int), 
+        argDes={"OBJECTJOINT_5":(float, int),
                 "OBJECTJOINT_6":(float, int)}
         ObjectJoint.__init__(self, kw, argDes)
-        
+
         for dis in (self.distance1, self.distance2):
             if dis<0.0:
                 raise StructuralError, "Distance parameter must be greater then 0"
         self.segment=self._UpdateChamferSegment()
-    
-    def setConstructionElements(self, kw):    
+
+    def setConstructionElements(self, kw):
         """
             set the construction elements
         """
         for k in kw:
             self[k]=kw[k]
-        
-    def _UpdateChamferSegment(self):           
+
+    def _UpdateChamferSegment(self):
         """
             Recompute the Chamfer segment
         """
@@ -70,7 +70,7 @@ class Chamfer(ObjectJoint):
         arg={"SEGMENT_0":pc1, "SEGMENT_1":pc2}
         seg=Segment(arg)
         return seg
-    
+
     def _updateSegment(self, obj,distance,  clickPoint=None):
         """
             recalculate the segment for the chamfer
@@ -90,36 +90,36 @@ class Chamfer(ObjectJoint):
                 dist2=clickPoint.dist(p2)
                 if dist1<dist2:
                     mvPoint=p1
-                    stPoint=p2  
+                    stPoint=p2
                 else:
                     mvPoint=p2
-                    stPoint=p1           
+                    stPoint=p1
             else:
                 dist1=ip.dist(p1)
                 dist2=ip.dist(p2)
                 if dist1<dist2:
                     mvPoint=p1
-                    stPoint=p2  
+                    stPoint=p2
                 else:
                     mvPoint=p2
-                    stPoint=p1   
-                    
+                    stPoint=p1
+
             v=Vector(mvPoint,stPoint).mag()
             v.mult(distance)
             ePoint=ip+v.point
             arg={"SEGMENT_0":ePoint, "SEGMENT_1":stPoint}
             return Segment(arg), ePoint
-            
-        
+
+
     def getConstructionElements(self):
         """
             retutn the construction element of the object
         """
-        outElement=(self._obj1 , 
+        outElement=(self._obj1 ,
                     self._obj2 ,
-                    self.distance1, 
-                    self.distance2, 
-                    self.pointClick1, 
+                    self.distance1,
+                    self.distance2,
+                    self.pointClick1,
                     self.pointClick2
                     )
         return outElement
@@ -146,7 +146,7 @@ class Chamfer(ObjectJoint):
             return the distance from intersection point to chanfer start
         """
         return self["OBJECTJOINT_5"]
-        
+
     def setDistance2(self, distance):
         """
             change the value of the distance1
@@ -160,20 +160,20 @@ class Chamfer(ObjectJoint):
             return the distance from intersection point to chanfer start
         """
         return self["OBJECTJOINT_6"]
-    distance1=property(getDistance1, setDistance1, None, "set the first distance") 
-    distance2=property(getDistance2, setDistance2, None, "set the second distance") 
+    distance1=property(getDistance1, setDistance1, None, "set the first distance")
+    distance2=property(getDistance2, setDistance2, None, "set the second distance")
 
     def clone(self):
         """
-            Clone the Chamfer .. 
+            Clone the Chamfer ..
             I do not why somone whant to clone a chamfer ..
             But Tis is the functionality .. :-)
         """
-        newChamfer=Chamfer(self._obj1 , 
+        newChamfer=Chamfer(self._obj1 ,
                     self._obj2 ,
-                    self.distance1, 
-                    self.distance2, 
-                    self.pointClick1, 
+                    self.distance1,
+                    self.distance2,
+                    self.pointClick1,
                     self.pointClick2)
         return newChamfer
 

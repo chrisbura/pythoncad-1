@@ -26,9 +26,9 @@ from __future__ import generators
 
 import math
 
-from Kernel.GeoEntity.geometricalentity     import *
-from Kernel.GeoEntity.point                 import Point
-from Kernel.GeoUtil.util                    import *
+from kernel.geoentity.geometricalentity     import *
+from kernel.geoentity.point                 import Point
+from kernel.geoutil.util                    import *
 
 class Dimension(GeometricalEntity):
     """
@@ -38,19 +38,19 @@ class Dimension(GeometricalEntity):
         """
             Initialize a Segment object.
             kw['DIMENSION_1'] first point
-            kw['DIMENSION_2'] second point (se dimension 1 == dimesion 2 it means that the 
+            kw['DIMENSION_2'] second point (se dimension 1 == dimesion 2 it means that the
                                 dimension is angular
             kw['DIMENSION_3'] third poin
-            kw['DIMENSION_4'] angle 0 horizontal pi/2 vertical        
+            kw['DIMENSION_4'] angle 0 horizontal pi/2 vertical
         """
         dimDescription={
                         "DIMENSION_1":Point,
-                        "DIMENSION_2":Point, 
+                        "DIMENSION_2":Point,
                         "DIMENSION_3":Point,
-                        "DIMENSION_4":(float, int), 
+                        "DIMENSION_4":(float, int),
                         }
         GeometricalEntity.__init__(self,kw, dimDescription)
-        
+
     def __str__(self):
         return "Dimension : (%g)" % (self.distance)
     @property
@@ -83,16 +83,16 @@ class Dimension(GeometricalEntity):
     @property
     def angle(self):
         return self['DIMENSION_4']
-        
+
     def getConstructionElements(self):
         """
             Get the construction element of entity..
         """
         return {
                 "DIMENSION_1":self.firstPoint,
-                "DIMENSION_2":self.secondPoint, 
+                "DIMENSION_2":self.secondPoint,
                 "DIMENSION_3":self.thirdPoint,
-                "DIMENSION_4":self.angle, 
+                "DIMENSION_4":self.angle,
                 }
     def setConstructionElements(self, p1, p2, p3, angle):
         """
@@ -114,7 +114,7 @@ class Dimension(GeometricalEntity):
             get the sympy object
         """
         return None
-    
+
     def move(self,fromPoint, toPoint): #TODO : Test It
         """
             perform the move operation
@@ -122,7 +122,7 @@ class Dimension(GeometricalEntity):
         self._point1.move(fromPoint, toPoint)
         self._point2.move(fromPoint, toPoint)
         self._point3.move(fromPoint, toPoint)
-        
+
     def rotate(self, rotationPoint, angle): #TODO : Test It
         """
             this method must be defined for rotation
@@ -131,7 +131,7 @@ class Dimension(GeometricalEntity):
         self._point2.rotate(rotationPoint, angle)
         self._point3.rotate(rotationPoint, angle)
         self._angle=self._angle+angle
-        
+
     def mirror(self, mirrorRef): #TODO : Test It
         """
             perform the mirror of the line
@@ -320,7 +320,7 @@ class Dimension(GeometricalEntity):
 #        if self.__dim is not None:
 #            _parent = self.__dim.getParent()
 #        return _parent
-#    
+#
 #    def setLocation(self, x, y):
 #        """Set the location of the DimString.
 #
@@ -768,7 +768,7 @@ class Dimension(GeometricalEntity):
 #    __messages = {
 #        'attribute_changed' : True,
 #        }
-#        
+#
 #    def __init__(self, x1=0.0, y1=0.0, x2=0.0, y2=0.0, **kw):
 #        """Initialize a DimBar.
 #
@@ -946,7 +946,7 @@ class Dimension(GeometricalEntity):
 #getMarkerPoints(): Return the coordinates of the dimension marker.
 #    """
 #    __messages = {}
-#    
+#
 #    def __init__(self, **kw):
 #        """Initialize a DimCrossbar object.
 #
@@ -1087,7 +1087,7 @@ class Dimension(GeometricalEntity):
 #        'start_angle_changed' : True,
 #        'end_angle_changed' : True,
 #        }
-#        
+#
 #    def __init__(self, radius=0.0, start=0.0, end=0.0, **kw):
 #        """Initialize a DimCrossarc object.
 #
@@ -1292,7 +1292,7 @@ class Dimension(GeometricalEntity):
 #        'dimstring_changed' : True,
 #        'moved' : True,
 #        }
-#        
+#
 #    def __init__(self, x, y, dimstyle=None, **kw):
 #        """Initialize a Dimension object
 #
@@ -1663,7 +1663,7 @@ class Dimension(GeometricalEntity):
 #                ]
 #
 #    getEndpointTypeValues = classmethod(getEndpointTypeValues)
-#    
+#
 #    def getEndpointType(self):
 #        """Return what type of endpoints the Dimension uses.
 #
@@ -1796,7 +1796,7 @@ class Dimension(GeometricalEntity):
 #            util.test_boolean(_mode)
 #        _ddm = self.getDualDimMode()
 #        if ((_mode is None and self.__ddm is not None) or
-#            (_mode is not None and _mode is not _ddm)): 
+#            (_mode is not None and _mode is not _ddm)):
 #            self.startChange('dual_mode_changed')
 #            self.__ddm = _mode
 #            self.endChange('dual_mode_changed')
@@ -1967,7 +1967,7 @@ class Dimension(GeometricalEntity):
 #                ]
 #
 #    getPositionValues = classmethod(getPositionValues)
-#    
+#
 #    def getPosition(self):
 #        """Return how the dimension text intersects the crossbar.
 #
@@ -2189,7 +2189,7 @@ class Dimension(GeometricalEntity):
 #setScale([scale])
 #
 #Optional argument 's' should be a float value greater than 0. If
-#no argument is supplied the default scale factor of 1 is set. 
+#no argument is supplied the default scale factor of 1 is set.
 #        """
 #        if self.isLocked():
 #            raise RuntimeError, "Setting scale not allowed - object locked."
@@ -2458,7 +2458,7 @@ class Dimension(GeometricalEntity):
 #        _ds.setSize(_ds2.getSize())
 #        _ds.setAngle(_ds2.getAngle())
 #        _ds.setAlignment(_ds2.getAlignment())
-#        
+#
 #    def __dimstringChangePending(self, p, *args):
 #        _alen = len(args)
 #        if _alen < 1:
@@ -2508,7 +2508,7 @@ class Dimension(GeometricalEntity):
 #            self.endChange('dimstring_changed')
 #        else:
 #            pass
-#            
+#
 #    def sendsMessage(self, m):
 #        if m in Dimension.__messages:
 #            return True
@@ -2618,7 +2618,7 @@ class Dimension(GeometricalEntity):
 #        for _kw in keywords:
 #            if _kw not in DimStyle.__defaults:
 #                raise KeyError, "Unknown DimStyle keyword: " + _kw
-#            _val = keywords[_kw]            
+#            _val = keywords[_kw]
 #            _valid = test_option(_kw, _val)
 #            self.__opts[_kw] = _val
 #
@@ -3313,7 +3313,7 @@ class Dimension(GeometricalEntity):
 #        _ldim = LinearDimension(_p1, _p2, _x, _y, _ds)
 #        _ldim.copyDimValues(self)
 #        return _ldim
-#        
+#
 #    def __pointChangePending(self, p, *args):
 #        _alen = len(args)
 #        if _alen < 1:
@@ -3577,7 +3577,7 @@ class Dimension(GeometricalEntity):
 #        'dimobj_changed' : True,
 #        'dia_mode_changed' : True,
 #        }
-#        
+#
 #    def __init__(self, cir, x, y, ds=None, **kw):
 #        """Initialize a RadialDimension object.
 #
@@ -4005,7 +4005,7 @@ class Dimension(GeometricalEntity):
 #
 #    def __radiusChanged(self, circ, *args):
 #        self.calcDimValues()
-#        
+#
 #    def sendsMessage(self, m):
 #        if m in RadialDimension.__messages:
 #            return True
@@ -4038,7 +4038,7 @@ class Dimension(GeometricalEntity):
 #        'point_changed' : True,
 #        'inverted' : True,
 #        }
-#        
+#
 #    def __init__(self, vp, p1, p2, x, y, ds=None, **kw):
 #        """Initialize an AngularDimension object.
 #

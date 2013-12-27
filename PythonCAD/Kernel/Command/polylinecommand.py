@@ -21,10 +21,10 @@
 #This module provide a class for the polyline command
 #
 
-from Kernel.exception               import *
-from Kernel.Command.basecommand     import *
-from Kernel.GeoEntity.polyline         import Polyline
-from Kernel.GeoEntity.point            import Point
+from kernel.exception               import *
+from kernel.command.basecommand     import *
+from kernel.geoentity.polyline         import Polyline
+from kernel.geoentity.point            import Point
 
 class PolylineCommand(BaseCommand):
     """

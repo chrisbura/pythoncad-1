@@ -20,24 +20,24 @@
 #
 # This module provide a factory for the preview objects
 #
-from Kernel.Command.pointcommand        import PointCommand
-from Kernel.Command.segmentcommand      import SegmentCommand
-from Kernel.Command.arccommand          import ArcCommand
-from Kernel.Command.circlecommand       import CircleCommand
-from Kernel.Command.rectanglecommand    import RectangleCommand
-from Kernel.Command.ellipsecommand      import EllipseCommand
-from Kernel.Command.polylinecommand     import PolylineCommand
-from Kernel.Command.polygoncommand      import PolygonCommand
+from kernel.command.pointcommand        import PointCommand
+from kernel.command.segmentcommand      import SegmentCommand
+from kernel.command.arccommand          import ArcCommand
+from kernel.command.circlecommand       import CircleCommand
+from kernel.command.rectanglecommand    import RectangleCommand
+from kernel.command.ellipsecommand      import EllipseCommand
+from kernel.command.polylinecommand     import PolylineCommand
+from kernel.command.polygoncommand      import PolygonCommand
 
-from Interface.Preview.point        import PreviewPoint
-from Interface.Preview.arc          import PreviewArc
+from interface.preview.point        import PreviewPoint
+from interface.preview.arc          import PreviewArc
 
-from Interface.Preview import *
+from interface.preview import *
 
-#from Interface.Preview.rectangle    import QtRectangleItem
-#from Interface.Preview.ellipse      import QtEllipseItem
-#from Interface.Preview.polyline     import QtPolylineItem
-#from Interface.Preview.polygon      import QtPolygonItem
+#from Interface.preview.rectangle    import QtRectangleItem
+#from Interface.preview.ellipse      import QtEllipseItem
+#from Interface.preview.polyline     import QtPolylineItem
+#from Interface.preview.polygon      import QtPolygonItem
 
 def getPreviewObject(command):
     if isinstance(command, PointCommand):

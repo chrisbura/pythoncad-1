@@ -26,12 +26,12 @@ from __future__ import generators
 
 import math
 
-from Kernel.GeoEntity.point                import Point
-from Kernel.GeoEntity.segment              import Segment
-from Kernel.GeoEntity.cline                import CLine
-from Kernel.GeoUtil.geolib                 import Vector
-from Kernel.GeoEntity.geometricalentity    import *
-from Kernel.GeoUtil.util                   import *
+from kernel.geoentity.point                import Point
+from kernel.geoentity.segment              import Segment
+from kernel.geoentity.cline                import CLine
+from kernel.geoutil.geolib                 import Vector
+from kernel.geoentity.geometricalentity    import *
+from kernel.geoutil.util                   import *
 
 _dtr = math.pi/180.0
 _rtd = 180.0/math.pi

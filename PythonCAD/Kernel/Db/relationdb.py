@@ -23,8 +23,8 @@
 
 import cPickle as pickle
 
-from Kernel.entity          import Entity
-from Kernel.Db.basedb       import BaseDb
+from kernel.entity          import Entity
+from kernel.db.basedb       import BaseDb
 
 class RelationDb(BaseDb):
     """
@@ -87,7 +87,7 @@ class RelationDb(BaseDb):
             childrenType='%'
         if childrenType=='ALL':
             childrenType='%' # TODO : controllare questa select pycad_id,
-        _sqlSelect="""SELECT 
+        _sqlSelect="""SELECT
                             pycad_entity_id,
                             pycad_object_type,
                             pycad_object_definition,
@@ -104,9 +104,9 @@ class RelationDb(BaseDb):
                                     WHERE pycad_parent_id =%s
                                 )
                             AND pycad_id IN (
-                                SELECT max(pycad_id) 
-                                FROM pycadent  
-                                WHERE pycad_undo_visible=1  
+                                SELECT max(pycad_id)
+                                FROM pycadent
+                                WHERE pycad_undo_visible=1
                                 GROUP BY pycad_entity_id ORDER BY pycad_id)
                             AND pycad_entity_state NOT LIKE "DELETE"
                             AND pycad_object_type LIKE '%s'

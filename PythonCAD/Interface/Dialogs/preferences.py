@@ -30,25 +30,25 @@ from PyQt4.QtCore   import pyqtSignature
 
 from Ui_preferences    import Ui_preferences
 
-from Interface.cadinitsetting import *
+from interface.cadinitsetting import *
 
 class Preferences(QDialog, Ui_preferences):
     """
         this class define the entity property dialog
-        it automaticaly retrive the style property 
+        it automaticaly retrive the style property
         and show it in the form
     """
     def __init__(self, parent = None, entity=None):
         QDialog.__init__(self, parent)
         self.setupUi(self)
- 
+
     @pyqtSignature("")
     def on_buttonBox_accepted(self):
         """
             implements the accept button
         """
         self.close()
-        
+
     @pyqtSignature("")
     def on_buttonBox_rejected(self):
         """

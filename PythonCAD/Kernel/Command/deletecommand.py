@@ -20,11 +20,11 @@
 #
 #This module provide a class for the Trim command
 #
-from Kernel.exception               import *
-from Kernel.Command.basecommand     import *
-from Kernel.GeoEntity               import *
-from Kernel.GeoUtil.intersection    import *
-from Kernel.GeoUtil.util            import *
+from kernel.exception               import *
+from kernel.command.basecommand     import *
+from kernel.geoentity               import *
+from kernel.geoutil.intersection    import *
+from kernel.geoutil.util            import *
 
 class DeleteCommand(BaseCommand):
     """

@@ -22,20 +22,20 @@
 # entity such as Chamfer Fillet Blocks
 #
 
-from Kernel.Db.pycadobject      import *
-from Kernel.GeoEntity.style            import Style
-from Kernel.GeoEntity.point            import Point
+from kernel.db.pycadobject      import *
+from kernel.geoentity.style            import Style
+from kernel.geoentity.point            import Point
 
 class ComposedEntity(PyCadObject):
     """
-        this class provide the besic functionality for storing entity that need a 
+        this class provide the besic functionality for storing entity that need a
         sort of relation such Chamfer Fillet Blocks
     """
     def __init__(self, objId,constructionElements, eType, style, childEnt=[] ):
         """
             Inizialize a composed entity
         """
-        from Kernel.initsetting             import PY_CAD_COMPOSED_ENT 
+        from kernel.initsetting             import PY_CAD_COMPOSED_ENT
         if not eType in PY_CAD_COMPOSED_ENT:
             raise TypeError,'entType not supported'
         PyCadObject.__init__(self,eType=eType, objId=objId,style=style)
@@ -47,17 +47,17 @@ class ComposedEntity(PyCadObject):
             return an array of cildren ents
         """
         return self.__childEnt
-        
+
     def setChildEnt(self, childEnt):
         """
             set all the child entitys
         """
-        from Kernel.initsetting             import PY_CAD_ENT   
+        from kernel.initsetting             import PY_CAD_ENT
         for ent in childEnt:
             if not ent.eType in PY_CAD_ENT:
                 raise TypeError,'entType with id: %s not supported as child ent'%(str(ent.getId()))
         self.__childEnt=childEnt
-    
+
     def getConstructionElements(self):
         """
             Return the base entity

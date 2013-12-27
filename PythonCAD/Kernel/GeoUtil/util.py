@@ -2,17 +2,17 @@
 # Copyright (c) 2002, 2003, 2004 Art Haas
 #
 # This file is part of PythonCAD.
-# 
+#
 # PythonCAD is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # PythonCAD is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with PythonCAD; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -22,12 +22,12 @@
 #
 
 import random
-import string 
+import string
 
 from math import fmod, pi
 import types
 
-from Kernel.GeoUtil.tolerance       import TOL
+from kernel.geoutil.tolerance       import TOL
 
 def get_float(val):
     _v = val
@@ -106,7 +106,7 @@ def make_c_angle(angle):
     elif _a > 360.0:
         _a = fmod(_a, 360.0)
     return _a
-    
+
 def make_c_angle_rad(angle):
     """
         return the angle from 0 to 2*pi
@@ -114,8 +114,8 @@ def make_c_angle_rad(angle):
     while angle>pi*2:
         angle=angle-pi*2
     return angle
-        
-    
+
+
 def make_coords(x, y):
     """Check and convert x/y values to float values.
 
@@ -144,7 +144,7 @@ that xmin < xmax and ymin < ymax.
     if _ymax < _ymin:
         raise ValueError, "Invalid values: ymax < ymin"
     return _xmin, _ymin, _xmax, _ymax
-    
+
 def degrees(value):
     """Convert a value from radians to degrees.
 
@@ -285,7 +285,7 @@ def to_unicode(obj, encoding='utf-8'):
 
 def getRandomString(lengh=None):
     """
-        get a random name 
+        get a random name
     """
     random.seed(14)
     if lengh==None:
@@ -307,20 +307,20 @@ def getSegmentNearestPoint(segment, p):
         return ps2
     else:
         return ps1
-           
+
 def updateSegment(objSegment,objPoint, objInterPoint):
         """
             Return a segment with trimed to the intersection point
         """
-        from Kernel.GeoEntity.segment       import Segment
-        from Kernel.GeoEntity.point         import Point
-        from Kernel.GeoUtil.geolib          import Vector
-        
+        from kernel.geoentity.segment       import Segment
+        from kernel.geoentity.point         import Point
+        from kernel.geoutil.geolib          import Vector
+
         objProjection=objSegment.getProjection(objPoint)
-        _p1 , _p2 = objSegment.getEndpoints()       
+        _p1 , _p2 = objSegment.getEndpoints()
         if not (_p1==objInterPoint or _p2==objInterPoint):
-            pickIntVect=Vector(objInterPoint,objProjection).mag()                    
-            p1IntVect=Vector(objInterPoint,_p1).mag() 
+            pickIntVect=Vector(objInterPoint,objProjection).mag()
+            p1IntVect=Vector(objInterPoint,_p1).mag()
             if(pickIntVect==p1IntVect):
                 arg={"SEGMENT_0":_p1,"SEGMENT_1":objInterPoint}
                 return Segment(arg)

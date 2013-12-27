@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship, foreign, remote, backref
 from sqlalchemy.ext.declarative import as_declarative, declared_attr
 from sqlalchemy import event
 
-from Kernel import models
+from kernel import models
 
 @as_declarative()
 class Base(object):

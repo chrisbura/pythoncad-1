@@ -1,9 +1,9 @@
 from PyQt4 import QtCore, QtGui
-from Kernel.document     import *
-from Kernel.exception    import *
-from Kernel.GeoEntity.point         import Point
-from Kernel.Command.basecommand     import BaseCommand
-from Interface.pycadapp             import PyCadApp
+from kernel.document     import *
+from kernel.exception    import *
+from kernel.geoentity.point         import Point
+from kernel.command.basecommand     import BaseCommand
+from interface.pycadapp             import PyCadApp
 
 class testCmdLine(object):
     def __init__(self, dialog, scene):

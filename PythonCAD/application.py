@@ -28,10 +28,10 @@ import shutil
 if __name__=="__main__":
     sys.path.append(os.path.join(os.getcwd(), 'Kernel'))
 #
-from Kernel.pycadevent          import PyCadEvent
-from Kernel.exception           import *
-from Kernel.document            import *
-from Kernel.Command             import *
+from kernel.pycadevent          import PyCadEvent
+from kernel.exception           import *
+from kernel.document            import *
+from kernel.command             import *
 
 
 class Application(object):

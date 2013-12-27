@@ -24,11 +24,11 @@
 
 from PyQt4 import QtCore, QtGui
 
-from Kernel.initsetting             import SNAP_POINT_ARRAY, ACTIVE_SNAP_POINT, ACTIVE_SNAP_LIST
-from Kernel.GeoEntity.point         import Point
-from Kernel.GeoUtil.intersection    import *
+from kernel.initsetting             import SNAP_POINT_ARRAY, ACTIVE_SNAP_POINT, ACTIVE_SNAP_LIST
+from kernel.geoentity.point         import Point
+from kernel.geoutil.intersection    import *
 
-from Interface.Entity.base          import BaseEntity
+from interface.entity.base          import BaseEntity
 
 class SnapPoint():
     def __init__(self, scene):
@@ -47,7 +47,7 @@ class SnapPoint():
             if pointCalculated==None:
                 return realPoint
             return pointCalculated
-            
+
         if self.activeSnap==SNAP_POINT_ARRAY["NONE"]:
             return point
         else:
@@ -162,7 +162,7 @@ class SnapPoint():
                     return p2
         elif getattr(entity.geoItem, 'getPoint', None):
                 return entity.geoItem.getPoint()
-                
+
         else:
             return None
 
@@ -239,10 +239,10 @@ class SnapMark(QtGui.QGraphicsItem):
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, False)
         self.setFlag(QtGui.QGraphicsItem.ItemIgnoresTransformations, True)
         self.hide()
-    
+
     def collidesWithItem(self,other,mode):
         return False
-    
+
     def shape(self):
         """
             overloading of the shape method
@@ -275,11 +275,11 @@ class SnapEndMark(SnapMark):
         self.setToolTip("EndPoint")
         self.x=x
         self.y=y
-    
+
     def collidesWithItem(self,other,mode):
         print "collidesWithItem"
         return False
-    
+
     def definePath(self):
         rect=QtCore.QRectF(self.x-5.0, self.y-5.0, 10.0, 10.0)
         path=QtGui.QPainterPath()

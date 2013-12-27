@@ -1,7 +1,7 @@
 
 from PyQt4 import QtGui, QtCore
-from Interface.Entity.point import Point
-from Interface.Entity.base import BaseItem
+from interface.entity.point import Point
+from interface.entity.base import BaseItem
 
 
 class Circle(BaseItem, QtGui.QGraphicsEllipseItem):

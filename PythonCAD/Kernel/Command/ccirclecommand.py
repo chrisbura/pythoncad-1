@@ -20,9 +20,9 @@
 #
 #This module provide a class for the arc command
 #
-from Kernel.exception               import *
-from Kernel.Command.basecommand     import *
-from Kernel.GeoEntity.ccircle          import CCircle
+from kernel.exception               import *
+from kernel.command.basecommand     import *
+from kernel.geoentity.ccircle          import CCircle
 
 class CCircleCommand(BaseCommand):
     """

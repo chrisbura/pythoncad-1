@@ -26,9 +26,9 @@ import sys
 import tempfile
 import sqlite3 as sql
 
-from Kernel.exception import *
+from kernel.exception import *
 
-from Kernel.Db.alchemy import Connection
+from kernel.db.alchemy import Connection
 
 class BaseDb(object):
     """

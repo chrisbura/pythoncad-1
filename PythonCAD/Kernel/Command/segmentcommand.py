@@ -19,9 +19,9 @@
 # along with PythonCAD; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-from Kernel.Db.schema import Point, Segment, Entity
-from Kernel.Command.inputs import PointInput
-from Kernel.Command.command import Command
+from kernel.db.schema import Point, Segment, Entity
+from kernel.command.inputs import PointInput
+from kernel.command.command import Command
 
 class SegmentCommand(Command):
     def __init__(self, document):
