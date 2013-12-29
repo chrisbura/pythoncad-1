@@ -20,22 +20,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from PyQt4 import QtGui, QtCore
-from interface.preview.base import Preview
-
-
-class Point(QtGui.QGraphicsEllipseItem):
-    def __init__(self, point):
-        radius = 2
-        super(Point, self).__init__(
-            point.x - radius,
-            point.y - radius,
-            radius * 1.5,
-            radius * 1.5
-         )
-        self.setAcceptHoverEvents(True)
-        self.setBrush(QtCore.Qt.black)
-        self.setPen(QtGui.QPen(QtCore.Qt.black, 1, QtCore.Qt.SolidLine))
-
+from kernel.db import schema
+from interface.preview.base import Preview, BasePreview
+from interface.preview.circle import Point
 
 class RectanglePreview(Preview, QtGui.QGraphicsItemGroup):
     def __init__(self, command):
@@ -45,18 +32,16 @@ class RectanglePreview(Preview, QtGui.QGraphicsItemGroup):
 
         self.point1 = self.command.inputs[0].value
 
-        self.point1_item = Point(self.point1)
+        for i in range(1, 5):
+            # Initialize the four lines
+            name = 'segment{0}'.format(i)
+            setattr(self, name, QtGui.QGraphicsLineItem())
+            self.addToGroup(getattr(self, name))
 
-        self.segment1 = QtGui.QGraphicsLineItem()
-        self.segment2 = QtGui.QGraphicsLineItem()
-        self.segment3 = QtGui.QGraphicsLineItem()
-        self.segment4 = QtGui.QGraphicsLineItem()
-
-        self.addToGroup(self.point1_item)
-        self.addToGroup(self.segment1)
-        self.addToGroup(self.segment2)
-        self.addToGroup(self.segment3)
-        self.addToGroup(self.segment4)
+            # Initialize the four points
+            name = 'point{0}_item'.format(i)
+            setattr(self, name, Point(self.point1))
+            self.addToGroup(getattr(self, name))
 
     def updatePreview(self, event):
         x = event.scenePos().x()
@@ -67,3 +52,13 @@ class RectanglePreview(Preview, QtGui.QGraphicsItemGroup):
         self.segment2.setLine(x, self.point1.y, x, y)
         self.segment3.setLine(x, y, self.point1.x, y)
         self.segment4.setLine(self.point1.x, y, self.point1.x, self.point1.y)
+
+        # TODO: Clean up
+        point_update = Point(schema.Point(x=x, y=self.point1.y))
+        self.point2_item.setRect(point_update.rect())
+
+        point_update = Point(schema.Point(x=x, y=y))
+        self.point3_item.setRect(point_update.rect())
+
+        point_update = Point(schema.Point(x=self.point1.x, y=y))
+        self.point4_item.setRect(point_update.rect())

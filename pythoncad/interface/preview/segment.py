@@ -18,28 +18,40 @@
 # You should have received a copy of the GNU General Public Licensesegmentcmd.py
 # along with PythonCAD; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-# SegmentPreview object
-#
+
 
 from PyQt4 import QtGui, QtCore
-from interface.preview.base         import PreviewBase, Preview
-from interface.entity.segment       import Segment
+from interface.entity.base import BaseComposite
+from interface.preview.base import Preview, BasePreview
+from interface.preview.circle import Point
 
 
-class SegmentPreview(Preview, QtGui.QGraphicsLineItem):
+class Segment(BasePreview, QtGui.QGraphicsLineItem):
+    pass
+
+
+class SegmentPreview(Preview, BaseComposite, QtGui.QGraphicsItemGroup):
     def __init__(self, command):
         self.command = command
+        super(SegmentPreview, self).__init__()
 
-        super(SegmentPreview, self).__init__(
-            self.command.inputs[0].value.x, self.command.inputs[0].value.y,
-            self.command.inputs[0].value.x, self.command.inputs[0].value.y)
+        self.start_point = Point(self.command.inputs[0].value)
+        self.segment = Segment(
+            self.command.inputs[0].value.x,
+            self.command.inputs[0].value.y,
+            self.command.inputs[0].value.x,
+            self.command.inputs[0].value.y
+        )
 
-        self.setPen(QtGui.QPen(QtCore.Qt.black, 1, QtCore.Qt.SolidLine))
+        self.addToGroup(self.start_point)
+        self.addToGroup(self.segment)
 
     def updatePreview(self, event):
-        line_update = QtCore.QLineF(
-            self.command.inputs[0].value.x, self.command.inputs[0].value.y,
-            event.scenePos().x(), event.scenePos().y())
+        segment_update = Segment(
+            self.command.inputs[0].value.x,
+            self.command.inputs[0].value.y,
+            event.scenePos().x(),
+            event.scenePos().y()
+        )
 
-        self.setLine(line_update)
+        self.segment.setLine(segment_update.line())

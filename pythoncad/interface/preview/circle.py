@@ -1,5 +1,6 @@
 
 from PyQt4 import QtGui, QtCore
+from interface.entity.base import BaseComposite
 from interface.preview.base import Preview, BasePreview
 import numpy
 
@@ -13,10 +14,10 @@ class Point(BasePreview, QtGui.QGraphicsEllipseItem):
             radius * 2.0,
             radius * 2.0
          )
-        self.setBrush(QtCore.Qt.lightGray)
+        self.setBrush(QtCore.Qt.black)
 
 
-class Circle(QtGui.QGraphicsEllipseItem):
+class Circle(BasePreview, QtGui.QGraphicsEllipseItem):
     def __init__(self, center_point, radius):
         super(Circle, self).__init__(
             center_point.x - radius,
@@ -24,15 +25,12 @@ class Circle(QtGui.QGraphicsEllipseItem):
             radius * 2.0,
             radius * 2.0
         )
-        self.setPen(QtGui.QPen(QtCore.Qt.black, 1, QtCore.Qt.SolidLine))
-        self.setAcceptHoverEvents(True)
 
 
-class CirclePreview(Preview, QtGui.QGraphicsItemGroup):
+class CirclePreview(Preview, BaseComposite, QtGui.QGraphicsItemGroup):
     def __init__(self, command):
         self.command = command
         super(CirclePreview, self).__init__()
-        self.setHandlesChildEvents(False)
 
         self.center = self.command.inputs[0].value
 

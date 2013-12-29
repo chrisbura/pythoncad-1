@@ -20,7 +20,7 @@
 
 from PyQt4 import QtGui, QtCore
 from interface.entity.point import Point
-from interface.entity.base import BaseItem
+from interface.entity.base import BaseItem, BaseComposite
 
 
 class Ellipse(BaseItem, QtGui.QGraphicsEllipseItem):
@@ -50,11 +50,9 @@ class Ellipse(BaseItem, QtGui.QGraphicsEllipseItem):
         super(Ellipse, self).paint(painter, option, widget)
 
 
-class EllipseComposite(QtGui.QGraphicsItemGroup):
+class EllipseComposite(BaseComposite, QtGui.QGraphicsItemGroup):
     def __init__(self, obj):
         super(EllipseComposite, self).__init__()
-        # Prevent group events from overriding child events
-        self.setHandlesChildEvents(False)
 
         # Create child entities
         self.center_point = Point(obj.point)

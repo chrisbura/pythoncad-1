@@ -39,7 +39,7 @@ class BasePreview(object):
         super(BasePreview, self).__init__(*args, **kwargs)
         # TODO: Customizable
         self.pen_thickness = 1
-        self.setPen(QtGui.QPen(QtCore.Qt.lightGray, self.pen_thickness, QtCore.Qt.SolidLine))
+        self.setPen(QtGui.QPen(QtCore.Qt.black, self.pen_thickness, QtCore.Qt.SolidLine))
         self.setAcceptHoverEvents(True)
 
 class PreviewBase(QtGui.QGraphicsItem):

@@ -20,27 +20,25 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from PyQt4 import QtGui, QtCore
-from interface.preview.base import Preview
+from interface.preview.base import Preview, BasePreview
 import numpy
 
 import math
 from interface.preview.base import *
 
-class Point(QtGui.QGraphicsEllipseItem):
+class Point(BasePreview, QtGui.QGraphicsEllipseItem):
     def __init__(self, point):
         radius = 2
         super(Point, self).__init__(
             point.x - radius,
             point.y - radius,
-            radius * 1.5,
-            radius * 1.5
+            radius * 2.0,
+            radius * 2.0
          )
-        self.setAcceptHoverEvents(True)
-        self.setBrush(QtCore.Qt.lightGray)
-        self.setPen(QtGui.QPen(QtCore.Qt.lightGray, 2, QtCore.Qt.SolidLine))
+        self.setBrush(QtCore.Qt.black)
 
-
-class Ellipse(QtGui.QGraphicsEllipseItem):
+# TODO: Use entity instead of specific preview class
+class Ellipse(BasePreview, QtGui.QGraphicsEllipseItem):
     def __init__(self, center_point, radius_x=1.0, radius_y=1.0):
         super(Ellipse, self).__init__(
             center_point.x - radius_x,
@@ -48,8 +46,6 @@ class Ellipse(QtGui.QGraphicsEllipseItem):
             radius_x * 2.0,
             radius_y * 2.0
         )
-        self.setPen(QtGui.QPen(QtCore.Qt.black, 1, QtCore.Qt.SolidLine))
-        self.setAcceptHoverEvents(True)
 
 
 class EllipsePreview(Preview, QtGui.QGraphicsItemGroup):
