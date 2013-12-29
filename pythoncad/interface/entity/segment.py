@@ -19,7 +19,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from PyQt4 import QtCore, QtGui
-from interface.entity.base import BaseItem
+from interface.entity.base import BaseItem, BaseComposite
+from interface.entity.point import Point
 
 class Segment(BaseItem, QtGui.QGraphicsLineItem):
     def __init__(self, obj):
@@ -42,3 +43,17 @@ class Segment(BaseItem, QtGui.QGraphicsLineItem):
         painter.setPen(QtGui.QPen(QtCore.Qt.cyan))
         # painter.drawPath(self.shape())
         super(Segment, self).paint(painter, option, widget)
+
+class SegmentComposite(BaseComposite, QtGui.QGraphicsItemGroup):
+    def __init__(self, obj):
+        super(SegmentComposite, self).__init__()
+
+        # Create child entities
+        self.point1 = Point(obj.point1)
+        self.point2 = Point(obj.point2)
+        self.segment = Segment(obj)
+
+        # Add child entities to group
+        self.addToGroup(self.segment)
+        self.addToGroup(self.point1)
+        self.addToGroup(self.point2)

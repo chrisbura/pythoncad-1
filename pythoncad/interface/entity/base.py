@@ -51,6 +51,13 @@ class BaseItem(object):
         self.setPen(QtGui.QPen(QtCore.Qt.black, self.pen_thickness))
 
 
+class BaseComposite(object):
+    def __init__(self, *args, **kwargs):
+        super(BaseComposite, self).__init__(*args, **kwargs)
+        # Prevent group events from overriding child events
+        self.setHandlesChildEvents(False)
+
+
 class BaseEntity(QtGui.QGraphicsItem):
     shapeSize=MOUSE_GRAPH_DIMENSION
     # TODO: Move to application settings ('debug mode')

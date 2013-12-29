@@ -22,7 +22,7 @@
 # This  module PROVIDE ALL GLOBAL VARIABLE NEEDE TO THE SCENE
 #
 from interface.entity.point         import Point
-from interface.entity.segment       import Segment
+from interface.entity.segment import SegmentComposite
 from interface.entity.arc           import Arc
 from interface.entity.text          import Text
 from interface.entity.ellipse import EllipseComposite
@@ -46,7 +46,7 @@ from kernel.db import schema
 
 ENTITY_MAP = {
    schema.Point: Point,
-   schema.Segment: Segment,
+   schema.Segment: SegmentComposite,
    schema.Circle: CircleComposite,
    schema.Ellipse: EllipseComposite
 }
@@ -61,7 +61,7 @@ SCENE_SUPPORTED_TYPE=["SEGMENT",
 
 SCANE_OBJECT_TYPE=dict(zip(SCENE_SUPPORTED_TYPE,
                        (
-                        Segment,
+                        # Segment,
                         Point,
                         Arc,
                         Text,

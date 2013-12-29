@@ -1,7 +1,7 @@
 
 from PyQt4 import QtGui, QtCore
 from interface.entity.point import Point
-from interface.entity.base import BaseItem
+from interface.entity.base import BaseItem, BaseComposite
 
 # TODO: Handle case where circle radius is smaller than a 'point' radius
 
@@ -31,11 +31,9 @@ class Circle(BaseItem, QtGui.QGraphicsEllipseItem):
         super(Circle, self).paint(painter, option, widget)
 
 
-class CircleComposite(QtGui.QGraphicsItemGroup):
+class CircleComposite(BaseComposite, QtGui.QGraphicsItemGroup):
     def __init__(self, obj):
         super(CircleComposite, self).__init__()
-        # Prevent group events from overriding child events
-        self.setHandlesChildEvents(False)
 
         # Create child entities
         self.center_point = Point(obj.point)

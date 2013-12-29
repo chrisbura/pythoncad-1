@@ -19,36 +19,34 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from PyQt4 import QtGui, QtCore
+from interface.entity.base import BaseItem
 
 
-class Point(QtGui.QGraphicsEllipseItem):
+class Point(BaseItem, QtGui.QGraphicsEllipseItem):
     def __init__(self, point):
-        self.location = point
+        self.point = point
         radius = 2.0
         super(Point, self).__init__(
-            self.location.x - radius,
-            self.location.y - radius,
+            self.point.x - radius,
+            self.point.y - radius,
             radius * 2.0,
             radius * 2.0
         )
-        self.setAcceptHoverEvents(True)
-        self.setPen(QtGui.QPen(QtCore.Qt.lightGray, 1, QtCore.Qt.SolidLine))
-        self.setBrush(QtCore.Qt.lightGray)
+        self.setBrush(QtCore.Qt.black)
 
     def hoverEnterEvent(self, event):
-        # TODO: Investigate 'default' qt thickness
-        self.setPen(QtGui.QPen(QtCore.Qt.red, 2))
+        super(Point, self).hoverEnterEvent(event)
         self.setBrush(QtCore.Qt.red)
 
     def hoverLeaveEvent(self, event):
-        self.setPen(QtGui.QPen(QtCore.Qt.lightGray, 2))
-        self.setBrush(QtCore.Qt.lightGray)
+        super(Point, self).hoverLeaveEvent(event)
+        self.setBrush(QtCore.Qt.black)
 
     def shape(self):
         shape = super(Point, self).shape()
         path = QtGui.QPainterPath()
         width = 10.0
-        path.addEllipse(self.location.x - width / 2.0, self.location.y - width / 2.0, width, width)
+        path.addEllipse(self.point.x - width / 2.0, self.point.y - width / 2.0, width, width)
         return path
 
     def paint(self, painter, option, widget):
