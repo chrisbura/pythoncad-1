@@ -25,9 +25,14 @@ class Point(QtGui.QGraphicsEllipseItem):
     def __init__(self, point):
         self.location = point
         radius = 2.0
-        super(Point, self).__init__(self.location.x - radius, self.location.y - radius, radius * 2.0, radius * 2.0)
+        super(Point, self).__init__(
+            self.location.x - radius,
+            self.location.y - radius,
+            radius * 2.0,
+            radius * 2.0
+        )
         self.setAcceptHoverEvents(True)
-        self.setPen(QtGui.QPen(QtCore.Qt.lightGray, 2, QtCore.Qt.SolidLine))
+        self.setPen(QtGui.QPen(QtCore.Qt.lightGray, 1, QtCore.Qt.SolidLine))
         self.setBrush(QtCore.Qt.lightGray)
 
     def hoverEnterEvent(self, event):

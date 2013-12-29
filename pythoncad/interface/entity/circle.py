@@ -3,6 +3,7 @@ from PyQt4 import QtGui, QtCore
 from interface.entity.point import Point
 from interface.entity.base import BaseItem
 
+# TODO: Handle case where circle radius is smaller than a 'point' radius
 
 class Circle(BaseItem, QtGui.QGraphicsEllipseItem):
     def __init__(self, obj):

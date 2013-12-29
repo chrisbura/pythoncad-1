@@ -34,6 +34,13 @@ from kernel.initsetting     import PYTHONCAD_COLOR, PYTHONCAD_PREVIEW_COLOR, MOU
 class Preview(object):
     pass
 
+class BasePreview(object):
+    def __init__(self, *args, **kwargs):
+        super(BasePreview, self).__init__(*args, **kwargs)
+        # TODO: Customizable
+        self.pen_thickness = 1
+        self.setPen(QtGui.QPen(QtCore.Qt.lightGray, self.pen_thickness, QtCore.Qt.SolidLine))
+        self.setAcceptHoverEvents(True)
 
 class PreviewBase(QtGui.QGraphicsItem):
     showShape=False # This Flag is used for debug porpoise

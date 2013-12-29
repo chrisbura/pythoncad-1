@@ -1,21 +1,19 @@
 
 from PyQt4 import QtGui, QtCore
-from interface.preview.base import Preview
+from interface.preview.base import Preview, BasePreview
 import numpy
 
 
-class Point(QtGui.QGraphicsEllipseItem):
+class Point(BasePreview, QtGui.QGraphicsEllipseItem):
     def __init__(self, point):
         radius = 2
         super(Point, self).__init__(
             point.x - radius,
             point.y - radius,
-            radius * 1.5,
-            radius * 1.5
+            radius * 2.0,
+            radius * 2.0
          )
-        self.setAcceptHoverEvents(True)
-        self.setBrush(QtCore.Qt.black)
-        self.setPen(QtGui.QPen(QtCore.Qt.black, 1, QtCore.Qt.SolidLine))
+        self.setBrush(QtCore.Qt.lightGray)
 
 
 class Circle(QtGui.QGraphicsEllipseItem):
