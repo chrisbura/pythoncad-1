@@ -76,13 +76,13 @@ class Document(BaseDb):
         This class provide basic operation on the pycad db database
         dbPath: is the path the database if None look in the some directory.
     """
-    def __init__(self,dbPath=None):
+    def __init__(self, dbPath=None):
         """
             init of the kernel
         """
         self.__logger=logging.getLogger('DbKernel')
         self.__logger.debug('__init__')
-        BaseDb.__init__(self)
+        super(Document, self).__init__()
         # set the events
         self.__logger.debug('set events')
         self.saveEntityEvent=PyCadEvent()

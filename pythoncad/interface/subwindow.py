@@ -50,27 +50,32 @@ class SubWindow(QtGui.QMdiSubWindow):
     @property
     def view(self):
         return self.__view
+
     @property
     def scene(self):
         return self._scene
+
     @property
     def application(self):
         """
         get the kernel application object
         """
         return self.__application
+
     @property
     def layerDock(self):
         """
         get the layer tree dockable window
         """
         return self.__layer_dock
+
     @property
     def fileName(self):
         """
             get the current file name
         """
         return self.document.dbPath
+
     def unDo(self):
         """
             perform undo on the active document
@@ -90,12 +95,12 @@ class SubWindow(QtGui.QMdiSubWindow):
             import an external document
         """
         self.document.importExternalFormat(file)
+
     def renderCurrentScene(self, painter):
         """
             render the current scene for the printer
         """
         self.view.render(painter)
-
 
     def wWellEWvent(self, event):
         self.__view.scaleFactor=math.pow(2.0, -event.delta() / 240.0)
@@ -137,10 +142,6 @@ class SubWindow(QtGui.QMdiSubWindow):
         super(SubWindow, self).closeEvent(event)
         # TODO: Verify if document is being closed (self.__application.closeDocument(path))
         self._mainwindow.updateOpenFileList()
-
-#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------------------------------------------------MANAGE SCENE EVENTS
-#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     def setStatusbarCoords(self, x, y, status):
         #set statusbar coordinates when mouse move on the scene
