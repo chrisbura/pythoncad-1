@@ -83,10 +83,7 @@ class MainWindow(QtGui.QMainWindow):
         self.lastDirectory=os.getenv('USERPROFILE') or os.getenv('HOME')
         self.readSettings() #now works for position and size and ismaximized, and finally toolbar position
 
-        self.updateOpenFileList()
         self.updateRecentFileList()
-
-
 
         # Menubar
         self.menubar = self.menuBar()
@@ -107,9 +104,15 @@ class MainWindow(QtGui.QMainWindow):
         # Toggle button enabled/disabled
         self.updateMenus()
 
+        # Build window menu
+        self.update_window_menu()
+
+        # Signals
+        self.mdiArea.subWindowActivated.connect(self.update_window_menu)
+
     def populate_menu(self):
         # File Menu
-        file_menu = self.menubar.addMenu('&File')
+        self.file_menu = self.menubar.addMenu('&File')
 
         file_new = QtGui.QAction('&New', self)
         file_new.connect(file_new, QtCore.SIGNAL('triggered()'), self._onNewDrawing)
@@ -118,23 +121,28 @@ class MainWindow(QtGui.QMainWindow):
         # TODO: Close all subwindows properly (close the db connections)?
         file_quit.connect(file_quit, QtCore.SIGNAL('triggered()'), QtGui.qApp.quit)
 
-        file_menu.addAction(file_new)
-        file_menu.addAction(file_quit)
+        self.file_menu.addAction(file_new)
+        self.file_menu.addAction(file_quit)
+
+        self.window_menu = self.menubar.addMenu('&Windows')
 
     @property
     def scene(self):
         if self.mdiArea.activeSubWindow():
             return self.mdiArea.activeSubWindow().scene
+
     @property
     def view(self):
         if self.mdiArea.activeSubWindow():
             return self.mdiArea.activeSubWindow().view
+
     @property
     def Application(self):
         """
             get the kernel application object
         """
         return self.__application
+
     @property
     def LayerDock(self):
         """
@@ -296,18 +304,21 @@ class MainWindow(QtGui.QMainWindow):
         # TODO: can be simplified?
         self.emit(QtCore.SIGNAL('command_started'), command)
 
-    def updateOpenFileList(self):
-        # Currently open windows
-        self.open_window_menu.clear()
+    def update_window_menu(self):
+        """
+        Refresh currently open document list
+
+        To display open documents outside of a submenu the entire window menu must
+        be rebuilt
+
+        """
+        self.window_menu.clear()
         window_list = self.mdiArea.subWindowList()
-        if not window_list:
-            self.open_window_menu.addAction('None').setDisabled(True)
-            return
         for window in window_list:
-            entry = self.open_window_menu.addAction(window.document.dbPath)
-            self.connect(entry, QtCore.SIGNAL('triggered()'),
-                functools.partial(self.mdiArea.setActiveSubWindow, window))
-            self.open_window_menu.addAction(entry)
+            action = self.window_menu.addAction('{0}'.format(window.document.db_path))
+            action.setCheckable(True)
+            action.setChecked(window.widget() is self.activeMdiChild())
+            action.triggered.connect(partial(self.mdiArea.setActiveSubWindow, window))
 
     def updateRecentFileList(self):
         """
@@ -337,16 +348,15 @@ class MainWindow(QtGui.QMainWindow):
         child = self.create_subwindow(file_path)
         child.show()
         self.updateRecentFileList()
-        self.updateOpenFileList()
+        self.update_window_menu()
         self.view.fit()
         return
 
     def _onNewDrawing(self):
         child = self.create_subwindow()
         child.show()
-        self.updateOpenFileList()
         self.updateRecentFileList()
-        return
+        self.update_window_menu()
 
     def _onOpenDrawing(self):
         '''
@@ -368,7 +378,7 @@ class MainWindow(QtGui.QMainWindow):
                 return
             child.show()
             self.updateRecentFileList()
-            self.updateOpenFileList()
+            self.update_window_menu()
             self.view.fit()
         return
 
@@ -394,7 +404,7 @@ class MainWindow(QtGui.QMainWindow):
             child = self.create_subwindow(drawing)
             child.show()
             self.updateRecentFileList()
-            self.updateOpenFileList()
+            self.update_window_menu()
             self.view.fit()
 
     def _onPrint(self):
@@ -424,7 +434,7 @@ class MainWindow(QtGui.QMainWindow):
         for window in window_list:
             self.__application.closeDocument(window.fileName)
         self.mdiArea.closeAllSubWindows()
-        self.updateOpenFileList()
+        self.update_window_menu()
         return
 
     def preferences(self):
@@ -544,6 +554,7 @@ class MainWindow(QtGui.QMainWindow):
         settings.endGroup()
 
     def activeMdiChild(self):
+        # TODO: From PyQt examples, add license info back in
         activeSubWindow = self.mdiArea.activeSubWindow()
         if activeSubWindow:
             return activeSubWindow.widget()
@@ -554,10 +565,6 @@ class MainWindow(QtGui.QMainWindow):
             QtGui.qApp.setLayoutDirection(QtCore.Qt.RightToLeft)
         else:
             QtGui.qApp.setLayoutDirection(QtCore.Qt.LeftToRight)
-
-    def setActiveSubWindow(self, window):
-        if window:
-            self.mdiArea.setActiveSubWindow(window)
 
     def _getIcon(self, cmd):
         '''
