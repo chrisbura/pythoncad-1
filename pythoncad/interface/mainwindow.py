@@ -257,28 +257,23 @@ class MainWindow(QtGui.QMainWindow):
         for action in self.actions:
             getattr(self, action).setEnabled(hasMdiChild)
 
+    def create_subwindow(self, file_name=None):
 
-    def createMdiChild(self, file=None):
-        """
-            Create new SubWindow
-        """
-        if file:
-            newDoc=self.__application.openDocument(file)
-        else:
-            newDoc=self.__application.newDocument()
-        for mdiwind in self.mdiArea.subWindowList():
-            if mdiwind._SubWindow__document.dbPath==file:
-                child=mdiwind
-                break
-        else:
-            child = SubWindow(newDoc,self.__cmd_intf, self)
-            self.mdiArea.addSubWindow(child)
+        # If the file is already open then just activate that subwindow
+        subwindows = self.mdiArea.subWindowList()
+        for subwindow in subwindows:
+            if subwindow.document.db_path == file_name:
+                return subwindow
 
-        #child.copyAvailable.connect(self.cutAct.setEnabled)
-        #child.copyAvailable.connect(self.copyAct.setEnabled)
+        # If a file_name is given then open that document, else create a new document
+        if file_name:
+            document = self.__application.openDocument(file_name)
+        else:
+            document = self.__application.newDocument()
+
+        child = SubWindow(document, self)
+        self.mdiArea.addSubWindow(child)
         return child
-    #def setAppDocActiveOnUi(self, doc):
-    #    self.mdiArea.
 
     def _registerCommands(self):
         '''
@@ -347,7 +342,7 @@ class MainWindow(QtGui.QMainWindow):
         if not os.path.exists(file_path):
             # TODO: Return a proper error
             return
-        child = self.createMdiChild(file_path)
+        child = self.create_subwindow(file_path)
         child.show()
         self.updateRecentFileList()
         self.updateOpenFileList()
@@ -355,10 +350,7 @@ class MainWindow(QtGui.QMainWindow):
         return
 
     def _onNewDrawing(self):
-        '''
-            Create a new drawing
-        '''
-        child = self.createMdiChild()
+        child = self.create_subwindow()
         child.show()
         self.updateOpenFileList()
         self.updateRecentFileList()
@@ -375,10 +367,10 @@ class MainWindow(QtGui.QMainWindow):
             self.lastDirectory=os.path.split(drawing)[0]
             (name, extension)=os.path.splitext(drawing)
             if extension.upper()=='.DXF':
-                child = self.createMdiChild()
+                child = self.create_subwindow()
                 child.importExternalFormat(drawing)
             elif extension.upper()=='.PDR':
-                child = self.createMdiChild(drawing)
+                child = self.create_subwindow(drawing)
             else:
                 self.critical("Wrong command selected")
                 return
@@ -407,7 +399,7 @@ class MainWindow(QtGui.QMainWindow):
             # Connection has been closed already so close the child window
             self.mdiArea.closeActiveSubWindow()
             # Create new child window with the new path/filename
-            child = self.createMdiChild(drawing)
+            child = self.create_subwindow(drawing)
             child.show()
             self.updateRecentFileList()
             self.updateOpenFileList()
