@@ -66,7 +66,7 @@ class MainWindow(QtGui.QMainWindow):
         self.mdiArea.subWindowActivated.connect(self.subWindowActivatedEvent)
         self.oldSubWin=None
 #        self.readSettings() #now works for position and size, support for toolbars is still missing(http://www.opendocs.net/pyqt/pyqt4/html/qsettings.html)
-        self.setWindowTitle("PythonCAD")
+        self.setWindowTitle('PythonCAD')
         qIcon=self._getIcon('pythoncad')
         if qIcon:
             self.setWindowIcon(qIcon)
@@ -80,7 +80,19 @@ class MainWindow(QtGui.QMainWindow):
         # create status bar
         self._createStatusBar()
         self.setUnifiedTitleAndToolBarOnMac(True)
+        self.lastDirectory=os.getenv('USERPROFILE') or os.getenv('HOME')
+        self.readSettings() #now works for position and size and ismaximized, and finally toolbar position
 
+        self.updateOpenFileList()
+        self.updateRecentFileList()
+
+
+
+        # Menubar
+        self.menubar = self.menuBar()
+        self.populate_menu()
+
+        # Toolbar
         self.actions = [
             'point_action',
             'segment_action',
@@ -88,25 +100,12 @@ class MainWindow(QtGui.QMainWindow):
             'circle_action',
             'ellipse_action'
         ]
-
         self.command_toolbar = self.addToolBar('Commands')
         self.command_toolbar.setObjectName('command_toolbar')
+        self.populate_toolbar()
 
-
-        self._registerCommands()
+        # Toggle button enabled/disabled
         self.updateMenus()
-        self.lastDirectory=os.getenv('USERPROFILE') or os.getenv('HOME')
-
-        self.readSettings() #now works for position and size and ismaximized, and finally toolbar position
-
-        self.updateOpenFileList()
-        self.updateRecentFileList()
-
-        # Menubar
-        self.menubar = self.menuBar()
-        self.populate_menu()
-
-        return
 
     def populate_menu(self):
         # File Menu
@@ -199,8 +198,6 @@ class MainWindow(QtGui.QMainWindow):
 
     def setGrid(self):
         pass
-# ###############################################END STATUSBAR
-# ##########################################################
 
     def commandExecuted(self):
         self.resetCommand()
@@ -275,10 +272,7 @@ class MainWindow(QtGui.QMainWindow):
         self.mdiArea.addSubWindow(child)
         return child
 
-    def _registerCommands(self):
-        '''
-            Register all commands that are handed by this object
-        '''
+    def populate_toolbar(self):
 
         self.point_action  = QtGui.QAction(QtGui.QIcon('icons/point.png'), 'Point', self)
         self.point_action.connect(self.point_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, PointCommand))
@@ -297,8 +291,6 @@ class MainWindow(QtGui.QMainWindow):
 
         for action in self.actions:
             self.command_toolbar.addAction(getattr(self, action))
-
-        return
 
     def _call_command(self, command):
         # TODO: can be simplified?
