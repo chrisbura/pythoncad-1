@@ -98,6 +98,7 @@ class MainWindow(QtGui.QMainWindow):
             'ellipse_action'
         ]
         self.command_toolbar = self.addToolBar('Commands')
+        self.command_toolbar.setMovable(False)
         self.command_toolbar.setObjectName('command_toolbar')
         self.populate_toolbar()
 
@@ -108,7 +109,9 @@ class MainWindow(QtGui.QMainWindow):
         self.update_window_menu()
 
         # Signals
+        # TODO: Merge into a 'rebuild' method
         self.mdiArea.subWindowActivated.connect(self.update_window_menu)
+        self.mdiArea.subWindowActivated.connect(self.updateMenus)
 
     def populate_menu(self):
         # File Menu
@@ -426,7 +429,7 @@ class MainWindow(QtGui.QMainWindow):
         path=self.mdiArea.activeSubWindow().fileName
         self.__application.closeDocument(path)
         self.mdiArea.closeActiveSubWindow()
-        self.updateOpenFileList()
+        self.update_window_menu()
         return
 
     def _onCloseAll(self):
