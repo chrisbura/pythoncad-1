@@ -60,7 +60,7 @@ class Application(object):
         self.afterCloseDocumentEvent=PyCadEvent()
         self.activeteDocumentEvent=PyCadEvent()
         # manage Document inizialization
-        self.__Documents={}
+        self.open_documents={}
         if args.has_key('open'):
             self.openDocument(args['open'])
         else:
@@ -166,29 +166,26 @@ class Application(object):
         """
         return self.__applicationCommand.keys()
 
-    def newDocument(self, fileName=None):
-        """
-            Create a new document empty document in the application
-        """
-        newDoc = Document(fileName)
-        fileName = newDoc.dbPath
-        self.__Documents[fileName] = newDoc
-        self.afterOpenDocumentEvent(self, self.__Documents[fileName])   #   Fire the open document event
-        self.ActiveDocument = self.__Documents[fileName]              #   Set Active the document
-        self.addRecentFiles(fileName)
-        return self.__Documents[fileName]
+    def newDocument(self, file_name=None):
+        document = Document(file_name)
+        file_name = document.db_path
+        self.open_documents[file_name] = document
+        self.afterOpenDocumentEvent(self, self.open_documents[file_name])   #   Fire the open document event
+        self.ActiveDocument = self.open_documents[file_name]              #   Set Active the document
+        self.addRecentFiles(file_name)
+        return self.open_documents[file_name]
 
-    def openDocument(self, fileName):
+    def openDocument(self, file_name):
         """
             open a saved document
         """
-        self.beforeOpenDocumentEvent(self, fileName)
-        if not self.__Documents.has_key(fileName):
-            self.__Documents[fileName]=Document(fileName)
-            self.addRecentFiles(fileName)
-        self.afterOpenDocumentEvent(self, self.__Documents[fileName])   #   Fire the open document event
-        self.ActiveDocument=self.__Documents[fileName]                  #   Set Active the document
-        return self.__Documents[fileName]
+        self.beforeOpenDocumentEvent(self, file_name)
+        if not self.open_documents.has_key(file_name):
+            self.open_documents[file_name]=Document(file_name)
+            self.addRecentFiles(file_name)
+        self.afterOpenDocumentEvent(self, self.open_documents[file_name])   #   Fire the open document event
+        self.ActiveDocument=self.open_documents[file_name]                  #   Set Active the document
+        return self.open_documents[file_name]
 
     def saveAs(self, newFileName):
         """
@@ -212,7 +209,7 @@ class Application(object):
 #                                                                   S-PM 110427
 #Method to "Close" the named drawing file.
 #--Rq-local
-# __Documents   dictionary of currently opened drawing files
+# open_documents   dictionary of currently opened drawing files
 #               (was misspelled: "__Docuemnts")
 #--Rq
 # dFile         drawing file to close
@@ -221,12 +218,12 @@ class Application(object):
 
         self.beforeCloseDocumentEvent(self,dFile)   #initial house-keeping
 
-        if self.__Documents.has_key(dFile): #<-file to Close is there:
-            self.__Documents[dFile].close()
-            del(self.__Documents[dFile])    #delete from dictionary
+        if self.open_documents.has_key(dFile): #<-file to Close is there:
+            self.open_documents[dFile].close()
+            del(self.open_documents[dFile])    #delete from dictionary
             #--check dictionary for possible next active document
-            for keyDoc in self.__Documents: #<-dictionary is not empty:
-                self.ActiveDocument=self.__Documents[keyDoc]    #pick next
+            for keyDoc in self.open_documents: #<-dictionary is not empty:
+                self.ActiveDocument=self.open_documents[keyDoc]    #pick next
                 break
             else:   #=-dictionary is empty:
                 self.ActiveDocument=None  #set no active document
@@ -251,8 +248,8 @@ class Application(object):
             Set the document to active
         """
         if document:
-            if self.__Documents.has_key(document.dbPath):
-                self.__ActiveDocument=self.__Documents[document.dbPath]
+            if self.open_documents.has_key(document.dbPath):
+                self.__ActiveDocument=self.open_documents[document.dbPath]
             else:
                 raise EntityMissing("Unable to set active the document %s"%str(document.dbPath))
         else:
@@ -262,7 +259,7 @@ class Application(object):
         """
             get the Docuemnts Collection
         """
-        return self.__Documents
+        return self.open_documents
 
     #
     # manage application style
