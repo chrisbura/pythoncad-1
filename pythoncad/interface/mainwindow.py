@@ -92,6 +92,7 @@ class MainWindow(QtGui.QMainWindow):
         self.command_toolbar = self.addToolBar('Commands')
         self.command_toolbar.setObjectName('command_toolbar')
 
+
         self._registerCommands()
         self.updateMenus()
         self.lastDirectory=os.getenv('USERPROFILE') or os.getenv('HOME')
@@ -101,7 +102,25 @@ class MainWindow(QtGui.QMainWindow):
         self.updateOpenFileList()
         self.updateRecentFileList()
 
+        # Menubar
+        self.menubar = self.menuBar()
+        self.populate_menu()
+
         return
+
+    def populate_menu(self):
+        # File Menu
+        file_menu = self.menubar.addMenu('&File')
+
+        file_new = QtGui.QAction('&New', self)
+        file_new.connect(file_new, QtCore.SIGNAL('triggered()'), self._onNewDrawing)
+
+        file_quit  = QtGui.QAction('&Quit', self)
+        # TODO: Close all subwindows properly (close the db connections)?
+        file_quit.connect(file_quit, QtCore.SIGNAL('triggered()'), QtGui.qApp.quit)
+
+        file_menu.addAction(file_new)
+        file_menu.addAction(file_quit)
 
     @property
     def scene(self):
