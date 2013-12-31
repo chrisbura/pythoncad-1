@@ -28,7 +28,6 @@ import shutil
 if __name__=="__main__":
     sys.path.append(os.path.join(os.getcwd(), 'Kernel'))
 #
-from kernel.pycadevent          import PyCadEvent
 from kernel.exception           import *
 from kernel.document            import *
 from kernel.command             import *
@@ -52,13 +51,6 @@ class Application(object):
         # TODO: Convert to 'application document'
         self.kernel = Document(baseDbName)
         self.__applicationCommand=APPLICATION_COMMAND
-        # Setting up Application Events
-        self.startUpEvent=PyCadEvent()
-        self.beforeOpenDocumentEvent=PyCadEvent()
-        self.afterOpenDocumentEvent=PyCadEvent()
-        self.beforeCloseDocumentEvent=PyCadEvent()
-        self.afterCloseDocumentEvent=PyCadEvent()
-        self.activeteDocumentEvent=PyCadEvent()
         # manage Document inizialization
         self.open_documents={}
         if args.has_key('open'):
@@ -66,7 +58,6 @@ class Application(object):
         else:
             self.__ActiveDocument=None
         # Fire the Application inizialization
-        self.startUpEvent(self)
 
 
 
@@ -170,7 +161,6 @@ class Application(object):
         document = Document(file_name)
         file_name = document.db_path
         self.open_documents[file_name] = document
-        self.afterOpenDocumentEvent(self, self.open_documents[file_name])   #   Fire the open document event
         self.ActiveDocument = self.open_documents[file_name]              #   Set Active the document
         self.addRecentFiles(file_name)
         return self.open_documents[file_name]
@@ -179,11 +169,9 @@ class Application(object):
         """
             open a saved document
         """
-        self.beforeOpenDocumentEvent(self, file_name)
         if not self.open_documents.has_key(file_name):
             self.open_documents[file_name]=Document(file_name)
             self.addRecentFiles(file_name)
-        self.afterOpenDocumentEvent(self, self.open_documents[file_name])   #   Fire the open document event
         self.ActiveDocument=self.open_documents[file_name]                  #   Set Active the document
         return self.open_documents[file_name]
 
@@ -204,37 +192,20 @@ class Application(object):
         raise EntityMissing, "No document open in the application unable to perform the saveAs comand"
 
 
-    def closeDocument(self,dFile):
-#-- - - -=- - - - -=- - - - -=- - - - -=- - - - -=- - - - -=- - - - -=- - - - -=
-#                                                                   S-PM 110427
-#Method to "Close" the named drawing file.
-#--Rq-local
-# open_documents   dictionary of currently opened drawing files
-#               (was misspelled: "__Docuemnts")
-#--Rq
-# dFile         drawing file to close
-#-- - - -=- - - - -=- - - - -=- - - - -=- - - - -=- - - - -=- - - - -=- - - - -=
-        "Close current document"    #standard "Documentation String"
+    def closeDocument(self, file_name):
+        if self.open_documents.has_key(file_name):
+            # Close document database connection
+            self.open_documents[file_name].close()
+            del(self.open_documents[file_name])
 
-        self.beforeCloseDocumentEvent(self,dFile)   #initial house-keeping
-
-        if self.open_documents.has_key(dFile): #<-file to Close is there:
-            self.open_documents[dFile].close()
-            del(self.open_documents[dFile])    #delete from dictionary
-            #--check dictionary for possible next active document
-            for keyDoc in self.open_documents: #<-dictionary is not empty:
-                self.ActiveDocument=self.open_documents[keyDoc]    #pick next
+            # Select another document to set active
+            for keyDoc in self.open_documents:
+                self.ActiveDocument = self.open_documents[keyDoc]
                 break
-            else:   #=-dictionary is empty:
-                self.ActiveDocument=None  #set no active document
-            #>
-        else:   #=-file to Close is NOT there:
-            raise IOError("Unable to close the file:  %s"%str(dFile))
-        #>
-
-        self.afterCloseDocumentEvent(self)          #final house-keeping
-    #closeDocument>
-
+            else:
+                self.ActiveDocument=None
+        else:
+            raise IOError("Unable to close the file:  %s" % str(file_name))
 
     @property
     def ActiveDocument(self):
@@ -242,6 +213,7 @@ class Application(object):
             get The active Document
         """
         return self.__ActiveDocument
+
     @ActiveDocument.setter
     def ActiveDocument(self, document):
         """
@@ -254,7 +226,7 @@ class Application(object):
                 raise EntityMissing("Unable to set active the document %s"%str(document.dbPath))
         else:
             self.__ActiveDocument=document
-        self.activeteDocumentEvent(self, self.__ActiveDocument)
+
     def getDocuments(self):
         """
             get the Docuemnts Collection
