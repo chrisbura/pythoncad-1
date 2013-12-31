@@ -35,10 +35,10 @@ class LayerTable(object):
     """
 
     def __init__(self, kernel):
-        self.__kr = kernel
+        self.kernel = kernel
         self.settings = {}
 
-        self.db = self.__kr.db
+        self.db = self.kernel.db
 
         # Add a default layer if none exists
         layer_count = self.getLayerCount()
@@ -92,7 +92,7 @@ class LayerTable(object):
 
         """
         # TODO
-        _children=self.__kr.getAllChildrenType(layer, entityType)
+        _children=self.kernel.getAllChildrenType(layer, entityType)
         return _children
 
     def getEntLayerDb(self,layerName):
@@ -100,7 +100,7 @@ class LayerTable(object):
             get the pycadent  layer by giving a name
         """
         #TODO: manage logger self.__logger.debug('getEntLayerDb')
-        _layersEnts=self.__kr.getEntityFromType('LAYER')
+        _layersEnts=self.kernel.getEntityFromType('LAYER')
         #TODO: Optimaze this loop with the build in type [...] if possible
         for layersEnt in _layersEnts:
             unpickleLayers=layersEnt.getConstructionElements()
@@ -152,14 +152,14 @@ class LayerTable(object):
             ToDo: to be tested
         """
         # TODO:
-        return self.__kr.getRelatioObject().getParentEnt(layer)
+        return self.kernel.getRelatioObject().getParentEnt(layer)
 
     def delete(self, layerId):
         """
             delete the current layer and all the entity related to it
         """
         # TODO:
-        deleteLayer = self.__kr.getEntity(layerId)
+        deleteLayer = self.kernel.getEntity(layerId)
 
         # If layer is currently active, find the first visible layer and set it active
         if layerId is self.__activeLayer.getId():
@@ -173,7 +173,7 @@ class LayerTable(object):
         self.deleteLayerEntity(deleteLayer)
 
         # Delete the layer
-        self.__kr.deleteEntity(layerId)
+        self.kernel.deleteEntity(layerId)
 
     def deleteLayerEntity(self, layer):
         """
@@ -181,7 +181,7 @@ class LayerTable(object):
         """
         # TODO:
         for ent in self.getLayerChildren(layer):
-                self.__kr.deleteEntity(ent.getId())
+                self.kernel.deleteEntity(ent.getId())
 
     def rename(self, layer, new_name):
         self._rename(layer, new_name)
