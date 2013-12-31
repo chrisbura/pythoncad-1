@@ -86,11 +86,12 @@ class MainWindow(QtGui.QMainWindow):
         self.lastDirectory=os.getenv('USERPROFILE') or os.getenv('HOME')
         self.readSettings() #now works for position and size and ismaximized, and finally toolbar position
 
-        self.updateRecentFileList()
 
         # Menubar
         self.menubar = self.menuBar()
         self.populate_menu()
+
+        self.updateRecentFileList()
 
         # Toolbar
         self.actions = [
@@ -121,10 +122,12 @@ class MainWindow(QtGui.QMainWindow):
         # File Menu
         self.file_menu = self.menubar.addMenu('&File')
 
-        file_new = QtGui.QAction('&New', self)
+        file_new = QtGui.QAction('&New File', self)
         file_new.triggered.connect(self._onNewDrawing)
 
-        file_close = QtGui.QAction('&Close', self)
+        self.file_open_recent = QtGui.QMenu('Open &Recent File', self)
+
+        file_close = QtGui.QAction('&Close File', self)
         file_close.triggered.connect(self._onCloseDrawing)
 
         file_quit  = QtGui.QAction('&Quit', self)
@@ -132,7 +135,10 @@ class MainWindow(QtGui.QMainWindow):
         file_quit.triggered.connect(QtGui.qApp.quit)
 
         self.file_menu.addAction(file_new)
+        self.file_menu.addMenu(self.file_open_recent)
+        self.file_menu.addSeparator()
         self.file_menu.addAction(file_close)
+        self.file_menu.addSeparator()
         self.file_menu.addAction(file_quit)
 
         self.window_menu = self.menubar.addMenu('&Windows')
@@ -328,19 +334,19 @@ class MainWindow(QtGui.QMainWindow):
             action.triggered.connect(partial(self.mdiArea.setActiveSubWindow, window))
 
     def updateRecentFileList(self):
-        """
-            update the menu recent file list
-        """
-        self.open_recent_menu.clear()
+        # Empty out the recent submenu
+        self.file_open_recent.clear()
         recent_files = self.Application.getRecentFiles
+
         if not recent_files:
-            self.open_recent_menu.addAction('None').setDisabled(True)
+            # Add a blank action if there are no recent files
+            self.file_open_recent.addAction('None').setDisabled(True)
             return
+
         for recent_file in recent_files:
-            entry = self.open_recent_menu.addAction(recent_file)
-            self.connect(entry, QtCore.SIGNAL('triggered()'),
-                functools.partial(self.openDrawing, recent_file))
-            self.open_recent_menu.addAction(entry)
+            entry = self.file_open_recent.addAction(recent_file)
+            entry.triggered.connect(partial(self.openDrawing, recent_file))
+            self.file_open_recent.addAction(entry)
 
     def strippedName(self, fullFileName):
         """
@@ -362,8 +368,8 @@ class MainWindow(QtGui.QMainWindow):
     def _onNewDrawing(self):
         child = self.create_subwindow()
         child.show()
-        self.updateRecentFileList()
         self.update_window_menu()
+        self.updateRecentFileList()
 
     def _onOpenDrawing(self):
         '''
