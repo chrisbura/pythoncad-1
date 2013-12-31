@@ -40,12 +40,6 @@ class LayerTable(object):
 
         self.db = self.__kr.db
 
-        # Initialize events
-        self.setCurrentEvent = PyCadEvent()
-        self.deleteEvent = PyCadEvent()
-        self.insertEvent = PyCadEvent()
-        self.updateEvent = PyCadEvent()
-
         # Add a default layer if none exists
         layer_count = self.getLayerCount()
         if not layer_count:
@@ -75,14 +69,12 @@ class LayerTable(object):
         self.__activeLayer=layer
         self.settings['active_layer'].value = layer.id
         self.db.commit()
-        self.setCurrentEvent()
 
     def getActiveLayer(self):
         return self.__activeLayer
 
     def insert(self, layer):
         self.setActiveLayer(layer)
-        self.insertEvent()
 
     def _getLayerConstructionElement(self, pyCadEnt):
         """
@@ -182,7 +174,6 @@ class LayerTable(object):
 
         # Delete the layer
         self.__kr.deleteEntity(layerId)
-        self.deleteEvent(layerId)
 
     def deleteLayerEntity(self, layer):
         """
@@ -198,12 +189,10 @@ class LayerTable(object):
     def _rename(self, layer, new_name):
         layer.name = new_name
         self.db.commit()
-        self.updateEvent()
 
     def _show(self, layer):
         layer.visible = True
         self.db.commit()
-        self.updateEvent()
 
     def show(self, layer):
         self._show(layer)
@@ -211,8 +200,6 @@ class LayerTable(object):
     def _hide(self, layer):
         layer.visible = False
         self.db.commit()
-        # TODO: Signals
-        self.updateEvent()
 
     def hide(self, layer):
         # Prevent trying to hide the only layer

@@ -136,6 +136,9 @@ class LayerView(QtGui.QTableView):
     Displays the layers in a simple table instead of a tree. This allows for
     easier management of layers.
     """
+
+    layers_changed = QtCore.pyqtSignal()
+
     def __init__(self, parent, document, model):
         super(LayerView, self).__init__(parent)
         self._document = document
@@ -165,6 +168,7 @@ class LayerView(QtGui.QTableView):
         # Signals
         self.connect(self.model, QtCore.SIGNAL('hide_layer'), self._hide)
         self.connect(self.model, QtCore.SIGNAL('show_layer'), self._show)
+        self.layers_changed.connect(self.updateView)
 
     def updateView(self):
         self.model.clear()
@@ -213,16 +217,20 @@ class LayerView(QtGui.QTableView):
 
         self._document.getTreeTable.insert(new_layer)
 
+        self.layers_changed.emit()
+
     def _remove(self):
         # TODO: Add warning
         layer = self.current_selection
         self._document.getTreeTable.delete(layer)
+        self.layers_changed.emit()
 
     def _rename(self):
         text, ok = QtGui.QInputDialog.getText(self, 'Rename Layer', 'Enter New Layer Name')
         if ok:
             layer = self.current_selection
             self._document.getTreeTable.rename(layer, text)
+            self.layers_changed.emit()
 
     def _hide(self, layer=None):
         # TODO: Move to object property
@@ -243,17 +251,20 @@ class LayerView(QtGui.QTableView):
                 return False
 
         self._document.getTreeTable.hide(layer)
+        self.layers_changed.emit()
 
     def _show(self, layer=None):
         if not layer:
             layer = self.current_selection
         self._document.getTreeTable.show(layer)
+        self.layers_changed.emit()
 
     def _setCurrent(self):
         # TODO: Can you even click on this without having a selection
         cito = self.current_selection
         if cito != None:
             self._document.getTreeTable.setActiveLayer(cito)
+            self.layers_changed.emit()
 
     @property
     def current_selection(self):
