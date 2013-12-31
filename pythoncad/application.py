@@ -59,8 +59,6 @@ class Application(object):
             self.__ActiveDocument=None
         # Fire the Application inizialization
 
-
-
     @property
     def getRecentFiles(self):
         """
@@ -80,7 +78,6 @@ class Application(object):
             objSettings.setVariable("RECENT_FILE_ARRAY",[] )
             self.updateApplicationSetting(objSettings)
         return []
-
 
     def addRecentFiles(self,fPath):
 #-- - - -=- - - - -=- - - - -=- - - - -=- - - - -=- - - - -=- - - - -=- - - - -=
@@ -134,7 +131,6 @@ class Application(object):
         rgO.setVariable("RECENT_FILE_ARRAY", rgL)   #--update current settings
         self.updateApplicationSetting(rgO)
     #addRecentFiles>
-
 
     def getCommand(self,commandType):
         """
@@ -191,7 +187,6 @@ class Application(object):
                 return self.openDocument(newFileName)
         raise EntityMissing, "No document open in the application unable to perform the saveAs comand"
 
-
     def closeDocument(self, file_name):
         if self.open_documents.has_key(file_name):
             # Close document database connection
@@ -218,6 +213,7 @@ class Application(object):
             else:
                 raise EntityMissing("Unable to set active the document %s"%str(document.dbPath))
         else:
+            # TODO: Can flow even reach this?
             self.__ActiveDocument=document
 
     def getDocuments(self):

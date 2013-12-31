@@ -135,10 +135,7 @@ class BaseDb(object):
             raise KeyError
 
     def close(self):
-        """
-            close the database connection
-        """
-        self.__dbConnection.close()
+        self.db.close()
 
     def suspendCommit(self):
         """

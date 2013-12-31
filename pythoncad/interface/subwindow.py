@@ -10,9 +10,9 @@ class SubWindow(QtGui.QMdiSubWindow):
     def __init__(self, document, cmdInf, parent):
         super(SubWindow, self).__init__(parent)
         SubWindow.sequenceNumber += 1
-        self.__document=document
-        self.__document.handledErrorEvent+=self._errorEvent
         self.__cmdInf=cmdInf
+        self.document=document
+        self.document.handledErrorEvent+=self._errorEvent
         self._mainwindow=parent
         self.setWindowTitle(document.dbPath + '[*]')
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
@@ -20,7 +20,7 @@ class SubWindow(QtGui.QMdiSubWindow):
         # Layer model used in dock and quick switcher
         self.__layer_model = LayerModel(self)
         # layer list
-        self.__layer_dock = LayerDock(self,self.__document, self.__layer_model)
+        self.__layer_dock = LayerDock(self,self.document, self.__layer_model)
         self._scene = CadScene(document, parent=self)
         self.__cmdInf.commandLine.evaluatePressed+=self.scene.textInput
         self.__view = CadView(self._scene, self)
@@ -141,7 +141,7 @@ class SubWindow(QtGui.QMdiSubWindow):
     def closeEvent(self, event):
         super(SubWindow, self).closeEvent(event)
         # TODO: Verify if document is being closed (self.__application.closeDocument(path))
-        self._mainwindow.updateOpenFileList()
+        self._mainwindow.update_window_menu()
 
     def setStatusbarCoords(self, x, y, status):
         #set statusbar coordinates when mouse move on the scene

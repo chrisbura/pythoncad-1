@@ -77,7 +77,7 @@ class CadScene(QtGui.QGraphicsScene):
         #fire Pan and Zoom events to the view
         self.firePan=PyCadEvent()
         self.fireZoomFit=PyCadEvent()
-        self.__document = document
+        self.document = document
         self.needPreview=False
         self.forceDirectionEnabled=False
         self.forceDirection=None
@@ -117,7 +117,7 @@ class CadScene(QtGui.QGraphicsScene):
             # TODO: Cancel current command (cancel and then start the new one)
             pass
 
-        self.active_command = command(self.__document)
+        self.active_command = command(self.document)
 
     def _process_click(self, event):
         if not self.active_command:
@@ -447,20 +447,20 @@ class CadScene(QtGui.QGraphicsScene):
         """
             Initialize the document events.
         """
-        if not self.__document is None:
-            self.__document.showEntEvent        += self.eventShow
-            self.__document.updateShowEntEvent  += self.eventUpdate
-            self.__document.deleteEntityEvent   += self.eventDelete
-            self.__document.massiveDeleteEvent  += self.eventMassiveDelete
-            self.__document.undoRedoEvent       += self.eventUndoRedo
-            self.__document.hideEntEvent        += self.eventDelete
+        if not self.document is None:
+            self.document.showEntEvent        += self.eventShow
+            self.document.updateShowEntEvent  += self.eventUpdate
+            self.document.deleteEntityEvent   += self.eventDelete
+            self.document.massiveDeleteEvent  += self.eventMassiveDelete
+            self.document.undoRedoEvent       += self.eventUndoRedo
+            self.document.hideEntEvent        += self.eventDelete
 
     def populateScene(self, document):
         """
         Traverse all entities in the document and add these to the scene.
 
         """
-        all_entities = self.__document.db.query(schema.Entity)
+        all_entities = self.document.db.query(schema.Entity)
         for entity in all_entities:
             self.addGraficalObject(entity)
 

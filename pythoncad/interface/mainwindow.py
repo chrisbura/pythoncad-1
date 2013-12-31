@@ -110,6 +110,7 @@ class MainWindow(QtGui.QMainWindow):
 
         # Signals
         # TODO: Merge into a 'rebuild' method
+        self.mdiArea.subWindowActivated.connect(self.subWindowActivatedEvent)
         self.mdiArea.subWindowActivated.connect(self.update_window_menu)
         self.mdiArea.subWindowActivated.connect(self.updateMenus)
 
@@ -120,11 +121,15 @@ class MainWindow(QtGui.QMainWindow):
         file_new = QtGui.QAction('&New', self)
         file_new.triggered.connect(self._onNewDrawing)
 
+        file_close = QtGui.QAction('&Close', self)
+        file_close.triggered.connect(self._onCloseDrawing)
+
         file_quit  = QtGui.QAction('&Quit', self)
         # TODO: Close all subwindows properly (close the db connections)?
         file_quit.triggered.connect(QtGui.qApp.quit)
 
         self.file_menu.addAction(file_new)
+        self.file_menu.addAction(file_close)
         self.file_menu.addAction(file_quit)
 
         self.window_menu = self.menubar.addMenu('&Windows')
@@ -240,10 +245,9 @@ class MainWindow(QtGui.QMainWindow):
             Sub windows activation
         """
         if self.mdiArea.activeSubWindow():
-            if (self.mdiArea.activeSubWindow().document!=
-                        self.__application.ActiveDocument):
+            if (self.mdiArea.activeSubWindow().document != self.__application.ActiveDocument):
                 self.resetCommand()
-                self.__application.ActiveDocument=self.mdiArea.activeSubWindow().document
+                self.__application.ActiveDocument = self.mdiArea.activeSubWindow().document
         self.updateMenus()
 
     def resetCommand(self):
@@ -256,9 +260,6 @@ class MainWindow(QtGui.QMainWindow):
         self.statusBar().showMessage("Ready")
 
     def updateMenus(self):
-        """
-            update menu status
-        """
         hasMdiChild = (self.activeMdiChild() is not None)
 
         # TODO: refactor
@@ -426,11 +427,14 @@ class MainWindow(QtGui.QMainWindow):
         return
 
     def _onCloseDrawing(self):
-        path=self.mdiArea.activeSubWindow().fileName
+        # Get document path of the currently active window we want to close
+        active_subwindow = self.mdiArea.activeSubWindow()
+        path = active_subwindow.document.db_path
+
         self.__application.closeDocument(path)
         self.mdiArea.closeActiveSubWindow()
+        # TODO: Emit open document change signal
         self.update_window_menu()
-        return
 
     def _onCloseAll(self):
         window_list = self.mdiArea.subWindowList()
