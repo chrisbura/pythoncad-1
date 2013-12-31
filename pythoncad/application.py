@@ -197,13 +197,6 @@ class Application(object):
             # Close document database connection
             self.open_documents[file_name].close()
             del(self.open_documents[file_name])
-
-            # Select another document to set active
-            for keyDoc in self.open_documents:
-                self.ActiveDocument = self.open_documents[keyDoc]
-                break
-            else:
-                self.ActiveDocument=None
         else:
             raise IOError("Unable to close the file:  %s" % str(file_name))
 
