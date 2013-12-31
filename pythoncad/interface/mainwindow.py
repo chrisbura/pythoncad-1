@@ -57,20 +57,23 @@ from kernel.command.rectanglecommand import RectangleCommand
 
 
 class MainWindow(QtGui.QMainWindow):
-    def __init__(self):
-        super(MainWindow, self).__init__()
-        self.mdiArea = QtGui.QMdiArea()
-        self.mdiArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        self.mdiArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        self.setCentralWidget(self.mdiArea)
-        self.mdiArea.subWindowActivated.connect(self.subWindowActivatedEvent)
-        self.oldSubWin=None
-#        self.readSettings() #now works for position and size, support for toolbars is still missing(http://www.opendocs.net/pyqt/pyqt4/html/qsettings.html)
+    def __init__(self, parent=None):
+        super(MainWindow, self).__init__(parent)
+
+        # Add title text and icon to QMainWindow
         self.setWindowTitle('PythonCAD')
         qIcon=self._getIcon('pythoncad')
         if qIcon:
             self.setWindowIcon(qIcon)
-        self.setUnifiedTitleAndToolBarOnMac(True)
+
+        # Create and add QMdiArea (multiple document area) as central widget in QMainWindow
+        self.mdiArea = QtGui.QMdiArea()
+        self.mdiArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+        self.mdiArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+        self.setCentralWidget(self.mdiArea)
+
+
+
         #pythoncad kernel
         self.__application = Application()
         self.__cmd_intf = CmdIntf(self)

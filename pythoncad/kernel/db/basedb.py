@@ -45,6 +45,7 @@ class BaseDb(object):
         """
 
         if dbPath is None:
+            # TODO: Remove temp file if it was never saved
             f=tempfile.NamedTemporaryFile(prefix='PyCad_',suffix='.pdr')
             dbPath=f.name
             f.close()
