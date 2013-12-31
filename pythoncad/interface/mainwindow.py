@@ -118,11 +118,11 @@ class MainWindow(QtGui.QMainWindow):
         self.file_menu = self.menubar.addMenu('&File')
 
         file_new = QtGui.QAction('&New', self)
-        file_new.connect(file_new, QtCore.SIGNAL('triggered()'), self._onNewDrawing)
+        file_new.triggered.connect(self._onNewDrawing)
 
         file_quit  = QtGui.QAction('&Quit', self)
         # TODO: Close all subwindows properly (close the db connections)?
-        file_quit.connect(file_quit, QtCore.SIGNAL('triggered()'), QtGui.qApp.quit)
+        file_quit.triggered.connect(QtGui.qApp.quit)
 
         self.file_menu.addAction(file_new)
         self.file_menu.addAction(file_quit)
@@ -286,19 +286,19 @@ class MainWindow(QtGui.QMainWindow):
     def populate_toolbar(self):
 
         self.point_action  = QtGui.QAction(QtGui.QIcon('icons/point.png'), 'Point', self)
-        self.point_action.connect(self.point_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, PointCommand))
+        self.point_action.triggered.connect(partial(self._call_command, PointCommand))
 
         self.segment_action  = QtGui.QAction(QtGui.QIcon('icons/segment.png'), 'Segment', self)
-        self.segment_action.connect(self.segment_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, SegmentCommand))
+        self.segment_action.triggered.connect(partial(self._call_command, SegmentCommand))
 
         self.rectangle_action  = QtGui.QAction(QtGui.QIcon('icons/rectangle.png'), 'Rectangle', self)
-        self.rectangle_action.connect(self.rectangle_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, RectangleCommand))
+        self.rectangle_action.triggered.connect(partial(self._call_command, RectangleCommand))
 
         self.circle_action  = QtGui.QAction(QtGui.QIcon('icons/circle.png'), 'Circle', self)
-        self.circle_action.connect(self.circle_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, CircleCommand))
+        self.circle_action.triggered.connect(partial(self._call_command, CircleCommand))
 
         self.ellipse_action  = QtGui.QAction(QtGui.QIcon('icons/ellipse.png'), 'Ellipse', self)
-        self.ellipse_action.connect(self.ellipse_action, QtCore.SIGNAL('triggered()'), partial(self._call_command, EllipseCommand))
+        self.ellipse_action.triggered.connect(partial(self._call_command, EllipseCommand))
 
         for action in self.actions:
             self.command_toolbar.addAction(getattr(self, action))
