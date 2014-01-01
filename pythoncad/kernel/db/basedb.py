@@ -23,12 +23,12 @@
 
 import os
 import sys
-import tempfile
+from tempfile import NamedTemporaryFile
 import sqlite3 as sql
 
 from kernel.exception import *
 
-from kernel.db.alchemy import Connection
+from kernel.db.alchemy import DocumentDb
 
 class BaseDb(object):
     """
@@ -45,12 +45,13 @@ class BaseDb(object):
         """
 
         if dbPath is None:
+            # If document path is not supplied, create a new file in user's temp directory
             # TODO: Remove temp file if it was never saved
-            f=tempfile.NamedTemporaryFile(prefix='PyCad_',suffix='.pdr')
-            dbPath=f.name
-            f.close()
+            temporary_file = NamedTemporaryFile(prefix='pycad_', suffix='.pdr')
+            dbPath = temporary_file.name
+            temporary_file.close()
 
-        self.connection = Connection(dbPath)
+        self.connection = DocumentDb(dbPath)
         self.db = self.connection.session
         self.db_path = self.connection.db_path
 
