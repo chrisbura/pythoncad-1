@@ -360,6 +360,7 @@ class MainWindow(QtGui.QMainWindow):
             return
         child = self.create_subwindow(file_path)
         child.show()
+        self.mdiArea.setActiveSubWindow(child)
         self.updateRecentFileList()
         self.update_window_menu()
         self.view.fit()
