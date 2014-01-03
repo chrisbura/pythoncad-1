@@ -76,10 +76,8 @@ class MainWindow(QtGui.QMainWindow):
 
         #pythoncad kernel
         self.__application = Application()
-        self.__cmd_intf = CmdIntf(self)
-        #self.__cmd_intf.FunctionHandler.commandExecuted+=self.commandExecuted
         # create all dock windows
-        self._createDockWindows()
+        # self._createDockWindows()
         # create status bar
         self._createStatusBar()
         self.setUnifiedTitleAndToolBarOnMac(True)
@@ -186,7 +184,7 @@ class MainWindow(QtGui.QMainWindow):
         #Snap
         self.SnapStatus=statusButton('SSnap.png', 'Snap [right click displays snap list]\n for future implementation it should be a checkist')
         self.connect(self.SnapStatus, QtCore.SIGNAL('clicked()'), self.setSnapStatus)
-        self.SnapStatus.setMenu(self.__cmd_intf.Category.getMenu(6))
+        # self.SnapStatus.setMenu(self.__cmd_intf.Category.getMenu(6))
         self.SnapStatus.setChecked(True)
         self.statusBar().addPermanentWidget(self.SnapStatus)
 
@@ -232,7 +230,7 @@ class MainWindow(QtGui.QMainWindow):
             Creates all dockable windows for the application
         '''
         # commandline
-        command_dock = self.__cmd_intf.commandLine
+        # command_dock = self.__cmd_intf.commandLine
         # if the commandline exists, add it
         if not command_dock is None:
             self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, command_dock)
@@ -263,7 +261,7 @@ class MainWindow(QtGui.QMainWindow):
         """
             Resect the active command
         """
-        self.__cmd_intf.resetCommand()
+        # self.__cmd_intf.resetCommand()
         if self.scene!=None:
             self.scene.cancelCommand()
         self.statusBar().showMessage("Ready")
@@ -522,7 +520,7 @@ class MainWindow(QtGui.QMainWindow):
             self.critical("Wrong command")
 
     def updateInput(self, message):
-        self.__cmd_intf.commandLine.printMsg(str(message))
+        # self.__cmd_intf.commandLine.printMsg(str(message))
         self.statusBar().showMessage(str(message))
 
     @staticmethod

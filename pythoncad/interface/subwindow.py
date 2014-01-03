@@ -7,12 +7,12 @@ from interface.layerintf.layertreeobject import LayerModel
 
 class SubWindow(QtGui.QMdiSubWindow):
     sequenceNumber = 1
-    def __init__(self, document, cmdInf, parent):
+    def __init__(self, document, parent):
         super(SubWindow, self).__init__(parent)
         SubWindow.sequenceNumber += 1
-        self.__cmdInf=cmdInf
         self.document=document
         self.document.handledErrorEvent+=self._errorEvent
+        # self.__cmdInf=cmdInf
         self._mainwindow=parent
         self.setWindowTitle(document.dbPath + '[*]')
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
@@ -22,7 +22,7 @@ class SubWindow(QtGui.QMdiSubWindow):
         # layer list
         self.__layer_dock = LayerDock(self,self.document, self.__layer_model)
         self._scene = CadScene(document, parent=self)
-        self.__cmdInf.commandLine.evaluatePressed+=self.scene.textInput
+        # self.__cmdInf.commandLine.evaluatePressed+=self.scene.textInput
         self.__view = CadView(self._scene, self)
         # the graphics view is the main/central component
         innerWindows = QtGui.QMainWindow()
@@ -35,18 +35,15 @@ class SubWindow(QtGui.QMdiSubWindow):
         self._scene.populateScene(document)
 
         self._scene.zoomWindows+=self.__view.zoomWindows
-        self._scene.fireCommandlineFocus+=self.__cmdInf.commandLine.setFocus
+        # self._scene.fireCommandlineFocus+=self.__cmdInf.commandLine.setFocus
         self._scene.fireKeyShortcut+=self.keyShortcut
-        self._scene.fireKeyEvent+=self.keyEvent
+        # self._scene.fireKeyEvent+=self.keyEvent
         self._scene.fireWarning+=self.popUpWarning
         self._scene.fireCoords+=self.setStatusbarCoords
 
-    @property
-    def document(self):
-        return self.__document
-    @property
-    def cmdInf(self):
-        return self.__cmdInf
+    # @property
+    # def cmdInf(self):
+    #     return self.__cmdInf
     @property
     def view(self):
         return self.__view
@@ -150,9 +147,8 @@ class SubWindow(QtGui.QMdiSubWindow):
         elif status=="rel":
             self._mainwindow.coordLabel.setText("dx="+str("%.3f" % x)+"\n"+"dy="+str("%.3f" % y)) # "%.3f" %  sets the precision decimals to 3
 
-    def keyEvent(self, event): #fire the key event in the scene to the commandline
-        self.__cmdInf.commandLine._keyPress(event)
-
+    # def keyEvent(self, event): #fire the key event in the scene to the commandline
+    #     self.__cmdInf.commandLine._keyPress(event)
 
     def keyShortcut(self, command):
         self._mainwindow.statusBar().showMessage(str(command))
