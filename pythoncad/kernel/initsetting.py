@@ -71,10 +71,10 @@ from kernel.settings            import *
 from kernel.entity              import Entity
 from kernel.layer               import Layer
 from kernel.composedentity      import ComposedEntity
-#
-# Max Number of recent file
-#
-MAX_RECENT_FILE=5
+
+# The number of files to show in the `File > Open Recent File` menu
+MAX_RECENT_FILE = 5
+
 #
 # Object workflow state of the entity
 #

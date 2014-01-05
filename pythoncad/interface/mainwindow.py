@@ -25,7 +25,7 @@
 
 import os
 import sys
-import functools
+import datetime
 from functools import partial
 
 from PyQt4 import QtCore, QtGui
@@ -55,6 +55,8 @@ from kernel.command.pointcommand import PointCommand
 from kernel.command.ellipsecommand import EllipseCommand
 from kernel.command.rectanglecommand import RectangleCommand
 
+from interface.db.settings import InterfaceDb
+from interface.db.schema import RecentFile
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -71,6 +73,13 @@ class MainWindow(QtGui.QMainWindow):
         self.mdiArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.mdiArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.setCentralWidget(self.mdiArea)
+
+        # Initialize Interface settings
+        # TODO: Have user configurable location (or just the homedir)
+        current_folder = os.getcwd()
+        db_path = os.path.join(current_folder, 'pycad_interface_settings.tmp')
+        self.settings_db = InterfaceDb(db_path)
+        self.db = self.settings_db.session
 
 
 
@@ -287,6 +296,18 @@ class MainWindow(QtGui.QMainWindow):
         else:
             document = self.__application.newDocument()
 
+        # Update recent files
+        # TODO: Move to a manager class
+        # TODO: Make sure the file was actually opened before adding, ie. don't add an invalid file
+        recent_file = self.db.query(RecentFile).filter_by(path=document.db_path).first()
+        if recent_file:
+            recent_file.last_access = datetime.datetime.now()
+            self.db.commit()
+        else:
+            recent_file = RecentFile(path=document.db_path, last_access=datetime.datetime.now())
+            self.db.add(recent_file)
+            self.db.commit()
+
         child = SubWindow(document, self)
         self.mdiArea.addSubWindow(child)
         return child
@@ -334,7 +355,9 @@ class MainWindow(QtGui.QMainWindow):
     def updateRecentFileList(self):
         # Empty out the recent submenu
         self.file_open_recent.clear()
-        recent_files = self.Application.getRecentFiles
+        # TODO: Move to a manager class
+        # TODO: Clear old entries after some condition
+        recent_files = self.db.query(RecentFile).order_by(RecentFile.last_access.desc())[:MAX_RECENT_FILE]
 
         if not recent_files:
             # Add a blank action if there are no recent files
@@ -342,7 +365,7 @@ class MainWindow(QtGui.QMainWindow):
             return
 
         for recent_file in recent_files:
-            entry = self.file_open_recent.addAction(recent_file)
+            entry = self.file_open_recent.addAction(recent_file.path)
             entry.triggered.connect(partial(self.openDrawing, recent_file))
             self.file_open_recent.addAction(entry)
 

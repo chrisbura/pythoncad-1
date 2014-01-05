@@ -7,7 +7,7 @@ class Connection(object):
     document instances or application settings instances.
 
     """
-    def __init__(self, db_path=None):
+    def __init__(self, db_path):
         self.db_path = db_path
 
         # TODO: Verify path
