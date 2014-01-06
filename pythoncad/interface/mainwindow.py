@@ -243,15 +243,22 @@ class MainWindow(QtGui.QMainWindow):
         return
 
     def closeEvent(self, event):
-        """
-            manage close event
-        """
+        # Close all open document db connections
+        open_documents = self.__application.open_documents
+        for path, document in open_documents.iteritems():
+            del(document.connection)
+
+        # Close all subwindows
+        # TODO: Check if their closeEvents are called, move db close to there
         self.mdiArea.closeAllSubWindows()
-        if self.activeMdiChild():
-            event.ignore()
-        else:
-            self.writeSettings()
-            event.accept()
+
+        # Write settings (window position, maximized, etc)
+        self.writeSettings()
+
+        # Close the settings database
+        del(self.settings_db)
+
+        event.accept()
 
     def subWindowActivatedEvent(self):
         """
