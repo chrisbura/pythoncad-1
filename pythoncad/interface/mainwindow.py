@@ -56,7 +56,7 @@ from kernel.command.ellipsecommand import EllipseCommand
 from kernel.command.rectanglecommand import RectangleCommand
 
 from interface.db.settings import InterfaceDb
-from interface.db.schema import RecentFile
+from interface.db.schema import RecentFile, Settings
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -91,8 +91,6 @@ class MainWindow(QtGui.QMainWindow):
         self._createStatusBar()
         self.setUnifiedTitleAndToolBarOnMac(True)
         self.lastDirectory=os.getenv('USERPROFILE') or os.getenv('HOME')
-        self.readSettings() #now works for position and size and ismaximized, and finally toolbar position
-
 
         # Menubar
         self.menubar = self.menuBar()
@@ -124,6 +122,8 @@ class MainWindow(QtGui.QMainWindow):
         self.mdiArea.subWindowActivated.connect(self.subWindowActivatedEvent)
         self.mdiArea.subWindowActivated.connect(self.update_window_menu)
         self.mdiArea.subWindowActivated.connect(self.updateMenus)
+
+        self.readSettings() #now works for position and size and ismaximized, and finally toolbar position
 
     def populate_menu(self):
         # File Menu
@@ -571,38 +571,57 @@ class MainWindow(QtGui.QMainWindow):
         return
 
     def readSettings(self):
-        settings = QtCore.QSettings('PythonCAD', 'MDI Settings')
-        settings.beginGroup("CadWindow")
-        max=settings.value("maximized", False)
-        if max==True: #if cadwindow was maximized set it maximized again
-            self.showMaximized()
-        else: #else set it to the previous position and size
-            try:
-                self.resize(settings.value("size")) # self.resize(settings.value("size", QtCore.QSize(800, 600)).toSize())
-                self.move(settings.value("pos"))   # self.move(settings.value("pos", QtCore.QPoint(400, 300)).toPoint())+
-            except:
-                print "Warning: unable to set the previews values"
-        settings.endGroup()
+        """
+        Store settings inside the database instead of QSettings to allow multiple
+        instances to be run at the same time.
 
-        settings.beginGroup("CadWindowState")
-        try:
-            self.restoreState(settings.value('State'))
-        except:
-            print "Warning: Unable to set state"
-        settings.endGroup()
+        """
+        # Read settings from database
+        settings = self.db.query(Settings).first()
+        if settings:
+            self.settings = settings
+        else:
+            # TODO: Get better defaults from somewhere
+            self.settings = Settings(
+                window_maximized = False,
+                window_height = 768,
+                window_width = 1024,
+                window_x = 100,
+                window_y = 100,
+                state = self.saveState().data()
+            )
+            self.db.add(self.settings)
+            self.db.commit()
+
+        # Resize the window
+        self.resize(QtCore.QSize(
+            self.settings.window_width,
+            self.settings.window_height
+        ))
+
+        # Move the window, top left is QPoint(0, 0)
+        self.move(QtCore.QPoint(
+            self.settings.window_x,
+            self.settings.window_y
+        ))
+
+        # Maximize the window
+        if self.settings.window_maximized:
+            self.showMaximized()
+
+        self.restoreState(QtCore.QByteArray(self.settings.state))
 
     def writeSettings(self):
-        settings = QtCore.QSettings('PythonCAD', 'MDI Settings')
 
-        settings.beginGroup("CadWindow")
-        settings.setValue('pos', self.pos())
-        settings.setValue('size', self.size())
-        settings.setValue('maximized', self.isMaximized())
-        settings.endGroup()
-
-        settings.beginGroup("CadWindowState")
-        settings.setValue("state", self.saveState())
-        settings.endGroup()
+        # TODO: Don't write window settings if maximized!!
+        if self.settings:
+            self.settings.window_maximized = self.isMaximized()
+            self.settings.window_height = self.size().height()
+            self.settings.window_width = self.size().width()
+            self.settings.window_x = self.pos().x()
+            self.settings.window_y = self.pos().y()
+            self.settings.state = self.saveState().data()
+            self.db.commit()
 
     def activeMdiChild(self):
         # TODO: From PyQt examples, add license info back in

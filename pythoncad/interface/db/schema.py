@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, Float, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, Float, ForeignKey, DateTime, LargeBinary
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import as_declarative, declared_attr
 
@@ -14,3 +14,12 @@ class Base(object):
 class RecentFile(Base):
     path = Column(String)
     last_access = Column(DateTime)
+
+
+class Settings(Base):
+    window_maximized = Column(Boolean)
+    window_height = Column(Integer)
+    window_width = Column(Integer)
+    window_x = Column(Integer)
+    window_y = Column(Integer)
+    state = Column(LargeBinary)
