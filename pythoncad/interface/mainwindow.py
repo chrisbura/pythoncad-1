@@ -359,12 +359,21 @@ class MainWindow(QtGui.QMainWindow):
         if not recent_files:
             # Add a blank action if there are no recent files
             self.file_open_recent.addAction('None').setDisabled(True)
-            return
 
         for recent_file in recent_files:
-            entry = self.file_open_recent.addAction(recent_file.path)
+            entry = QtGui.QAction(recent_file.path, self)
             entry.triggered.connect(partial(self.openDrawing, recent_file))
             self.file_open_recent.addAction(entry)
+
+        self.file_open_recent.addSeparator()
+        clear_now = QtGui.QAction('Clear Now', self)
+        clear_now.triggered.connect(self.clear_recent)
+        self.file_open_recent.addAction(clear_now)
+
+    def clear_recent(self):
+        # TODO: Check return value
+        self.db.query(RecentFile).delete()
+        self.updateRecentFileList()
 
     def strippedName(self, fullFileName):
         """
