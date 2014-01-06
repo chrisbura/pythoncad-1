@@ -129,17 +129,14 @@ class MainWindow(QtGui.QMainWindow):
         # File Menu
         self.file_menu = self.menubar.addMenu('&File')
 
-        file_new = QtGui.QAction('&New File', self)
-        file_new.triggered.connect(self._onNewDrawing)
+        file_new = QtGui.QAction('&New File', self, triggered=self._onNewDrawing)
 
         self.file_open_recent = QtGui.QMenu('Open &Recent File', self)
 
-        file_close = QtGui.QAction('&Close File', self)
-        file_close.triggered.connect(self._onCloseDrawing)
+        file_close = QtGui.QAction('&Close File', self, triggered=self._onCloseDrawing)
 
-        file_quit  = QtGui.QAction('&Quit', self)
         # TODO: Close all subwindows properly (close the db connections)?
-        file_quit.triggered.connect(QtGui.qApp.quit)
+        file_quit  = QtGui.QAction('&Quit', self, triggered=QtGui.qApp.closeAllWindows)
 
         self.file_menu.addAction(file_new)
         self.file_menu.addMenu(self.file_open_recent)
