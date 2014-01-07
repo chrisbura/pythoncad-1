@@ -322,20 +322,20 @@ class MainWindow(QtGui.QMainWindow):
 
     def populate_toolbar(self):
 
-        self.point_action  = QtGui.QAction(QtGui.QIcon('icons/point.png'), 'Point', self)
-        self.point_action.triggered.connect(partial(self._call_command, PointCommand))
+        self.point_action  = QtGui.QAction(QtGui.QIcon('icons/point.png'), 'Point', self,
+            triggered=partial(self._call_command, PointCommand))
 
-        self.segment_action  = QtGui.QAction(QtGui.QIcon('icons/segment.png'), 'Segment', self)
-        self.segment_action.triggered.connect(partial(self._call_command, SegmentCommand))
+        self.segment_action  = QtGui.QAction(QtGui.QIcon('icons/segment.png'), 'Segment', self,
+            triggered=partial(self._call_command, SegmentCommand))
 
-        self.rectangle_action  = QtGui.QAction(QtGui.QIcon('icons/rectangle.png'), 'Rectangle', self)
-        self.rectangle_action.triggered.connect(partial(self._call_command, RectangleCommand))
+        self.rectangle_action  = QtGui.QAction(QtGui.QIcon('icons/rectangle.png'), 'Rectangle', self,
+            triggered=partial(self._call_command, RectangleCommand))
 
-        self.circle_action  = QtGui.QAction(QtGui.QIcon('icons/circle.png'), 'Circle', self)
-        self.circle_action.triggered.connect(partial(self._call_command, CircleCommand))
+        self.circle_action  = QtGui.QAction(QtGui.QIcon('icons/circle.png'), 'Circle', self,
+            triggered=partial(self._call_command, CircleCommand))
 
-        self.ellipse_action  = QtGui.QAction(QtGui.QIcon('icons/ellipse.png'), 'Ellipse', self)
-        self.ellipse_action.triggered.connect(partial(self._call_command, EllipseCommand))
+        self.ellipse_action  = QtGui.QAction(QtGui.QIcon('icons/ellipse.png'), 'Ellipse', self,
+            triggered=partial(self._call_command, EllipseCommand))
 
         for action in self.actions:
             self.command_toolbar.addAction(getattr(self, action))
