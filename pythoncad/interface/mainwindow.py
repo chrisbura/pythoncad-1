@@ -64,7 +64,7 @@ class MainWindow(QtGui.QMainWindow):
 
         # Add title text and icon to QMainWindow
         self.setWindowTitle('PythonCAD')
-        qIcon=self._getIcon('pythoncad')
+        qIcon = self._getIcon('pythoncad')
         if qIcon:
             self.setWindowIcon(qIcon)
 
@@ -80,6 +80,10 @@ class MainWindow(QtGui.QMainWindow):
         db_path = os.path.join(current_folder, 'pycad_interface_settings.tmp')
         self.settings_db = InterfaceDb(db_path)
         self.db = self.settings_db.session
+
+        # Initialize self.settings with either the row in the db or a new Settings object
+        self.initialize_settings()
+
 
 
 
@@ -570,17 +574,19 @@ class MainWindow(QtGui.QMainWindow):
         dlg.exec_()
         return
 
-    def readSettings(self):
+    def initialize_settings(self):
         """
         Store settings inside the database instead of QSettings to allow multiple
         instances to be run at the same time.
 
         """
+
         # Read settings from database
         settings = self.db.query(Settings).first()
         if settings:
             self.settings = settings
         else:
+            # Initialize default settings values
             # TODO: Get better defaults from somewhere
             self.settings = Settings(
                 window_maximized = False,
@@ -592,6 +598,12 @@ class MainWindow(QtGui.QMainWindow):
             )
             self.db.add(self.settings)
             self.db.commit()
+
+    def readSettings(self):
+        """
+        Restores window geometry as well as toolbar positions
+
+        """
 
         # Resize the window
         self.resize(QtCore.QSize(
@@ -609,19 +621,32 @@ class MainWindow(QtGui.QMainWindow):
         if self.settings.window_maximized:
             self.showMaximized()
 
-        self.restoreState(QtCore.QByteArray(self.settings.state))
+        # Restore toolbar positions
+        self.restoreState(
+            QtCore.QByteArray(self.settings.state)
+        )
 
     def writeSettings(self):
+        """
+        Saves window geometry values as well as the location of toolbars
+        See http://qt-project.org/doc/qt-4.8/application-windows.html#window-geometry
 
-        # TODO: Don't write window settings if maximized!!
-        if self.settings:
-            self.settings.window_maximized = self.isMaximized()
+        """
+        # Don't save the window geometry if the window is maximized
+        # When user un maximizes the window it returns to previous values
+        if not self.isMaximized():
             self.settings.window_height = self.size().height()
             self.settings.window_width = self.size().width()
             self.settings.window_x = self.pos().x()
             self.settings.window_y = self.pos().y()
-            self.settings.state = self.saveState().data()
-            self.db.commit()
+
+        self.settings.window_maximized = self.isMaximized()
+
+        # Save toolbar locations
+        self.settings.state = self.saveState().data()
+
+        # Save to db
+        self.db.commit()
 
     def activeMdiChild(self):
         # TODO: From PyQt examples, add license info back in
