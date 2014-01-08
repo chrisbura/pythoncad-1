@@ -39,8 +39,6 @@ from interface.dialogs.preferences  import Preferences
 from kernel.exception               import *
 from kernel.initsetting             import * #SNAP_POINT_ARRAY, ACTIVE_SNAP_POINT
 
-from interface.drawinghelper.polarguides import getPolarMenu
-
 from kernel.command.segmentcommand import SegmentCommand
 from kernel.command.circlecommand import CircleCommand
 from kernel.command.pointcommand import PointCommand
@@ -78,15 +76,8 @@ class MainWindow(QtGui.QMainWindow):
         # Initialize self.settings with either the row in the db or a new Settings object
         self.initialize_settings()
 
-
-
-
-        # create all dock windows
-        # self._createDockWindows()
-        # create status bar
+        # Create status bar
         self._createStatusBar()
-        self.setUnifiedTitleAndToolBarOnMac(True)
-        self.lastDirectory=os.getenv('USERPROFILE') or os.getenv('HOME')
 
         # Menubar
         self.menubar = self.menuBar()
@@ -154,62 +145,13 @@ class MainWindow(QtGui.QMainWindow):
             return self.mdiArea.activeSubWindow().view
 
     def _createStatusBar(self):
-        '''
-            Creates the statusbar object.
-        '''
-
-        self.statusBar().showMessage("Ready")
-
-        #------------------------------------------------------------------------------------Create status buttons
-
-
-
-        #Grid
-        self.GridStatus=statusButton('SGrid.png', 'Grid Mode [not available yet]')
-        self.connect(self.GridStatus, QtCore.SIGNAL('clicked()'), self.setGrid)
-        self.statusBar().addPermanentWidget(self.GridStatus)
-
-        #------------------------------------------------------------------------------------Set coordinates label on statusbar (updated by idocumet)
-        self.coordLabel=QtGui.QLabel("x=0.000\ny=0.000")
+        self.coordLabel=QtGui.QLabel("X=0.000 Y=0.000")
         self.coordLabel.setAlignment(QtCore.Qt.AlignVCenter)
         self.coordLabel.setFrameStyle(QtGui.QFrame.Panel | QtGui.QFrame.Sunken)
-        self.coordLabel.setMinimumWidth(80)
-        self.coordLabel.setMaximumHeight(20)
-        self.coordLabel.setFont(QtGui.QFont("Sans", 6))
+        # self.coordLabel.setMinimumWidth(80)
+        # self.coordLabel.setMaximumHeight(20)
+        self.coordLabel.setFont(QtGui.QFont("Sans", 10))
         self.statusBar().addPermanentWidget(self.coordLabel)
-
-    def setForceDirection(self):
-        if self.forceDirectionStatus.isChecked():
-            self.scene.forceDirectionEnabled=True
-            self.forceDirectionStatus.setFocus(False)
-            if self.scene.activeICommand!=None and self.scene.fromPoint!=None:
-                self.scene.GuideHandler.show()
-        else:
-            self.scene.forceDirectionEnabled=False
-            self.scene.GuideHandler.hide()
-
-    def setSnapStatus(self):
-        if self.SnapStatus.isChecked():
-            self.scene.snappingPoint.activeSnap=SNAP_POINT_ARRAY['LIST']
-        else:
-            self.scene.snappingPoint.activeSnap=SNAP_POINT_ARRAY['NONE']
-
-    def setGrid(self):
-        pass
-
-    def commandExecuted(self):
-        self.resetCommand()
-
-    def _createDockWindows(self):
-        '''
-            Creates all dockable windows for the application
-        '''
-        # commandline
-        # command_dock = self.__cmd_intf.commandLine
-        # if the commandline exists, add it
-        if not command_dock is None:
-            self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, command_dock)
-        return
 
     def closeEvent(self, event):
         # Close all open document db connections
@@ -234,15 +176,6 @@ class MainWindow(QtGui.QMainWindow):
             Sub windows activation
         """
         self.updateMenus()
-
-    def resetCommand(self):
-        """
-            Resect the active command
-        """
-        # self.__cmd_intf.resetCommand()
-        if self.scene!=None:
-            self.scene.cancelCommand()
-        self.statusBar().showMessage("Ready")
 
     def updateMenus(self):
         hasMdiChild = (self.activeMdiChild() is not None)
@@ -347,12 +280,6 @@ class MainWindow(QtGui.QMainWindow):
         self.db.query(RecentFile).delete()
         self.updateRecentFileList()
 
-    def strippedName(self, fullFileName):
-        """
-            get only the name of the filePath
-        """
-        return QtCore.QFileInfo(fullFileName).fileName()
-
     def openDrawing(self, file_path):
         if not os.path.exists(file_path):
             # TODO: Return a proper error
@@ -363,7 +290,6 @@ class MainWindow(QtGui.QMainWindow):
         self.updateRecentFileList()
         self.update_window_menu()
         self.view.fit()
-        return
 
     def _onNewDrawing(self):
         child = self.create_subwindow()
@@ -376,10 +302,11 @@ class MainWindow(QtGui.QMainWindow):
             Open an existing drawing PDR or DXF
         '''
         # ask the user to select an existing drawing
-        drawing = str(QtGui.QFileDialog.getOpenFileName(parent=self,directory=self.lastDirectory,  caption ="Open Drawing", filter ="Drawings (*.pdr *.dxf)"))
+        directory = os.getenv('USERPROFILE') or os.getenv('HOME')
+        drawing = str(QtGui.QFileDialog.getOpenFileName(parent=self,directory=directory,  caption ="Open Drawing", filter ="Drawings (*.pdr *.dxf)"))
         # open a document and load the drawing
         if len(drawing)>0:
-            self.lastDirectory=os.path.split(drawing)[0]
+            directory=os.path.split(drawing)[0]
             (name, extension)=os.path.splitext(drawing)
             if extension.upper()=='.DXF':
                 child = self.create_subwindow()
@@ -399,10 +326,11 @@ class MainWindow(QtGui.QMainWindow):
         '''
             Import existing drawing in current drawing (some issues with PyQt4.7)
         '''
-        drawing = QtGui.QFileDialog.getOpenFileName(parent=self, caption="Import Drawing", directory=self.lastDirectory, filter="Dxf (*.dxf)");
+        directory = os.getenv('USERPROFILE') or os.getenv('HOME')
+        drawing = QtGui.QFileDialog.getOpenFileName(parent=self, caption="Import Drawing", directory=directory, filter="Dxf (*.dxf)");
         # open a document and load the drawing
         if len(drawing)>0:
-            self.lastDirectory=os.path.split(drawing)[0]
+            directory=os.path.split(drawing)[0]
             self.mdiArea.activeSubWindow().importExternalFormat(drawing)
         return
 
@@ -453,13 +381,6 @@ class MainWindow(QtGui.QMainWindow):
         self.update_window_menu()
         return
 
-    def preferences(self):
-        p=Preferences(self)
-        #TODO: Fill up preferences
-        if (p.exec_() == QtGui.QDialog.Accepted):
-            #TODO: save Preferences
-            pass
-
     def _onAbout(self):
         QtGui.QMessageBox.about(self, "About PythonCAD",
                 """<b>PythonCAD</b> is a CAD package written, surprisingly enough, in Python using the PyQt4 interface.<p>
@@ -473,10 +394,6 @@ class MainWindow(QtGui.QMainWindow):
                    <a href="http://pythoncad.sourceforge.net/dokuwiki/doku.php">PythonCAD Wiki Page</a>
                    """)
         return
-
-    def updateInput(self, message):
-        # self.__cmd_intf.commandLine.printMsg(str(message))
-        self.statusBar().showMessage(str(message))
 
     @staticmethod
     def critical(text):
@@ -570,12 +487,6 @@ class MainWindow(QtGui.QMainWindow):
             return activeSubWindow.widget()
         return None
 
-    def switchLayoutDirection(self):
-        if self.layoutDirection() == QtCore.Qt.LeftToRight:
-            QtGui.qApp.setLayoutDirection(QtCore.Qt.RightToLeft)
-        else:
-            QtGui.qApp.setLayoutDirection(QtCore.Qt.LeftToRight)
-
     def _getIcon(self, cmd):
         '''
         Create an QIcon object based on the command name.
@@ -590,60 +501,3 @@ class MainWindow(QtGui.QMainWindow):
             return icon
         # icon not found, don't use an icon, return None
         return None
-
-    def keyPressEvent(self, event):
-        if event.key()==QtCore.Qt.Key_Escape:
-            self.resetCommand()
-
-        super(MainWindow, self).keyPressEvent(event)
-
-    def plotFromSympy(self, objects):
-        """
-            plot the sympy Object into PythonCAD
-        """
-        if self.mdiArea.currentSubWindow()==None:
-            self._onNewDrawing()
-        for obj in objects:
-            self.plotSympyEntity(obj)
-
-    def plotSympyEntity(self, sympyEntity):
-        """
-            plot the sympy entity
-        """
-        self.mdiArea.currentSubWindow().document.saveSympyEnt(sympyEntity)
-
-    def createSympyDocument(self):
-        """
-            create a new document to be used by sympy plugin
-        """
-        self._onNewDrawing()
-
-    def getSympyObject(self):
-        """
-            get an array of sympy object
-        """
-        #if self.Application.ActiveDocument==None:
-        if self.mdiArea.currentSubWindow()==None:
-            raise StructuralError("unable to get the active document")
-
-        ents=self.mdiArea.currentSubWindow().scene.getAllBaseEntity()
-        return [ents[ent].geoItem.getSympy() for ent in ents if ent!=None]
-
-class statusButton(QtGui.QToolButton):
-    def __init__(self, icon=None,  tooltip=None):
-        super(statusButton, self).__init__()
-        self.setCheckable(True)
-        self.setFixedSize(30, 20)
-        if icon:
-            self.getIcon(icon)
-        self.setToolTip(tooltip)
-
-    def getIcon(self, fileName):
-        iconpath=os.path.join(os.getcwd(), 'icons', fileName)
-        self.setIcon(QtGui.QIcon(iconpath))
-
-    def mousePressEvent(self, event):
-        if event.button()==QtCore.Qt.LeftButton:
-            self.click()
-        elif event.button()==QtCore.Qt.RightButton:
-            self.showMenu()
