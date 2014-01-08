@@ -162,19 +162,6 @@ class MainWindow(QtGui.QMainWindow):
 
         #------------------------------------------------------------------------------------Create status buttons
 
-        #Force Direction
-        self.forceDirectionStatus=statusButton('SForceDir.png', 'Orthogonal Mode [right click will in the future set increment constrain angle]')
-        self.connect(self.forceDirectionStatus, QtCore.SIGNAL('clicked()'), self.setForceDirection)
-        self.forceDirectionStatus.setMenu(getPolarMenu())
-        self.statusBar().addPermanentWidget(self.forceDirectionStatus)
-
-
-        #Snap
-        self.SnapStatus=statusButton('SSnap.png', 'Snap [right click displays snap list]\n for future implementation it should be a checkist')
-        self.connect(self.SnapStatus, QtCore.SIGNAL('clicked()'), self.setSnapStatus)
-        # self.SnapStatus.setMenu(self.__cmd_intf.Category.getMenu(6))
-        self.SnapStatus.setChecked(True)
-        self.statusBar().addPermanentWidget(self.SnapStatus)
 
 
         #Grid
