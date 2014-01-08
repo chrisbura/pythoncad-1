@@ -12,3 +12,9 @@ from kernel.geoentity.ccircle           import CCircle
 from kernel.geoentity.polyline          import Polyline
 from kernel.geoentity.segment           import Segment
 from kernel.geoentity.text              import Text
+
+from .pointcommand import PointCommand
+from .segmentcommand import SegmentCommand
+from .rectanglecommand import RectangleCommand
+from .circlecommand import CircleCommand
+from .ellipsecommand import EllipseCommand

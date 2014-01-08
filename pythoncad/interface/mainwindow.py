@@ -39,11 +39,7 @@ from interface.dialogs.preferences  import Preferences
 from kernel.exception               import *
 from kernel.initsetting             import * #SNAP_POINT_ARRAY, ACTIVE_SNAP_POINT
 
-from kernel.command.segmentcommand import SegmentCommand
-from kernel.command.circlecommand import CircleCommand
-from kernel.command.pointcommand import PointCommand
-from kernel.command.ellipsecommand import EllipseCommand
-from kernel.command.rectanglecommand import RectangleCommand
+from kernel.command import *
 
 from interface.db.settings import InterfaceDb
 from interface.db.schema import RecentFile, Settings
@@ -216,19 +212,24 @@ class MainWindow(QtGui.QMainWindow):
 
     def populate_toolbar(self):
 
-        self.point_action  = QtGui.QAction(QtGui.QIcon('icons/point.png'), 'Point', self,
+        self.point_action  = QtGui.QAction(
+            QtGui.QIcon('icons/point.png'), 'Point', self,
             triggered=partial(self._call_command, PointCommand))
 
-        self.segment_action  = QtGui.QAction(QtGui.QIcon('icons/segment.png'), 'Segment', self,
+        self.segment_action  = QtGui.QAction(
+            QtGui.QIcon('icons/segment.png'), 'Segment', self,
             triggered=partial(self._call_command, SegmentCommand))
 
-        self.rectangle_action  = QtGui.QAction(QtGui.QIcon('icons/rectangle.png'), 'Rectangle', self,
+        self.rectangle_action  = QtGui.QAction(
+            QtGui.QIcon('icons/rectangle.png'), 'Rectangle', self,
             triggered=partial(self._call_command, RectangleCommand))
 
-        self.circle_action  = QtGui.QAction(QtGui.QIcon('icons/circle.png'), 'Circle', self,
+        self.circle_action  = QtGui.QAction(
+            QtGui.QIcon('icons/circle.png'), 'Circle', self,
             triggered=partial(self._call_command, CircleCommand))
 
-        self.ellipse_action  = QtGui.QAction(QtGui.QIcon('icons/ellipse.png'), 'Ellipse', self,
+        self.ellipse_action  = QtGui.QAction(
+            QtGui.QIcon('icons/ellipse.png'), 'Ellipse', self,
             triggered=partial(self._call_command, EllipseCommand))
 
         for action in self.actions:
