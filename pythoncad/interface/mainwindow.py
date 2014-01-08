@@ -24,7 +24,6 @@
 #sip.setapi('QString', 2)
 
 import os
-import sys
 import datetime
 from functools import partial
 
@@ -35,21 +34,15 @@ import cadwindow_rc
 from application            import Application
 
 #Interface
-from interface.layerintf.layerdock  import LayerDock
-from interface.cadscene             import CadScene
-from interface.cadview              import CadView
 from interface.subwindow            import SubWindow
-from interface.cmdintf.cmdintf      import CmdIntf
-from interface.entity.base          import BaseEntity
-from interface.command.icommand     import InterfaceCommand
 from interface.cadinitsetting       import *
 from interface.dialogs.preferences  import Preferences
 #Kernel
 from kernel.exception               import *
 from kernel.initsetting             import * #SNAP_POINT_ARRAY, ACTIVE_SNAP_POINT
 
-
 from interface.drawinghelper.polarguides import getPolarMenu
+
 from kernel.command.circlecommand import CircleCommand
 from kernel.command.pointcommand import PointCommand
 from kernel.command.ellipsecommand import EllipseCommand
@@ -167,13 +160,6 @@ class MainWindow(QtGui.QMainWindow):
             get the kernel application object
         """
         return self.__application
-
-    @property
-    def LayerDock(self):
-        """
-            get the layer tree dockable window
-        """
-        return self.__layer_dock
 
     def _createStatusBar(self):
         '''
@@ -512,52 +498,6 @@ class MainWindow(QtGui.QMainWindow):
                    <a href="http://pythoncad.sourceforge.net/dokuwiki/doku.php">PythonCAD Wiki Page</a>
                    """)
         return
-
-    def callCommand(self, command_name, commandFrom=None):
-        """
-        Call a document command (kernel)
-
-        """
-        # TODO: Pass command directly
-
-        try:
-
-            if commandFrom == None or commandFrom == 'kernel':
-                self.scene.activeKernelCommand = self.__application.getCommand(command_name)
-            elif commandFrom=='document':
-                self.scene.activeKernelCommand = self.getCommand(command_name)
-            else:
-                return
-
-            self.scene.activeICommand = InterfaceCommand(self.scene)
-            self.scene.activeICommand.updateInput += self.updateInput
-            # self.updateInput(self.scene.activeKernelCommand.activeMessage)
-            self.updateInput(self.scene.activeKernelCommand.message)
-
-
-        except EntityMissing:
-            self.scene.cancelCommand()
-            self.critical("You need to have an active document to perform this command")
-        #checks if scene has selected items and launches them directly to the ICommand
-        #if it's first prompt it's "give me entities"
-        if len(self.scene.selectedItems())>0:
-            if  self.scene.activeKernelCommand.activeException()==ExcMultiEntity:
-                qtItems=[item for item in self.scene.selectedItems() if isinstance(item, BaseEntity)]
-                self.scene.activeICommand.addMouseEvent(point=None,
-                                                    entity=qtItems,
-                                                    force=None)
-            else:
-                self.scene.clearSelection()
-
-    def getCommand(self, name):
-        """
-            get an interface command
-        """
-        if INTERFACE_COMMAND.has_key(name):
-            return INTERFACE_COMMAND[name](self.mdiArea.activeSubWindow().document,
-                                           self.mdiArea.activeSubWindow())
-        else:
-            self.critical("Wrong command")
 
     def updateInput(self, message):
         # self.__cmd_intf.commandLine.printMsg(str(message))
