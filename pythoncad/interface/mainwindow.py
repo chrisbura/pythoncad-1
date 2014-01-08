@@ -31,8 +31,6 @@ from PyQt4 import QtCore, QtGui
 
 import cadwindow_rc
 
-from application            import Application
-
 #Interface
 from interface.subwindow            import SubWindow
 from interface.cadinitsetting       import *
@@ -43,6 +41,7 @@ from kernel.initsetting             import * #SNAP_POINT_ARRAY, ACTIVE_SNAP_POIN
 
 from interface.drawinghelper.polarguides import getPolarMenu
 
+from kernel.command.segmentcommand import SegmentCommand
 from kernel.command.circlecommand import CircleCommand
 from kernel.command.pointcommand import PointCommand
 from kernel.command.ellipsecommand import EllipseCommand
@@ -50,6 +49,8 @@ from kernel.command.rectanglecommand import RectangleCommand
 
 from interface.db.settings import InterfaceDb
 from interface.db.schema import RecentFile, Settings
+
+from kernel.document import Document
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -80,8 +81,6 @@ class MainWindow(QtGui.QMainWindow):
 
 
 
-        #pythoncad kernel
-        self.__application = Application()
         # create all dock windows
         # self._createDockWindows()
         # create status bar
@@ -153,13 +152,6 @@ class MainWindow(QtGui.QMainWindow):
     def view(self):
         if self.mdiArea.activeSubWindow():
             return self.mdiArea.activeSubWindow().view
-
-    @property
-    def Application(self):
-        """
-            get the kernel application object
-        """
-        return self.__application
 
     def _createStatusBar(self):
         '''
@@ -234,9 +226,9 @@ class MainWindow(QtGui.QMainWindow):
 
     def closeEvent(self, event):
         # Close all open document db connections
-        open_documents = self.__application.open_documents
-        for path, document in open_documents.iteritems():
-            del(document.connection)
+        subwindows = self.mdiArea.subWindowList()
+        for subwindow in subwindows:
+            subwindow.document.close()
 
         # Close all subwindows
         # TODO: Check if their closeEvents are called, move db close to there
@@ -254,10 +246,6 @@ class MainWindow(QtGui.QMainWindow):
         """
             Sub windows activation
         """
-        if self.mdiArea.activeSubWindow():
-            if (self.mdiArea.activeSubWindow().document != self.__application.ActiveDocument):
-                self.resetCommand()
-                self.__application.ActiveDocument = self.mdiArea.activeSubWindow().document
         self.updateMenus()
 
     def resetCommand(self):
@@ -286,9 +274,9 @@ class MainWindow(QtGui.QMainWindow):
 
         # If a file_name is given then open that document, else create a new document
         if file_name:
-            document = self.__application.openDocument(file_name)
+            document = Document(file_name)
         else:
-            document = self.__application.newDocument()
+            document = Document()
 
         # Update recent files
         # TODO: Move to a manager class
@@ -434,7 +422,7 @@ class MainWindow(QtGui.QMainWindow):
     def _onSaveAsDrawing(self):
         drawing = QtGui.QFileDialog.getSaveFileName(self, "Save As...", "/home", filter ="Drawings (*.pdr *.dxf)");
         if len(drawing)>0:
-            self.__application.saveAs(drawing)
+            self.application.saveAs(drawing)
 
             # Connection has been closed already so close the child window
             self.mdiArea.closeActiveSubWindow()
@@ -465,7 +453,7 @@ class MainWindow(QtGui.QMainWindow):
         active_subwindow = self.mdiArea.activeSubWindow()
         path = active_subwindow.document.db_path
 
-        self.__application.closeDocument(path)
+        active_subwindow.document.close()
         self.mdiArea.closeActiveSubWindow()
         # TODO: Emit open document change signal
         self.update_window_menu()
@@ -473,7 +461,7 @@ class MainWindow(QtGui.QMainWindow):
     def _onCloseAll(self):
         window_list = self.mdiArea.subWindowList()
         for window in window_list:
-            self.__application.closeDocument(window.fileName)
+            window.document.close()
         self.mdiArea.closeAllSubWindows()
         self.update_window_menu()
         return

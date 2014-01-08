@@ -57,7 +57,7 @@ class SubWindow(QtGui.QMdiSubWindow):
         """
         get the kernel application object
         """
-        return self.__application
+        return self.application
 
     @property
     def layerDock(self):
@@ -137,7 +137,7 @@ class SubWindow(QtGui.QMdiSubWindow):
 
     def closeEvent(self, event):
         super(SubWindow, self).closeEvent(event)
-        # TODO: Verify if document is being closed (self.__application.closeDocument(path))
+        # TODO: Verify if document is being closed (self.application.closeDocument(path))
         self._mainwindow.update_window_menu()
 
     def setStatusbarCoords(self, x, y, status):

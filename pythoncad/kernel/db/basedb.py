@@ -137,7 +137,7 @@ class BaseDb(object):
             raise KeyError
 
     def close(self):
-        self.db.close()
+        del self.db
 
     def suspendCommit(self):
         """
