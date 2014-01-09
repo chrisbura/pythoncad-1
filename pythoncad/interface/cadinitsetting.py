@@ -39,9 +39,6 @@ from PyQt4 import QtCore
 
 from interface.command.distance2point import Distance2Point
 
-from kernel.command.segmentcommand import SegmentCommand
-from kernel.command.circlecommand import CircleCommand
-from kernel.command.ellipsecommand import EllipseCommand
 from kernel.db import schema
 
 ENTITY_MAP = {

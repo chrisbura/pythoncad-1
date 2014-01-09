@@ -1,5 +1,6 @@
 #
 # Copyright (c) 2010 Matteo Boscolo
+# Copyright (c) 2013-2014 Christopher Bura
 #
 # This file is part of PythonCAD.
 #
@@ -18,35 +19,26 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# This is only needed for Python v2 but is harmless for Python v3.
-
-#import sip
-#sip.setapi('QString', 2)
-
 import os
-import datetime
+from datetime import datetime
 from functools import partial
 
 from PyQt4 import QtCore, QtGui
 
-import cadwindow_rc
-
-#Interface
-from interface.subwindow            import SubWindow
-from interface.cadinitsetting       import *
-from interface.dialogs.preferences  import Preferences
-#Kernel
-from kernel.exception               import *
-from kernel.initsetting             import * #SNAP_POINT_ARRAY, ACTIVE_SNAP_POINT
-
 from kernel.command import *
+from kernel.initsetting import MAX_RECENT_FILE
 
+from interface.subwindow import SubWindow
 from interface.db.settings import InterfaceDb
 from interface.db.schema import RecentFile, Settings
 
 from kernel.document import Document
 
 class MainWindow(QtGui.QMainWindow):
+
+    document_opened = QtCore.pyqtSignal()
+    document_closed = QtCore.pyqtSignal()
+
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
 
@@ -62,6 +54,12 @@ class MainWindow(QtGui.QMainWindow):
         self.mdiArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.setCentralWidget(self.mdiArea)
 
+        self.create_actions()
+        self.create_menus()
+        self.create_toolbars()
+        self.create_statusbar()
+        self.update_menus()
+
         # Initialize Interface settings
         # TODO: Have user configurable location (or just the homedir)
         current_folder = os.getcwd()
@@ -71,147 +69,39 @@ class MainWindow(QtGui.QMainWindow):
 
         # Initialize self.settings with either the row in the db or a new Settings object
         self.initialize_settings()
+        self.restore_geometry()
 
-        # Create status bar
-        self._createStatusBar()
-
-        # Menubar
-        self.menubar = self.menuBar()
-        self.populate_menu()
-
-        self.updateRecentFileList()
-
-        # Toolbar
-        self.actions = [
-            'point_action',
-            'segment_action',
-            'rectangle_action',
-            'circle_action',
-            'ellipse_action'
-        ]
-        self.command_toolbar = self.addToolBar('Commands')
-        self.command_toolbar.setMovable(False)
-        self.command_toolbar.setObjectName('command_toolbar')
-        self.populate_toolbar()
-
-        # Toggle button enabled/disabled
-        self.updateMenus()
+        # Update Menu > File > Recent list
+        self.update_recent()
 
         # Build window menu
         self.update_window_menu()
 
         # Signals
         # TODO: Merge into a 'rebuild' method
-        self.mdiArea.subWindowActivated.connect(self.subWindowActivatedEvent)
         self.mdiArea.subWindowActivated.connect(self.update_window_menu)
-        self.mdiArea.subWindowActivated.connect(self.updateMenus)
+        self.mdiArea.subWindowActivated.connect(self.update_menus)
 
-        self.readSettings() #now works for position and size and ismaximized, and finally toolbar position
+        self.document_opened.connect(self.update_window_menu)
+        self.document_opened.connect(self.update_recent)
+        self.document_opened.connect(self.update_menus)
 
-    def populate_menu(self):
-        # File Menu
-        self.file_menu = self.menubar.addMenu('&File')
+        self.document_closed.connect(self.update_window_menu)
+        self.document_closed.connect(self.update_menus)
 
-        file_new = QtGui.QAction('&New File', self, triggered=self._onNewDrawing)
 
-        self.file_open_recent = QtGui.QMenu('Open &Recent File', self)
+    def create_actions(self):
+        # Menu > File Actions
+        self.new_action = QtGui.QAction('&New File', self,
+            triggered=self.new_document)
+        self.close_action = QtGui.QAction('&Close File', self,
+            triggered=self.close_document)
+        self.quit_action  = QtGui.QAction('&Quit', self,
+            triggered=QtGui.qApp.closeAllWindows)
 
-        file_close = QtGui.QAction('&Close File', self, triggered=self._onCloseDrawing)
+        self.open_recent_menu = QtGui.QMenu('Open &Recent File', self)
 
-        # TODO: Close all subwindows properly (close the db connections)?
-        file_quit  = QtGui.QAction('&Quit', self, triggered=QtGui.qApp.closeAllWindows)
-
-        self.file_menu.addAction(file_new)
-        self.file_menu.addMenu(self.file_open_recent)
-        self.file_menu.addSeparator()
-        self.file_menu.addAction(file_close)
-        self.file_menu.addSeparator()
-        self.file_menu.addAction(file_quit)
-
-        self.window_menu = self.menubar.addMenu('&Windows')
-
-    @property
-    def scene(self):
-        if self.mdiArea.activeSubWindow():
-            return self.mdiArea.activeSubWindow().scene
-
-    @property
-    def view(self):
-        if self.mdiArea.activeSubWindow():
-            return self.mdiArea.activeSubWindow().view
-
-    def _createStatusBar(self):
-        self.coordLabel=QtGui.QLabel("X=0.000 Y=0.000")
-        self.coordLabel.setAlignment(QtCore.Qt.AlignVCenter)
-        self.coordLabel.setFrameStyle(QtGui.QFrame.Panel | QtGui.QFrame.Sunken)
-        # self.coordLabel.setMinimumWidth(80)
-        # self.coordLabel.setMaximumHeight(20)
-        self.coordLabel.setFont(QtGui.QFont("Sans", 10))
-        self.statusBar().addPermanentWidget(self.coordLabel)
-
-    def closeEvent(self, event):
-        # Close all open document db connections
-        subwindows = self.mdiArea.subWindowList()
-        for subwindow in subwindows:
-            subwindow.document.close()
-
-        # Close all subwindows
-        # TODO: Check if their closeEvents are called, move db close to there
-        self.mdiArea.closeAllSubWindows()
-
-        # Write settings (window position, maximized, etc)
-        self.writeSettings()
-
-        # Close the settings database
-        del(self.settings_db)
-
-        event.accept()
-
-    def subWindowActivatedEvent(self):
-        """
-            Sub windows activation
-        """
-        self.updateMenus()
-
-    def updateMenus(self):
-        hasMdiChild = (self.activeMdiChild() is not None)
-
-        # TODO: refactor
-        for action in self.actions:
-            getattr(self, action).setEnabled(hasMdiChild)
-
-    def create_subwindow(self, file_name=None):
-
-        # If the file is already open then just activate that subwindow
-        subwindows = self.mdiArea.subWindowList()
-        for subwindow in subwindows:
-            if subwindow.document.db_path == file_name:
-                return subwindow
-
-        # If a file_name is given then open that document, else create a new document
-        if file_name:
-            document = Document(file_name)
-        else:
-            document = Document()
-
-        # Update recent files
-        # TODO: Move to a manager class
-        # TODO: Make sure the file was actually opened before adding, ie. don't add an invalid file
-        recent_file = self.db.query(RecentFile).filter_by(path=document.db_path).first()
-        if recent_file:
-            recent_file.last_access = datetime.datetime.now()
-            self.db.commit()
-        else:
-            recent_file = RecentFile(path=document.db_path, last_access=datetime.datetime.now())
-            self.db.add(recent_file)
-            self.db.commit()
-
-        child = SubWindow(document, self)
-        self.mdiArea.addSubWindow(child)
-        return child
-
-    def populate_toolbar(self):
-
+        # Toolbar > Command Actions
         self.point_action  = QtGui.QAction(
             QtGui.QIcon('icons/point.png'), 'Point', self,
             triggered=partial(self._call_command, PointCommand))
@@ -232,8 +122,102 @@ class MainWindow(QtGui.QMainWindow):
             QtGui.QIcon('icons/ellipse.png'), 'Ellipse', self,
             triggered=partial(self._call_command, EllipseCommand))
 
-        for action in self.actions:
-            self.command_toolbar.addAction(getattr(self, action))
+    def create_menus(self):
+        # File Menu
+        self.file_menu = self.menuBar().addMenu('&File')
+        self.file_menu.addAction(self.new_action)
+        self.file_menu.addMenu(self.open_recent_menu)
+        self.file_menu.addSeparator()
+        self.file_menu.addAction(self.close_action)
+        self.file_menu.addSeparator()
+        self.file_menu.addAction(self.quit_action)
+
+        # Window Menu
+        self.window_menu = self.menuBar().addMenu('&Windows')
+
+    def create_toolbars(self):
+        # Command Toolbar
+        self.command_toolbar = self.addToolBar('Commands')
+        self.command_toolbar.setObjectName('command_toolbar')
+        self.command_toolbar.addAction(self.point_action)
+        self.command_toolbar.addAction(self.segment_action)
+        self.command_toolbar.addAction(self.rectangle_action)
+        self.command_toolbar.addAction(self.circle_action)
+        self.command_toolbar.addAction(self.ellipse_action)
+
+    def create_statusbar(self):
+        self.coordinate_label = QtGui.QLabel("X=0.000 Y=0.000")
+        self.coordinate_label.setAlignment(QtCore.Qt.AlignVCenter)
+        self.coordinate_label.setFrameStyle(QtGui.QFrame.Panel | QtGui.QFrame.Sunken)
+        # self.coordinate_label.setMinimumWidth(80)
+        # self.coordinate_label.setMaximumHeight(20)
+        self.coordinate_label.setFont(QtGui.QFont("Sans", 10))
+        self.statusBar().addPermanentWidget(self.coordinate_label)
+
+    def update_menus(self):
+        hasMdiChild = (self.activeMdiChild() is not None)
+
+        # Menu > File
+        self.close_action.setEnabled(hasMdiChild)
+
+        # Toolbar > Command
+        self.point_action.setEnabled(hasMdiChild)
+        self.segment_action.setEnabled(hasMdiChild)
+        self.rectangle_action.setEnabled(hasMdiChild)
+        self.circle_action.setEnabled(hasMdiChild)
+        self.ellipse_action.setEnabled(hasMdiChild)
+
+    def closeEvent(self, event):
+        # Close all open document db connections
+        subwindows = self.mdiArea.subWindowList()
+        for subwindow in subwindows:
+            subwindow.document.close()
+
+        # TODO: Check if their closeEvents are called, move db close to there
+        self.mdiArea.closeAllSubWindows()
+
+        # Write settings (window position, maximized, etc)
+        self.writeSettings()
+
+        # Close the settings database
+        del self.settings_db
+
+        event.accept()
+
+    def create_subwindow(self, file_name=None):
+
+        # If the file is already open then just activate that subwindow
+        subwindows = self.mdiArea.subWindowList()
+        for subwindow in subwindows:
+            if subwindow.document.db_path == file_name:
+                return subwindow
+
+        # If a file_name is given then open that document, else create a new document
+        if file_name:
+            document = Document(file_name)
+        else:
+            document = Document()
+
+        # Update recent files
+        # TODO: Move to a manager class
+        # TODO: Make sure the file was actually opened before adding, ie. don't add an invalid file
+        # TODO: Move to signal (document opened)
+        recent_file = self.db.query(RecentFile).filter_by(path=document.db_path).first()
+        if recent_file:
+            recent_file.last_access = datetime.now()
+            self.db.commit()
+        else:
+            recent_file = RecentFile(path=document.db_path, last_access=datetime.now())
+            self.db.add(recent_file)
+            self.db.commit()
+
+        child = SubWindow(document, self)
+        self.mdiArea.addSubWindow(child)
+
+        self.update_window_menu()
+        self.update_menus()
+
+        return child
 
     def _call_command(self, command):
         # TODO: can be simplified?
@@ -247,6 +231,7 @@ class MainWindow(QtGui.QMainWindow):
         be rebuilt
 
         """
+
         self.window_menu.clear()
         window_list = self.mdiArea.subWindowList()
         for window in window_list:
@@ -255,31 +240,31 @@ class MainWindow(QtGui.QMainWindow):
             action.setChecked(window.widget() is self.activeMdiChild())
             action.triggered.connect(partial(self.mdiArea.setActiveSubWindow, window))
 
-    def updateRecentFileList(self):
+    def update_recent(self):
         # Empty out the recent submenu
-        self.file_open_recent.clear()
+        self.open_recent_menu.clear()
         # TODO: Move to a manager class
         # TODO: Clear old entries after some condition
         recent_files = self.db.query(RecentFile).order_by(RecentFile.last_access.desc())[:MAX_RECENT_FILE]
 
         if not recent_files:
             # Add a blank action if there are no recent files
-            self.file_open_recent.addAction('None').setDisabled(True)
+            self.open_recent_menu.addAction('None').setDisabled(True)
 
         for recent_file in recent_files:
             entry = QtGui.QAction(recent_file.path, self)
             entry.triggered.connect(partial(self.openDrawing, recent_file))
-            self.file_open_recent.addAction(entry)
+            self.open_recent_menu.addAction(entry)
 
-        self.file_open_recent.addSeparator()
+        self.open_recent_menu.addSeparator()
         clear_now = QtGui.QAction('Clear Now', self)
         clear_now.triggered.connect(self.clear_recent)
-        self.file_open_recent.addAction(clear_now)
+        self.open_recent_menu.addAction(clear_now)
 
     def clear_recent(self):
         # TODO: Check return value
         self.db.query(RecentFile).delete()
-        self.updateRecentFileList()
+        self.update_recent()
 
     def openDrawing(self, file_path):
         if not os.path.exists(file_path):
@@ -288,15 +273,13 @@ class MainWindow(QtGui.QMainWindow):
         child = self.create_subwindow(file_path)
         child.show()
         self.mdiArea.setActiveSubWindow(child)
-        self.updateRecentFileList()
-        self.update_window_menu()
-        self.view.fit()
+        # self.view.fit()
+        self.document_opened.emit()
 
-    def _onNewDrawing(self):
+    def new_document(self):
         child = self.create_subwindow()
         child.show()
-        self.update_window_menu()
-        self.updateRecentFileList()
+        self.document_opened.emit()
 
     def _onOpenDrawing(self):
         '''
@@ -318,9 +301,8 @@ class MainWindow(QtGui.QMainWindow):
                 self.critical("Wrong command selected")
                 return
             child.show()
-            self.updateRecentFileList()
-            self.update_window_menu()
-            self.view.fit()
+            self.document_opened.emit()
+            # self.view.fit()
         return
 
     def _onImportDrawing(self):
@@ -345,13 +327,12 @@ class MainWindow(QtGui.QMainWindow):
             # Create new child window with the new path/filename
             child = self.create_subwindow(drawing)
             child.show()
-            self.updateRecentFileList()
-            self.update_window_menu()
-            self.view.fit()
+            self.document_opened.emit()
+            # self.view.fit()
 
     def _onPrint(self):
 #       printer.setPaperSize(QPrinter.A4);
-        self.scene.clearSelection()
+        # self.scene.clearSelection()
         printer=QtGui.QPrinter()
         printDialog=QtGui.QPrintDialog(printer)
         if (printDialog.exec_() == QtGui.QDialog.Accepted):
@@ -359,42 +340,29 @@ class MainWindow(QtGui.QMainWindow):
             painter.begin(printer)
             painter.setRenderHint(QtGui.QPainter.Antialiasing);
             #self.mdiArea.activeSubWindow().scene.render(painter)
-            self.mdiArea.activeSubWindow().view.render(painter)
+            # self.mdiArea.activeSubWindow().view.render(painter)
             painter.end()
         self.statusBar().showMessage("Ready")
         return
 
-    def _onCloseDrawing(self):
+    def close_document(self):
         # Get document path of the currently active window we want to close
         active_subwindow = self.mdiArea.activeSubWindow()
         path = active_subwindow.document.db_path
 
         active_subwindow.document.close()
         self.mdiArea.closeActiveSubWindow()
-        # TODO: Emit open document change signal
-        self.update_window_menu()
+
+        self.document_closed.emit()
 
     def _onCloseAll(self):
+        # TODO: Move db close to subwindow closeEvent
         window_list = self.mdiArea.subWindowList()
         for window in window_list:
             window.document.close()
         self.mdiArea.closeAllSubWindows()
-        self.update_window_menu()
-        return
 
-    def _onAbout(self):
-        QtGui.QMessageBox.about(self, "About PythonCAD",
-                """<b>PythonCAD</b> is a CAD package written, surprisingly enough, in Python using the PyQt4 interface.<p>
-                   The PythonCAD project aims to produce a scriptable, open-source,
-                   easy to use CAD package for any Python/PyQt supported Platforms
-                   <p>
-                   This is an Alfa Release For The new R38 Vesion <b>(R38.0.0.5)<b><P>
-                   <p>
-                   <a href="http://sourceforge.net/projects/pythoncad/">PythonCAD Web Site On Sourceforge</a>
-                   <p>
-                   <a href="http://pythoncad.sourceforge.net/dokuwiki/doku.php">PythonCAD Wiki Page</a>
-                   """)
-        return
+        self.document_closed.emit()
 
     @staticmethod
     def critical(text):
@@ -432,7 +400,7 @@ class MainWindow(QtGui.QMainWindow):
             self.db.add(self.settings)
             self.db.commit()
 
-    def readSettings(self):
+    def restore_geometry(self):
         """
         Restores window geometry as well as toolbar positions
 
