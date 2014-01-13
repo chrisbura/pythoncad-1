@@ -82,13 +82,7 @@ class MainWindow(QtGui.QMainWindow):
         self.mdiArea.subWindowActivated.connect(self.update_window_menu)
         self.mdiArea.subWindowActivated.connect(self.update_menus)
 
-        self.document_opened.connect(self.update_window_menu)
         self.document_opened.connect(self.update_recent)
-        self.document_opened.connect(self.update_menus)
-
-        self.document_closed.connect(self.update_window_menu)
-        self.document_closed.connect(self.update_menus)
-
 
     def create_actions(self):
         # Menu > File Actions
@@ -100,6 +94,13 @@ class MainWindow(QtGui.QMainWindow):
             triggered=QtGui.qApp.closeAllWindows)
 
         self.open_recent_menu = QtGui.QMenu('Open &Recent File', self)
+
+        # Menu > Windows
+        self.tile_action = QtGui.QAction('&Tile', self,
+            triggered=self.mdiArea.tileSubWindows)
+
+        self.cascade_action = QtGui.QAction('&Cascade', self,
+            triggered=self.cascade_windows)
 
         # Toolbar > Command Actions
         self.point_action  = QtGui.QAction(
@@ -123,7 +124,7 @@ class MainWindow(QtGui.QMainWindow):
             triggered=partial(self._call_command, EllipseCommand))
 
     def create_menus(self):
-        # File Menu
+        # Menu > File
         self.file_menu = self.menuBar().addMenu('&File')
         self.file_menu.addAction(self.new_action)
         self.file_menu.addMenu(self.open_recent_menu)
@@ -132,11 +133,12 @@ class MainWindow(QtGui.QMainWindow):
         self.file_menu.addSeparator()
         self.file_menu.addAction(self.quit_action)
 
-        # Window Menu
+        # Menu > Windows
         self.window_menu = self.menuBar().addMenu('&Windows')
+        # See update_window_menu() for adding actions to this menu
 
     def create_toolbars(self):
-        # Command Toolbar
+        # Toolbar > Commands
         self.command_toolbar = self.addToolBar('Commands')
         self.command_toolbar.setObjectName('command_toolbar')
         self.command_toolbar.addAction(self.point_action)
@@ -214,13 +216,11 @@ class MainWindow(QtGui.QMainWindow):
         child = SubWindow(document, self)
         self.mdiArea.addSubWindow(child)
 
-        self.update_window_menu()
-        self.update_menus()
-
         return child
 
     def _call_command(self, command):
         # TODO: can be simplified?
+        # TODO: EMIT ONLY TO ACTIVE SUB WINDOW, will apply to all otherwise
         self.emit(QtCore.SIGNAL('command_started'), command)
 
     def update_window_menu(self):
@@ -233,6 +233,11 @@ class MainWindow(QtGui.QMainWindow):
         """
 
         self.window_menu.clear()
+
+        self.window_menu.addAction(self.tile_action)
+        self.window_menu.addAction(self.cascade_action)
+        self.window_menu.addSeparator()
+
         window_list = self.mdiArea.subWindowList()
         for window in window_list:
             action = self.window_menu.addAction('{0}'.format(window.document.db_path))
@@ -253,7 +258,7 @@ class MainWindow(QtGui.QMainWindow):
 
         for recent_file in recent_files:
             entry = QtGui.QAction(recent_file.path, self)
-            entry.triggered.connect(partial(self.openDrawing, recent_file))
+            entry.triggered.connect(partial(self.open_drawing, recent_file.path))
             self.open_recent_menu.addAction(entry)
 
         self.open_recent_menu.addSeparator()
@@ -266,7 +271,7 @@ class MainWindow(QtGui.QMainWindow):
         self.db.query(RecentFile).delete()
         self.update_recent()
 
-    def openDrawing(self, file_path):
+    def open_drawing(self, file_path):
         if not os.path.exists(file_path):
             # TODO: Return a proper error
             return
@@ -287,7 +292,7 @@ class MainWindow(QtGui.QMainWindow):
         '''
         # ask the user to select an existing drawing
         directory = os.getenv('USERPROFILE') or os.getenv('HOME')
-        drawing = str(QtGui.QFileDialog.getOpenFileName(parent=self,directory=directory,  caption ="Open Drawing", filter ="Drawings (*.pdr *.dxf)"))
+        drawing = str(QtGui.QFileDialog.getOpenFileName(parent=self,directory=directory, caption ="Open Drawing", filter ="Drawings (*.pdr *.dxf)"))
         # open a document and load the drawing
         if len(drawing)>0:
             directory=os.path.split(drawing)[0]
@@ -470,3 +475,20 @@ class MainWindow(QtGui.QMainWindow):
             return icon
         # icon not found, don't use an icon, return None
         return None
+
+    def cascade_windows(self):
+        self.mdiArea.cascadeSubWindows()
+
+        # Location of the top left corner of the mdiArea (underneath the menu!!)
+        y = self.mdiArea.geometry().topLeft().y()
+
+        # Height of the titlebar
+        frame_offset_y = self.frameGeometry().height() - self.height()
+        frame_offset_x = self.frameGeometry().width() - self.width()
+
+        for window in self.mdiArea.subWindowList():
+            window.resize(
+                self.width() - window.pos().x() - frame_offset_x,
+                self.height() - y - window.pos().y() - frame_offset_y
+            )
+            window.raise_()
