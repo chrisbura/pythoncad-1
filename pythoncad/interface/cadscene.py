@@ -55,6 +55,10 @@ from interface.preview.factory import getPreviewObject
 
 
 class CadScene(QtGui.QGraphicsScene):
+
+    # TODO: Add shim for PySide (uses only Signal() not pyqtSignal())
+    mouseMoved = QtCore.pyqtSignal(QtGui.QGraphicsSceneMouseEvent)
+
     def __init__(self, document, parent=None):
         super(CadScene, self).__init__(parent)
 
@@ -201,6 +205,9 @@ class CadScene(QtGui.QGraphicsScene):
 
     def mouseMoveEvent(self, event):
         self.emit(QtCore.SIGNAL('mouse_move'), event)
+
+        self.mouseMoved.emit(event)
+
         scenePos=event.scenePos()
         mouseOnSceneX=scenePos.x()
         mouseOnSceneY=scenePos.y()*-1.0
