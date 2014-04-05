@@ -3,3 +3,5 @@
 *.old
 *.gif
 *~
+*.pdr
+*.tmp
