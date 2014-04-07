@@ -26,9 +26,9 @@ from __future__ import generators
 
 import math
 
-from kernel.geoentity.geometricalentity     import *
-from kernel.geoentity.point                 import Point
-from kernel.geoutil.util                    import *
+from pythoncad.geoentity.geometricalentity     import *
+from pythoncad.geoentity.point                 import Point
+from pythoncad.geoutil.util                    import *
 
 class Dimension(GeometricalEntity):
     """

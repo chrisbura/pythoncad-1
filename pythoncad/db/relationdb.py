@@ -23,8 +23,8 @@
 
 import cPickle as pickle
 
-from kernel.entity          import Entity
-from kernel.db.basedb       import BaseDb
+from pythoncad.entity          import Entity
+from pythoncad.db.basedb       import BaseDb
 
 class RelationDb(BaseDb):
     """

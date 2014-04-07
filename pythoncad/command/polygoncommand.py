@@ -26,10 +26,10 @@
 import math
 import array
 
-from kernel.exception                   import *
-from kernel.command.basecommand         import *
-from kernel.geoentity.point             import Point
-from kernel.geoentity.segment           import Segment
+from pythoncad.exception                   import *
+from pythoncad.command.basecommand         import *
+from pythoncad.geoentity.point             import Point
+from pythoncad.geoentity.segment           import Segment
 
 class PolygonCommand(BaseCommand):
     """

@@ -19,9 +19,9 @@
 # along with PythonCAD; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-from kernel.db.schema import Point, Circle, Entity
-from kernel.command.inputs import PointInput, LengthInput
-from kernel.command.command import Command
+from pythoncad.db.schema import Point, Circle, Entity
+from pythoncad.command.inputs import PointInput, LengthInput
+from pythoncad.command.command import Command
 
 class CircleCommand(Command):
     def __init__(self, document):

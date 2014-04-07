@@ -1,5 +1,5 @@
 
-from kernel.db import schema
+from pythoncad.db import schema
 
 class Input(object):
     def __init__(self, message):

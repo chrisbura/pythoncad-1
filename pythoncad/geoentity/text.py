@@ -26,8 +26,8 @@
 from geometricalentity      import GeometricalEntity
 
 
-from kernel.geoutil.util import *
-from kernel.geoentity.point import Point
+from pythoncad.geoutil.util import *
+from pythoncad.geoentity.point import Point
 #
 # Text
 #
@@ -53,7 +53,7 @@ class Text(GeometricalEntity):
 
         if kw['TEXT_2']==None:
             kw['TEXT_2'] = 0
-        from kernel.initsetting             import TEXT_POSITION
+        from pythoncad.initsetting             import TEXT_POSITION
         if kw['TEXT_3']==None:
             kw['TEXT_3'] = 'sw'
         else:
@@ -131,8 +131,8 @@ class Text(GeometricalEntity):
         """
             set the position of the textrefered to the point
         """
-        from kernel.initsetting             import TEXT_POSITION
-        from kernel.exception               import PythopnCadWarning
+        from pythoncad.initsetting             import TEXT_POSITION
+        from pythoncad.exception               import PythopnCadWarning
         if position in TEXT_POSITION:
             self['TEXT_3']=position
         raise TypeError,"bad Point position"

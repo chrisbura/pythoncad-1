@@ -28,11 +28,11 @@ from __future__ import generators
 import math
 
 
-from kernel.geoentity.geometricalentity    import *
-from kernel.geoutil.tolerance              import *
-from kernel.geoutil.util                   import *
-from kernel.geoentity.point                import Point
-from kernel.geoutil.geolib                 import Vector
+from pythoncad.geoentity.geometricalentity    import *
+from pythoncad.geoutil.tolerance              import *
+from pythoncad.geoutil.util                   import *
+from pythoncad.geoentity.point                import Point
+from pythoncad.geoutil.geolib                 import Vector
 
 class CLine(GeometricalEntity):
     """
@@ -135,7 +135,7 @@ class CLine(GeometricalEntity):
         """
             perform the mirror of the line
         """
-        from kernel.geoentity.segment              import Segment
+        from pythoncad.geoentity.segment              import Segment
         if not isinstance(mirrorRef, (CLine, Segment)):
             raise TypeError, "mirrorObject must be Cline Segment or a tuple of points"
         #

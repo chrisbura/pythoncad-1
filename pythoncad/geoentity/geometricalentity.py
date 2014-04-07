@@ -92,8 +92,8 @@ class GeometricalEntity(dict):
         """
             this method must be defined for moving operation
         """
-        from kernel.geoutil.geolib import Vector
-        from kernel.geoentity.point import Point
+        from pythoncad.geoutil.geolib import Vector
+        from pythoncad.geoentity.point import Point
         v=Vector(fromPoint, toPoint)
         for key in self:
             if isinstance(self[key] , Point):
@@ -104,8 +104,8 @@ class GeometricalEntity(dict):
         """
             this method must be defined for rotation
         """
-        from kernel.geoutil.geolib import Vector
-        from kernel.geoentity.point import Point
+        from pythoncad.geoutil.geolib import Vector
+        from pythoncad.geoentity.point import Point
 
         for key in self:
             if isinstance(self[key] , Point):

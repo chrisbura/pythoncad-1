@@ -20,15 +20,15 @@
 #
 # This module provide basic pythoncadObject
 #
-from kernel.geoentity.style             import Style
-from kernel.exception                   import EntityMissing
+from pythoncad.geoentity.style             import Style
+from pythoncad.exception                   import EntityMissing
 
 class PyCadObject(object):
     """
         This class provide basic information for all the pythoncad object
     """
     def __init__(self,objId,style,eType,properties={}):
-        from kernel.initsetting import OBJECT_STATE
+        from pythoncad.initsetting import OBJECT_STATE
         self.OBJECT_STATE=OBJECT_STATE
         self.__entityId=objId
         self.__state="MODIFIE"

@@ -20,8 +20,8 @@
 #
 import os.path
 #
-from kernel.externalformat.dxf.dxf import Dxf
-from kernel.exception import *
+from pythoncad.externalformat.dxf.dxf import Dxf
+from pythoncad.exception import *
 #
 class ExtFormat(object):
     """

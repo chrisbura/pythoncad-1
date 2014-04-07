@@ -20,9 +20,9 @@
 #
 #This module provide a class for the arc command
 #
-from kernel.exception               import *
-from kernel.command.basecommand     import *
-from kernel.geoentity.ccircle          import CCircle
+from pythoncad.exception               import *
+from pythoncad.command.basecommand     import *
+from pythoncad.geoentity.ccircle          import CCircle
 
 class CCircleCommand(BaseCommand):
     """

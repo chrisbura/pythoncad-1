@@ -23,9 +23,9 @@
 #
 #TODO : REPAIR THE LOGGER FOR THIS CLASS
 
-from kernel.exception import *
-from kernel.pycadevent import PyCadEvent
-from kernel.db.schema import Layer, Setting
+from pythoncad.exception import *
+from pythoncad.pycadevent import PyCadEvent
+from pythoncad.db.schema import Layer, Setting
 
 
 class LayerTable(object):

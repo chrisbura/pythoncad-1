@@ -20,12 +20,12 @@
 #
 #This module provide a class for the chamfer command
 #
-from kernel.exception                       import *
-from kernel.composedentity                  import ComposedEntity
-from kernel.command.basecommand             import *
-from kernel.geocomposedentity.chamfer       import Chamfer
-from kernel.geoentity.segment               import Segment
-from kernel.geoutil.util                    import getIdPoint
+from pythoncad.exception                       import *
+from pythoncad.composedentity                  import ComposedEntity
+from pythoncad.command.basecommand             import *
+from pythoncad.geocomposedentity.chamfer       import Chamfer
+from pythoncad.geoentity.segment               import Segment
+from pythoncad.geoutil.util                    import getIdPoint
 
 class ChamferCommand(BaseCommand):
     """

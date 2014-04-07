@@ -26,11 +26,11 @@ from __future__ import generators
 
 import math
 
-from kernel.geoutil.tolerance              import *
-from kernel.geoentity.point                import Point
-from kernel.geoentity.segment              import Segment
-from kernel.geoentity.cline                import CLine
-from kernel.geoentity.geometricalentity    import *
+from pythoncad.geoutil.tolerance              import *
+from pythoncad.geoentity.point                import Point
+from pythoncad.geoentity.segment              import Segment
+from pythoncad.geoentity.cline                import CLine
+from pythoncad.geoentity.geometricalentity    import *
 
 class Polyline(GeometricalEntity):
     """

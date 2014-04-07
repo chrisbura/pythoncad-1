@@ -27,7 +27,7 @@ import string
 from math import fmod, pi
 import types
 
-from kernel.geoutil.tolerance       import TOL
+from pythoncad.geoutil.tolerance       import TOL
 
 def get_float(val):
     _v = val
@@ -312,9 +312,9 @@ def updateSegment(objSegment,objPoint, objInterPoint):
         """
             Return a segment with trimed to the intersection point
         """
-        from kernel.geoentity.segment       import Segment
-        from kernel.geoentity.point         import Point
-        from kernel.geoutil.geolib          import Vector
+        from pythoncad.geoentity.segment       import Segment
+        from pythoncad.geoentity.point         import Point
+        from pythoncad.geoutil.geolib          import Vector
 
         objProjection=objSegment.getProjection(objPoint)
         _p1 , _p2 = objSegment.getEndpoints()

@@ -20,9 +20,9 @@
 #
 #This module provide a class for the move command
 #
-from kernel.exception               import *
-from kernel.command.basecommand     import *
-from kernel.geoentity.arc           import Arc
+from pythoncad.exception               import *
+from pythoncad.command.basecommand     import *
+from pythoncad.geoentity.arc           import Arc
 
 class MoveCommand(BaseCommand):
     """

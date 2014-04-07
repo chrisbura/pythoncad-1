@@ -23,7 +23,7 @@
 # code for base for Chamfer
 #
 
-from kernel.geocomposedentity.objoint import *
+from pythoncad.geocomposedentity.objoint import *
 
 class Chamfer(ObjectJoint):
     """

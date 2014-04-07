@@ -23,10 +23,10 @@
 # code for base for Fillet
 #
 
-from kernel.geocomposedentity.objoint import *
-from kernel.geocomposedentity.bisector import Bisector
-from kernel.exception           import *
-from kernel.geoutil.util import *
+from pythoncad.geocomposedentity.objoint import *
+from pythoncad.geocomposedentity.bisector import Bisector
+from pythoncad.exception           import *
+from pythoncad.geoutil.util import *
 
 _dtr = 180.0/pi
 

@@ -20,9 +20,9 @@
 #
 #This module provide a class for the segment command
 #
-from kernel.exception               import *
-from kernel.command.basecommand     import *
-from kernel.geoentity.cline           import CLine
+from pythoncad.exception               import *
+from pythoncad.command.basecommand     import *
+from pythoncad.geoentity.cline           import CLine
 
 class CLineCommand(BaseCommand):
     """

@@ -25,9 +25,9 @@
 
 import math
 
-from kernel.geoentity.cline import CLine
-from kernel.geoentity.ccircle import CCircle
-from kernel.exception import *
+from pythoncad.geoentity.cline import CLine
+from pythoncad.geoentity.ccircle import CCircle
+from pythoncad.exception import *
 
 #
 # common constants

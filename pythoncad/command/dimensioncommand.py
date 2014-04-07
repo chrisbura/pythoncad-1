@@ -20,10 +20,10 @@
 #
 #This module provide a class for the segment command
 #
-from kernel.exception               import *
-from kernel.command.basecommand     import *
-from kernel.geoutil.geolib          import Vector
-from kernel.geoentity.dimension     import Dimension
+from pythoncad.exception               import *
+from pythoncad.command.basecommand     import *
+from pythoncad.geoutil.geolib          import Vector
+from pythoncad.geoentity.dimension     import Dimension
 
 class DimensionCommand(BaseCommand):
     """

@@ -25,13 +25,13 @@
 
 from math import hypot, fmod, atan2, sin, cos, pi
 
-from kernel.geoentity.util     import *
-from kernel.geoentity.point    import Point
-from kernel.geoentity.segment  import Segment
-from kernel.geoentity.arc      import Arc
-from kernel.geoentity.cline    import CLine
-from kernel.geoentity.ccircle  import CCircle
-from kernel.geoentity.polyline import Polyline
+from pythoncad.geoentity.util     import *
+from pythoncad.geoentity.point    import Point
+from pythoncad.geoentity.segment  import Segment
+from pythoncad.geoentity.arc      import Arc
+from pythoncad.geoentity.cline    import CLine
+from pythoncad.geoentity.ccircle  import CCircle
+from pythoncad.geoentity.polyline import Polyline
 
 
 #from PythonCAD.Generic.segjoint import Chamfer, Fillet

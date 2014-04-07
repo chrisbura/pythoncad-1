@@ -26,9 +26,9 @@ import sys
 from tempfile import NamedTemporaryFile
 import sqlite3 as sql
 
-from kernel.exception import *
+from pythoncad.exception import *
 
-from kernel.db.alchemy import DocumentDb
+from pythoncad.db.alchemy import DocumentDb
 
 class BaseDb(object):
     """

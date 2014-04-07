@@ -20,11 +20,11 @@
 #
 #This module provide a class for the Trim command
 #
-from kernel.exception               import *
-from kernel.command.basecommand     import *
-from kernel.geoentity               import *
-from kernel.geoutil.intersection    import *
-from kernel.geoutil.util            import *
+from pythoncad.exception               import *
+from pythoncad.command.basecommand     import *
+from pythoncad.geoentity               import *
+from pythoncad.geoutil.intersection    import *
+from pythoncad.geoutil.util            import *
 
 class DeleteCommand(BaseCommand):
     """

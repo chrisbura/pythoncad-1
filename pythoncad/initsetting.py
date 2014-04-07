@@ -24,53 +24,53 @@
 #
 # Command List
 #
-from kernel.command                     import *
-from kernel.command.segmentcommand      import SegmentCommand
-from kernel.command.circlecommand       import CircleCommand
-from kernel.command.arccommand          import ArcCommand
-from kernel.command.pointcommand        import PointCommand
-from kernel.command.ellipsecommand      import EllipseCommand
-from kernel.command.polylinecommand     import PolylineCommand
-#from kernel.command.aclinecommand       import ACLineCommand
-from kernel.command.ccirclecommand      import CCircleCommand
-from kernel.command.textcommand         import TextCommand
-from kernel.command.chamfercommand      import ChamferCommand
-from kernel.command.filletcommand       import FilletCommand
-from kernel.command.bisectorcommand     import BisectorCommand
-from kernel.command.rectanglecommand    import RectangleCommand
-from kernel.command.polygoncommand      import PolygonCommand
-from kernel.command.copycommand         import CopyCommand
-from kernel.command.movecommand         import MoveCommand
-from kernel.command.mirrorcommand       import MirrorCommand
-from kernel.command.rotatecommand       import RotateCommand
-from kernel.command.trimcommand         import TrimCommand
-from kernel.command.deletecommand       import DeleteCommand
-from kernel.command.dimensioncommand    import DimensionCommand
-from kernel.command.propertycommand     import PropertyCommand
+from pythoncad.command                     import *
+from pythoncad.command.segmentcommand      import SegmentCommand
+from pythoncad.command.circlecommand       import CircleCommand
+from pythoncad.command.arccommand          import ArcCommand
+from pythoncad.command.pointcommand        import PointCommand
+from pythoncad.command.ellipsecommand      import EllipseCommand
+from pythoncad.command.polylinecommand     import PolylineCommand
+#from pythoncad.command.aclinecommand       import ACLineCommand
+from pythoncad.command.ccirclecommand      import CCircleCommand
+from pythoncad.command.textcommand         import TextCommand
+from pythoncad.command.chamfercommand      import ChamferCommand
+from pythoncad.command.filletcommand       import FilletCommand
+from pythoncad.command.bisectorcommand     import BisectorCommand
+from pythoncad.command.rectanglecommand    import RectangleCommand
+from pythoncad.command.polygoncommand      import PolygonCommand
+from pythoncad.command.copycommand         import CopyCommand
+from pythoncad.command.movecommand         import MoveCommand
+from pythoncad.command.mirrorcommand       import MirrorCommand
+from pythoncad.command.rotatecommand       import RotateCommand
+from pythoncad.command.trimcommand         import TrimCommand
+from pythoncad.command.deletecommand       import DeleteCommand
+from pythoncad.command.dimensioncommand    import DimensionCommand
+from pythoncad.command.propertycommand     import PropertyCommand
 #
 # Entity List
 #
-from kernel.geoentity.point        import Point
-from kernel.geoentity.segment      import Segment
-from kernel.geoentity.arc          import Arc
-from kernel.geoentity.ellipse      import Ellipse
-from kernel.geoentity.polyline     import Polyline
-from kernel.geoentity.style        import Style
-from kernel.geoentity.cline        import CLine
-from kernel.geoentity.ccircle      import CCircle
-from kernel.geoentity.text         import Text
-from kernel.geoentity.dimension    import Dimension
+from pythoncad.geoentity.point        import Point
+from pythoncad.geoentity.segment      import Segment
+from pythoncad.geoentity.arc          import Arc
+from pythoncad.geoentity.ellipse      import Ellipse
+from pythoncad.geoentity.polyline     import Polyline
+from pythoncad.geoentity.style        import Style
+from pythoncad.geoentity.cline        import CLine
+from pythoncad.geoentity.ccircle      import CCircle
+from pythoncad.geoentity.text         import Text
+from pythoncad.geoentity.dimension    import Dimension
 
-from kernel.geocomposedentity.chamfer   import Chamfer
-from kernel.geocomposedentity.fillet    import Fillet
-from kernel.geocomposedentity.bisector  import Bisector
+from pythoncad.geocomposedentity.chamfer   import Chamfer
+from pythoncad.geocomposedentity.fillet    import Fillet
+from pythoncad.geocomposedentity.bisector  import Bisector
 #
 # db Ent
 #
-from kernel.settings            import *
-from kernel.entity              import Entity
-from kernel.layer               import Layer
-from kernel.composedentity      import ComposedEntity
+from pythoncad.settings            import *
+from pythoncad.entity              import Entity
+from pythoncad.layer               import Layer
+from pythoncad.composedentity      import ComposedEntity
 
 # The number of files to show in the `File > Open Recent File` menu
 MAX_RECENT_FILE = 5

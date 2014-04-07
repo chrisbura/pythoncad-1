@@ -23,14 +23,14 @@ dxfDebug=False
 import math         # added to handle arc start and end point defination
 import re           # added to handle Mtext
 import os, sys
-from kernel.initsetting               import cgcol
-from kernel.layer                     import Layer
-from kernel.geoentity.point           import Point
-from kernel.geoentity.segment         import Segment
-from kernel.geoentity.arc             import Arc
-from kernel.geoentity.text            import Text
-from kernel.geoentity.ellipse         import Ellipse
-from kernel.geoentity.polyline        import Polyline
+from pythoncad.initsetting               import cgcol
+from pythoncad.layer                     import Layer
+from pythoncad.geoentity.point           import Point
+from pythoncad.geoentity.segment         import Segment
+from pythoncad.geoentity.arc             import Arc
+from pythoncad.geoentity.text            import Text
+from pythoncad.geoentity.ellipse         import Ellipse
+from pythoncad.geoentity.polyline        import Polyline
 def ChangeColor(x):
     try:
         newcolor = cgcol[x]

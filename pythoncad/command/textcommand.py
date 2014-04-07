@@ -20,9 +20,9 @@
 #
 #This module provide a class for the segment command
 #
-from kernel.exception               import *
-from kernel.command.basecommand     import *
-from kernel.geoentity.text             import Text
+from pythoncad.exception               import *
+from pythoncad.command.basecommand     import *
+from pythoncad.geoentity.text             import Text
 
 class TextCommand(BaseCommand):
     """

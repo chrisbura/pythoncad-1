@@ -20,9 +20,9 @@
 #
 #This module provide basic command function
 #
-from kernel.exception           import *
-from kernel.unitparser          import *
-from kernel.geoentity.point     import Point
+from pythoncad.exception           import *
+from pythoncad.unitparser          import *
+from pythoncad.geoentity.point     import Point
 
 class BaseCommand(object):
     """

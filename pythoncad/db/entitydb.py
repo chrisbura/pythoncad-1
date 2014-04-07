@@ -23,10 +23,10 @@
 
 import cPickle as pickle
 
-from kernel.entity              import *
-from kernel.db.basedb           import BaseDb
-from kernel.initsetting         import *
-from kernel.exception           import *
+from pythoncad.entity              import *
+from pythoncad.db.basedb           import BaseDb
+from pythoncad.initsetting         import *
+from pythoncad.exception           import *
 
 class EntityDb(BaseDb):
     """

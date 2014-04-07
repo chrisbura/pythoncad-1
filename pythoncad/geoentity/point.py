@@ -25,8 +25,8 @@ from __future__ import generators
 
 import math
 
-from kernel.geoentity.geometricalentity  import *
-from kernel.geoutil.util                 import *
+from pythoncad.geoentity.geometricalentity  import *
+from pythoncad.geoutil.util                 import *
 
 
 
@@ -257,7 +257,7 @@ class Point(GeometricalEntity):
         """
             perform the move operation
         """
-        from kernel.geoutil.geolib  import Vector
+        from pythoncad.geoutil.geolib  import Vector
         v=Vector(fromPoint, toPoint)
         p=self+v.point
         self.__x=p.x
@@ -267,8 +267,8 @@ class Point(GeometricalEntity):
         """
             this method must be defined for rotation
         """
-        from kernel.geoutil.geolib import Vector
-        from kernel.geoentity.point import Point
+        from pythoncad.geoutil.geolib import Vector
+        from pythoncad.geoentity.point import Point
         v=Vector(rotationPoint,self)
         v.rotate(angle)
         p=rotationPoint+v.point
@@ -279,9 +279,9 @@ class Point(GeometricalEntity):
         """
             perform the mirror of the line
         """
-        from kernel.geoentity.cline              import CLine
-        from kernel.geoentity.segment            import Segment
-        from kernel.geoutil.geolib               import Vector
+        from pythoncad.geoentity.cline              import CLine
+        from pythoncad.geoentity.segment            import Segment
+        from pythoncad.geoutil.geolib               import Vector
         if not isinstance(mirrorRef, (CLine, Segment)):
             raise TypeError, "mirrorObject must be Cline Segment or a tuple of points"
         #

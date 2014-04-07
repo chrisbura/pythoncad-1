@@ -26,11 +26,11 @@ from __future__ import generators
 
 import math
 
-from kernel.geoutil.util                    import *
-from kernel.geoutil.geolib                  import Vector
-from kernel.geoentity.point                 import Point
-from kernel.geoentity.cline                 import CLine
-from kernel.geoentity.geometricalentity     import *
+from pythoncad.geoutil.util                    import *
+from pythoncad.geoutil.geolib                  import Vector
+from pythoncad.geoentity.point                 import Point
+from pythoncad.geoentity.cline                 import CLine
+from pythoncad.geoentity.geometricalentity     import *
 
 
 class Segment(GeometricalEntity):

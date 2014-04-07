@@ -21,8 +21,8 @@
 # code for base for Bisector
 #
 
-from kernel.geocomposedentity.objoint import *
-from kernel.geoutil.geolib import Vector
+from pythoncad.geocomposedentity.objoint import *
+from pythoncad.geoutil.geolib import Vector
 import math
 
 class Bisector(ObjectJoint):

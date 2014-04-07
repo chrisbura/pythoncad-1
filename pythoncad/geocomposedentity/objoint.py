@@ -24,14 +24,14 @@
 #
 from math import hypot, pi, sin, cos, tan, atan2
 
-from kernel.geoentity.geometricalentity    import *
-from kernel.geoutil.util                   import *
-from kernel.geoutil.intersection           import *
-from kernel.geoentity.segment              import Segment
-#from kernel.geoentity.acline               import ACLine
-from kernel.geoentity.arc                  import Arc
-from kernel.geoentity.ccircle              import CCircle
-from kernel.geoutil.geolib                 import Vector
+from pythoncad.geoentity.geometricalentity    import *
+from pythoncad.geoutil.util                   import *
+from pythoncad.geoutil.intersection           import *
+from pythoncad.geoentity.segment              import Segment
+#from pythoncad.geoentity.acline               import ACLine
+from pythoncad.geoentity.arc                  import Arc
+from pythoncad.geoentity.ccircle              import CCircle
+from pythoncad.geoutil.geolib                 import Vector
 
 
 #ALLOW_CHAMFER_ENTITY=(Segment, ACLine)
@@ -42,7 +42,7 @@ class ObjectJoint(GeometricalEntityComposed):
         A ObjectJoint object has the following methods:
     """
     def __init__(self, kw, argDes=None):
-        from kernel.initsetting import DRAWIN_ENTITY
+        from pythoncad.initsetting import DRAWIN_ENTITY
         classNames=tuple(DRAWIN_ENTITY.keys())
         argDescription={"OBJECTJOINT_0":classNames,
                         "OBJECTJOINT_1":classNames,

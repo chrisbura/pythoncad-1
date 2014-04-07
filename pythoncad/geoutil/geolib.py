@@ -22,8 +22,8 @@
 
 import math
 
-from kernel.geoentity.point  import Point
-from kernel.exception import EntityMissing
+from pythoncad.geoentity.point  import Point
+from pythoncad.exception import EntityMissing
 
 class Vector:
     """
