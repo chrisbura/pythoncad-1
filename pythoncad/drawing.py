@@ -19,6 +19,7 @@
 #
 
 from pythoncad.db.alchemy import DocumentDb
+from pythoncad.db import schema
 
 
 class Drawing(object):
@@ -30,4 +31,20 @@ class Drawing(object):
         self.connection = DocumentDb(db_path)
         self.db = self.connection.session
         self.db_path = self.connection.db_path
+
+    def get_property(self, property_name):
+        property_value = self.db.query(schema.Setting).filter_by(name=property_name).first()
+
+        if not property_value:
+            property_value = schema.Setting(name='drawing_title', value='Untitled')
+            self.db.add(property_value)
+            self.db.commit()
+
+        return property_value
+
+    def set_property(self, property_name, property_value):
+        property_obj = self.get_property(property_name)
+        property_obj.value = property_value
+        self.db.commit()
+        # TODO: Error checking
 
