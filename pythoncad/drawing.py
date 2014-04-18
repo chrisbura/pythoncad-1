@@ -18,20 +18,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-from pythoncad.models import Metadata, Layer
+from pythoncad.models import Layer
+
 
 class Drawing(object):
-    def __init__(self):
-        self.metadata = Metadata()
+    def __init__(self, title='Untitled'):
+        self.title = title
         self.layers = []
-
-    @property
-    def title(self):
-        return self.metadata.title
-
-    @title.setter
-    def title(self, value):
-        self.metadata.title = value
 
     @property
     def layer_count(self):
@@ -39,15 +32,27 @@ class Drawing(object):
 
     def create_layer(self):
         layer = Layer()
-        # Only temporary
-        layer.id = self.layer_count + 1
-        layer.title = 'Layer {0}'.format(layer.id)
-        self.layers.append(layer)
+        self.add_layer(layer)
         return layer
 
     def add_layer(self, layer):
-        if layer.id is not None:
+        if layer.drawing is not None and layer.drawing is not self:
+            # TODO: Pick better exception type
             raise Exception('Layer is already bound to another drawing')
 
-        layer.id = self.layer_count + 1
+        if layer in self.layers:
+            raise Exception('Layer is already part of this drawing')
+
+        layer.drawing = self
         self.layers.append(layer)
+
+    def remove_layer(self, layer):
+        if not layer in self.layers:
+            raise Exception('Layer is not part of this drawing')
+
+        # Perform 'soft' delete so that layer can be added to
+        # another drawing or to the same drawing later
+        # TODO: move_layer method
+        layer.drawing = None
+
+        self.layers.remove(layer)
