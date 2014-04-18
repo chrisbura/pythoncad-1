@@ -18,33 +18,36 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-from pythoncad.db.alchemy import DocumentDb
-from pythoncad.db import schema
-
+from pythoncad.models import Metadata, Layer
 
 class Drawing(object):
-    def __init__(self, db_path):
+    def __init__(self):
+        self.metadata = Metadata()
         self.layers = []
-        self.active_layer = None
 
-        # Database Connection
-        self.connection = DocumentDb(db_path)
-        self.db = self.connection.session
-        self.db_path = self.connection.db_path
+    @property
+    def title(self):
+        return self.metadata.title
 
-    def get_property(self, property_name):
-        property_value = self.db.query(schema.Setting).filter_by(name=property_name).first()
+    @title.setter
+    def title(self, value):
+        self.metadata.title = value
 
-        if not property_value:
-            property_value = schema.Setting(name='drawing_title', value='Untitled')
-            self.db.add(property_value)
-            self.db.commit()
+    @property
+    def layer_count(self):
+        return len(self.layers)
 
-        return property_value
+    def create_layer(self):
+        layer = Layer()
+        # Only temporary
+        layer.id = self.layer_count + 1
+        layer.title = 'Layer {0}'.format(layer.id)
+        self.layers.append(layer)
+        return layer
 
-    def set_property(self, property_name, property_value):
-        property_obj = self.get_property(property_name)
-        property_obj.value = property_value
-        self.db.commit()
-        # TODO: Error checking
+    def add_layer(self, layer):
+        if layer.id is not None:
+            raise Exception('Layer is already bound to another drawing')
 
+        layer.id = self.layer_count + 1
+        self.layers.append(layer)

@@ -18,17 +18,26 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+import unittest
 
-class Layer(object):
-    def __init__(self, drawing, name='Untitled Layer'):
-        self.name = name
-        self.entities = []
+from pythoncad.drawing import Drawing
 
-        # Bind layer to a specific drawing
-        self.drawing = drawing
 
-    def entity_count(self):
-        return len(self.entities)
+class TestDrawing(unittest.TestCase):
 
-    def add_entity(self, entity):
-        self.entities.append(entity)
+    def setUp(self):
+        self.drawing = Drawing()
+
+    def test_drawing_creation(self):
+        self.assertTrue(isinstance(self.drawing, Drawing))
+
+    def test_drawing_default_title(self):
+        self.assertEqual(self.drawing.title, 'Untitled')
+
+    def test_drawing_set_title(self):
+        self.drawing.title = 'New Drawing'
+        self.assertEqual(self.drawing.title, 'New Drawing')
+        self.assertEqual(self.drawing.metadata.title, 'New Drawing')
+
+if __name__ == '__main__':
+    unittest.main()
