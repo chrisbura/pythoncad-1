@@ -36,6 +36,11 @@ class Drawing(object):
         return layer
 
     def add_layer(self, layer):
+        if not isinstance(layer, Layer):
+            raise Exception('Cannot add object of type {0} as layer'.format(
+                layer.__class__))
+
+        # TODO: Check key error?
         if layer.drawing is not None and layer.drawing is not self:
             # TODO: Pick better exception type
             raise Exception('Layer is already bound to another drawing')

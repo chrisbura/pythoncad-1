@@ -39,6 +39,7 @@ class TestDrawing(unittest.TestCase):
         self.drawing.title = 'New Drawing'
         self.assertEqual(self.drawing.title, 'New Drawing')
 
+
 class TestLayerCreation(unittest.TestCase):
 
     def setUp(self):
@@ -83,7 +84,7 @@ class TestLayerCreation(unittest.TestCase):
         self.assertEqual(layer.drawing, None)
         self.assertEqual(self.drawing.layer_count, 0)
 
-    def test_layer_remove_and_readd(self):
+    def test_layer_remove_and_re_add(self):
         layer = self.drawing.create_layer()
         self.assertEquals(self.drawing.layer_count, 1)
         self.drawing.remove_layer(layer)
@@ -96,5 +97,6 @@ class TestLayerCreation(unittest.TestCase):
         with self.assertRaises(Exception):
             self.drawing.remove_layer(layer)
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_adding_random_object_as_layer(self):
+        with self.assertRaises(Exception):
+            self.drawing.add_layer(Drawing())
