@@ -21,10 +21,8 @@
 import unittest
 
 from pythoncad.drawing import Drawing
-from pythoncad.models import Layer
-from pythoncad.models import Point
-from pythoncad.models import Segment
-from pythoncad.models import Entity
+from pythoncad.models.layer import Layer
+from pythoncad.entities import Entity, Point, LineSegment
 
 
 class TestEntityCreation(unittest.TestCase):
@@ -41,13 +39,13 @@ class TestEntityCreation(unittest.TestCase):
     def test_adding_multiple_entity(self):
         for i in range(5):
             self.layer.add_entity(Point())
-            self.layer.add_entity(Segment())
+            self.layer.add_entity(LineSegment())
         self.assertEquals(self.layer.entity_count, 10)
 
     def test_entity_adding_segment_and_point(self):
         point = Point()
         self.layer.add_entity(point)
-        segment = Segment()
+        segment = LineSegment()
         self.layer.add_entity(segment)
         self.assertEquals(point.layer, self.layer)
         self.assertEquals(segment.layer, self.layer)

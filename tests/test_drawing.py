@@ -21,7 +21,7 @@
 import unittest
 
 from pythoncad.drawing import Drawing
-from pythoncad.models import Layer
+from pythoncad.models.layer import Layer
 
 
 class TestDrawing(unittest.TestCase):
