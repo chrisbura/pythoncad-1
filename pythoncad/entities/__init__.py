@@ -19,5 +19,3 @@
 #
 
 from .entity import Entity
-from .point import Point
-from .linesegment import LineSegment
