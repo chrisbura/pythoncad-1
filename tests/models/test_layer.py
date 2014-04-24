@@ -22,7 +22,8 @@ import unittest
 
 from pythoncad.drawing import Drawing
 from pythoncad.models.layer import Layer
-from pythoncad.entities import Entity, Point, LineSegment
+from pythoncad.entities.point import Point
+from pythoncad.entities.segment import Segment
 
 
 class TestEntityCreation(unittest.TestCase):
@@ -31,28 +32,28 @@ class TestEntityCreation(unittest.TestCase):
         self.layer = self.drawing.create_layer()
 
     def test_entity_adding_point(self):
-        point = Point()
+        point = Point(0, 0)
         self.layer.add_entity(point)
         self.assertEquals(self.layer.entity_count, 1)
         self.assertEquals(point.layer, self.layer)
 
     def test_adding_multiple_entity(self):
         for i in range(5):
-            self.layer.add_entity(Point())
-            self.layer.add_entity(LineSegment())
+            self.layer.add_entity(Point(i, i))
+            self.layer.add_entity(Segment(Point(0, 0), Point(1, i)))
         self.assertEquals(self.layer.entity_count, 10)
 
     def test_entity_adding_segment_and_point(self):
-        point = Point()
+        point = Point(0, 0)
         self.layer.add_entity(point)
-        segment = LineSegment()
+        segment = Segment(Point(0, 0), Point(10, 10))
         self.layer.add_entity(segment)
         self.assertEquals(point.layer, self.layer)
         self.assertEquals(segment.layer, self.layer)
         self.assertEquals(self.layer.entity_count, 2)
 
     def test_entity_removal(self):
-        point = Point()
+        point = Point(0, 0)
         self.layer.add_entity(point)
         self.assertEquals(self.layer, point.layer)
         self.assertEquals(self.layer.entity_count, 1)
@@ -60,8 +61,8 @@ class TestEntityCreation(unittest.TestCase):
         self.assertEquals(point.layer, None)
         self.assertEquals(self.layer.entity_count, 0)
 
-    def test_entity_readd(self):
-        point = Point()
+    def test_entity_re_add(self):
+        point = Point(0, 0)
         self.layer.add_entity(point)
         self.assertEquals(self.layer.entity_count, 1)
         self.layer.remove_entity(point)
@@ -70,15 +71,16 @@ class TestEntityCreation(unittest.TestCase):
         self.assertEquals(self.layer.entity_count, 1)
 
     def test_entity_already_added(self):
-        point = Point()
+        point = Point(0, 0)
         self.layer.add_entity(point)
         self.assertEquals(point.layer, self.layer)
         self.assertEquals(self.layer.entity_count, 1)
-        self.layer.add_entity(point)
+        with self.assertRaises(Exception):
+            self.layer.add_entity(point)
         self.assertEquals(self.layer.entity_count, 1)
 
     def test_entity_already_bound(self):
-        point = Point()
+        point = Point(0 ,0)
         self.layer.add_entity(point)
 
         # Add second layer to try adding point
@@ -88,7 +90,7 @@ class TestEntityCreation(unittest.TestCase):
             layer2.add_entity(point)
 
         self.assertEquals(self.layer.entity_count, 1)
-        self.assertEquals(self.layer2.entity_count, 0)
+        self.assertEquals(layer2.entity_count, 0)
 
     def test_add_random_object_as_entity(self):
         layer = Layer()
@@ -96,7 +98,7 @@ class TestEntityCreation(unittest.TestCase):
             self.layer.add_entity(layer)
 
     def test_entity_not_bound_remove(self):
-        point = Point()
+        point = Point(0, 0)
         with self.assertRaises(Exception):
             self.layer.remove_entity(point)
 

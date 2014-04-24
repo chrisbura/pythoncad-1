@@ -18,5 +18,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-class Entity(object):
-    pass
+class BaseEntity(object):
+    def __init__(self, *args, **kwargs):
+        super(BaseEntity, self).__init__(*args, **kwargs)
+
+        self.layer = None
